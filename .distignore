@@ -1,0 +1,8 @@
+/.wordpress-org
+/.git
+/.github
+.distignore
+.gitignore
+readme.md
+*.codekit3
+scss
