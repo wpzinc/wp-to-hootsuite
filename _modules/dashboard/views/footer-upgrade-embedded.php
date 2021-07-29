@@ -26,7 +26,7 @@ if ( isset( $this->base->plugin->upgrade_reasons ) && is_array( $this->base->plu
 	</div>
 
     <div class="wpzinc-option">
-    	<a href="<?php echo $this->base->plugin->upgrade_url; ?>?utm_source=wordpress&utm_medium=link&utm_content=settings_footer_upgrade&utm_campaign=general" class="button button-primary" rel="noopener" target="_blank"><?php _e( 'Upgrade Now', $this->base->plugin->name ); ?></a>
+    	<a href="<?php echo $this->base->dashboard->get_upgrade_url( 'settings_footer_upgrade' ); ?>" class="button button-primary" rel="noopener" target="_blank"><?php _e( 'Upgrade Now', $this->base->plugin->name ); ?></a>
     </div>
 	<?php
 }
