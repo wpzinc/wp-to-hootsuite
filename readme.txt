@@ -3,8 +3,8 @@ Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
 Tags: auto publish, auto post, social media automation, social media scheduling, hootsuite, promote old posts, promote posts, promote custom posts, promote selected posts, share posts, bulk share posts, share old posts, social, media, sharing, social media, social sharing, schedule, auto post, auto publish, publish, facebook, facebook post, facebook selected posts, facebook plugin, auto facebook post, post facebook, post to facebook, twitter, twitter post, tweet post twitter selected posts, tweet selected posts twitter plugin, auto twitter post, auto tweet post post twitter, post to twitter, linkedin, linkedin post, linkedin selected posts, linkedin plugin, auto linkedin post, post linkedin, post to linkedin, google, google post, google selected posts, google plugin, auto google post, post google, post to google, pinterest, pinterest post, pinterest selected posts, pinterest plugin, auto pinterest post, post pinterest, post to pinterest, best wordpress social plugin, best wordpress social sharing plugin, best social plugin, best social sharing plugin, best facebook social plugin, best twitter social plugin, best linkedin social plugin, best pinterest social plugin, best google+ social plugin, instagram, pinterest
 Requires at least: 5.0
-Tested up to: 5.8
-Requires PHP: 7.2
+Tested up to: 5.8.1
+Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -87,6 +87,12 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 1.3.7 (2021-09-09) =
+* Added: Status: Text: Convert HTML links to plain text with link in brackets, instead of just displaying the unlinked text
+* Added: Status: Text: Convert HTML lists to plain text with hyphens, instead of just displaying plain text
+* Added: Status: Image: Support for .webp images when Use Feat. Image enabled and .webp image used as Featured Image. See Docs: https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/featured-image-settings/#webp-image-support
+* Added: Status: Remove HTML from shortcodes included in status text
 
 = 1.3.6 (2021-07-15) =
 * Added: New Installations: Clearer workflow for connecting to Hootsuite and connecting social media profiles to Hootsuite account.  See Docs: https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/authentication-settings/

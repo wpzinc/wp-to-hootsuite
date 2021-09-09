@@ -492,7 +492,7 @@ class WP_To_Social_Pro_Settings {
     public function get_status_row( $status, $post_type, $action ) {
 
         // Get Options
-        $featured_image_options     = $this->base->get_class( 'common' )->get_featured_image_options( $post_type );
+        $featured_image_options     = $this->base->get_class( 'image' )->get_featured_image_options( $post_type );
         $schedule                   = $this->base->get_class( 'common' )->get_schedule_options( $post_type );
 
         // Define row
@@ -601,7 +601,7 @@ class WP_To_Social_Pro_Settings {
 
         // Define skeleton status to be used for new statuses
         $status = array(
-            'image'                             => ( $this->supports_opengraph() ? 0 : 2 ),
+            'image'                             => ( $this->base->get_class( 'image' )->is_opengraph_plugin_active() ? 0 : 2 ),
             'sub_profile'                       => 0,
             'message'                           => ( ! $default_message ? '{title} {url}' : $default_message ),
             'schedule'                          => $default_schedule,
@@ -662,41 +662,7 @@ class WP_To_Social_Pro_Settings {
         return $status;
 
     }
-
-    /**
-     * Determines if the WordPress installations has a Plugin installed that outputs
-     * OpenGraph metadata
-     *
-     * @since   4.4.0
-     *
-     * @return  bool    Supports OpenGraph
-     */
-    public function supports_opengraph() {
-
-        // Load function if required
-        if ( ! function_exists( 'is_plugin_active' ) ) {
-            include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-        }
-
-        // Fetch OpenGraph supported SEO Plugins and Fetured Image Options
-        $featured_image_options = array_keys( $this->base->get_class( 'common' )->get_featured_image_options() );
-
-        // If the Plugin only offers "Use OpenGraph Settings", no need to check for SEO Plugin availability
-        if ( count( $featured_image_options ) == 1 && ! $featured_image_options[0] ) {
-            return false;
-        }
-
-        foreach ( $this->base->get_class( 'common' )->get_opengraph_seo_plugins() as $seo_plugin ) {
-            // If plugin active, use OpenGraph for images
-            if ( is_plugin_active( $seo_plugin ) ) {
-                return true;
-            }
-        }
-        
-        return false;
-
-    }
-
+    
     /**
      * Helper method to determine whether the given Post Type has at least
      * one social media account enabled, and there is a publish or update

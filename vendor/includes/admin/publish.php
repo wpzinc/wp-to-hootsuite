@@ -810,10 +810,13 @@ class WP_To_Social_Pro_Publish {
                 switch ( $status['image'] ) {
                     /**
                      * Use OpenGraph Settings
-                     * - Don't specify Media, as the service will scrape the URL for OpenGraph image tags
                      */
                     case 0:
                     case '':
+                    	// Add Post link to media, so API service knows where to fetch OpenGraph data from
+                    	$args['media'] = array(
+				        	'link' => $this->get_permalink( $post ),
+				        );
                         break;
 
                     /**
@@ -830,6 +833,9 @@ class WP_To_Social_Pro_Publish {
                             // Supplied, as required when specifying media with no link
                             // Using the smallest possible image to avoid cURL timeouts
                             'thumbnail'     => strtok( $image['thumbnail'], '?' ),
+
+                            // Hootsuite for Amazon S3 upload for quality tests
+                            'id'            => $image['id'],
                         );
                         break;
 
@@ -873,7 +879,7 @@ class WP_To_Social_Pro_Publish {
         // Featured Image
         $image_id = get_post_thumbnail_id( $post->ID );
         if ( $image_id > 0 ) {
-            return $this->get_image_sources( $image_id, 'featured_image' );
+            return $this->base->get_class( 'image' )->get_image_sources( $image_id, 'featured_image', $service );
         }
 
         // Content's First Image
@@ -888,30 +894,6 @@ class WP_To_Social_Pro_Publish {
 
         // If here, no image was found in the Post
         return false;
-
-    }
-
-    /**
-     * Returns the large and thumbnail image sizes for the given Attachment ID
-     *
-     * @since   3.9.8
-     *
-     * @param   int     $image_id   Image ID
-     * @param   string  $source     Source Image ID was derived from (plugin, featured_image, post_content)
-     * @return  array               Image URLs
-     */
-    private function get_image_sources( $image_id, $source ) {
-
-        // Get image sources
-        $image = wp_get_attachment_image_src( $image_id, 'large' );
-        $thumbnail = wp_get_attachment_image_src( $image_id, 'thumbnail' );
-
-        // Return URLs only
-        return array(
-            'image'     => strtok( $image[0], '?' ),
-            'thumbnail' => strtok( $thumbnail[0], '?' ),
-            'source'    => $source,
-        );
 
     }
 
@@ -1102,8 +1084,8 @@ class WP_To_Social_Pro_Publish {
         // Execute any shortcodes in the text now
         $text = do_shortcode( $text );
 
-        // Remove double spaces, but retain newlines and accented characters
-        $text = preg_replace( '/[ ]{2,}/', ' ', $text );
+        // Convert to plain text
+        $text = $this->convert_to_plain_text( $text );
 
         /**
          * Filters the parsed status message text on a status.
@@ -1404,7 +1386,7 @@ class WP_To_Social_Pro_Publish {
     private function get_title( $post ) {
 
         // Define title
-        $title = html_entity_decode( strip_tags( strip_shortcodes( get_the_title( $post ) ) ) );
+        $title = $this->convert_to_plain_text( get_the_title( $post ) );
 
         /**
          * Filters the dynamic {title} replacement, when a Post's status is being built.
@@ -1448,17 +1430,8 @@ class WP_To_Social_Pro_Publish {
             $excerpt = apply_filters( 'get_the_excerpt', $post->post_excerpt, $post );
         }
 
-        // Strip shortcodes
-        $excerpt = strip_shortcodes( $excerpt );
-
-        // Strip HTML Tags
-        $excerpt = strip_tags( $excerpt );
-
-        // Decode excerpt to avoid encoding issues on status output
-        $excerpt = html_entity_decode( $excerpt );
-
-        // Finally, trim the output
-        $excerpt = trim( $excerpt );
+        // Convert to plain text
+        $excerpt = $this->convert_to_plain_text( $excerpt );
 
         /**
          * Filters the dynamic {excerpt} replacement, when a Post's status is being built.
@@ -1533,14 +1506,8 @@ class WP_To_Social_Pro_Publish {
             $content = preg_replace( '/<br(\s+)?\/?>/i', "\n", $content );
         }
 
-        // Strip HTML Tags
-        $content = strip_tags( $content );
-
-        // Decode content to avoid encoding issues on status output
-        $content = html_entity_decode( $content );
-
-        // Finally, trim the output
-        $content = trim( $content );
+        // Convert to plain text
+        $content = $this->convert_to_plain_text( $content );
 
         /**
          * Filters the dynamic {content} replacement, when a Post's status is being built.
@@ -1626,6 +1593,56 @@ class WP_To_Social_Pro_Publish {
 
         // Return
         return $url;
+
+    }
+
+    /**
+     * Converts the given string (which is typically HTML from a WordPress Post or Post Meta Field)
+     * to plain text, by performing several functions:
+     * - stripping shortcodes (if shortcodes need processing, do so before calling this function)
+     * - stripping HTML tags, excluding <br> and <br />
+     * - decoding HTML entities to avoid encoding issues on status output
+     * - converting <br> and <br /> to newlines
+     * - removing double spaces
+     * - trimming the final result of any leading or trailing spaces
+     * 
+     * @since 	4.6.9
+     * 
+     * @param 	string 	$text 	Text
+     * @return 	string 			Text
+     */
+    private function convert_to_plain_text( $text ) {
+
+    	// Strip any shortcodes still remaining
+    	// If shortcodes need to be processed, they should be processed before calling this function
+    	$text = strip_shortcodes( $text );
+
+    	// Remove HTML, except breaklines, links and unordered list items
+        $text = strip_tags( $text, '<br><a><li>' );
+
+        // Decode excerpt to avoid encoding issues on status output
+        $text = html_entity_decode( $text );
+
+        // Convert <br> and <br /> into newlines
+        $text = preg_replace( '/<br(\s+)?\/?>/i', "\n", $text );
+
+        // Convert <a> to text and inline link
+        $text = preg_replace( '/<a[^>]+href=\"(.*?)\"[^>]*>(.*?)<\/a>/i', "$2 ($1)", $text );
+
+        // Convert <li> to hyphenated
+        $text = preg_replace( '/<li[^>]*>(.*?)<\/li>/i', "- $1", $text );
+        
+        // Remove double spaces, but retain newlines and accented characters
+        $text = preg_replace( '/[ ]{2,}/', ' ', $text );
+
+        // Remove tabs
+		$text = str_replace( "\t", '', $text );
+
+        // Finally, trim the text
+        $text = trim( $text );
+
+        // Return
+        return $text;
 
     }
 

@@ -22,7 +22,7 @@
                     <!-- Image -->
                     <select name="<?php echo $this->base->plugin->name; ?>_image" size="1" class="right image">
                         <?php
-                        foreach ( $this->base->get_class( 'common' )->get_featured_image_options( $post_type ) as $value => $label ) {
+                        foreach ( $this->base->get_class( 'image' )->get_featured_image_options( $post_type ) as $value => $label ) {
                             ?>
                             <option value="<?php echo $value; ?>"><?php echo $label; ?></option>
                             <?php
