@@ -352,10 +352,10 @@ class WP_To_Social_Pro_Hootsuite_API {
      * @since   1.0.0
      *
      * @param   bool    $force                      Force API call (false = use WordPress transient)
-     * @param   int     $transient_expiration_time  Transient Expiration Time
+     * @param   int     $transient_expiration_time  Transient Expiration Time, in seconds (default: 12 hours)
      * @return  mixed                               WP_Error | Profiles object
      */
-    public function profiles( $force = false, $transient_expiration_time ) {
+    public function profiles( $force = false, $transient_expiration_time = 43200 ) {
 
         // Check access token
         if ( ! $this->check_access_token_exists() ) {

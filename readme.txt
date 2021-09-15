@@ -88,6 +88,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
+= 1.3.8 (2021-09-16) =
+* Fix: PHP Deprecated notices in PHP 8
+
 = 1.3.7 (2021-09-09) =
 * Added: Status: Text: Convert HTML links to plain text with link in brackets, instead of just displaying the unlinked text
 * Added: Status: Text: Convert HTML lists to plain text with hyphens, instead of just displaying plain text
