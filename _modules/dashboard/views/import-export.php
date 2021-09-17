@@ -32,7 +32,7 @@
     		</a>
 		</h2>
 			
-		<form name="post" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>" id="<?php echo $this->plugin->name; ?>" enctype="multipart/form-data">
+		<form name="post" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>" id="<?php echo $this->plugin->name; ?>" enctype="multipart/form-data">
 			<div id="poststuff">
 		    	<div id="post-body" class="metabox-holder columns-1">
 		    		<!-- Content -->

@@ -88,6 +88,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
+= 1.3.9 (2021-09-17) =
+* Fix: Logs: Correctly escape search and form action
+
 = 1.3.8 (2021-09-16) =
 * Fix: PHP Deprecated notices in PHP 8
 

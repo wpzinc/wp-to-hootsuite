@@ -90,7 +90,7 @@
 	    <div id="poststuff">
 	    	<div id="post-body" class="metabox-holder columns-2">
 	    		<!-- Content -->
-	    		<form name="post" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>" id="<?php echo $this->base->plugin->name; ?>" class="wp-to-social-pro">	
+	    		<form name="post" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>" id="<?php echo $this->base->plugin->name; ?>" class="wp-to-social-pro">	
 		    		<div id="post-body-content">
 			            <div id="normal-sortables" class="meta-box-sortables ui-sortable publishing-defaults">  
 			            	<?php
