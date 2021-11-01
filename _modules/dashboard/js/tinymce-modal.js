@@ -121,7 +121,7 @@ jQuery( document ).ready( function( $ ) {
 } );
 
 // QuickTags: Setup Backbone Modal and Template
-if ( typeof wp.media !== 'undefined' ) {
+if ( typeof wp !== 'undefined' && typeof wp.media !== 'undefined' ) {
     var wpZincQuickTagsModal = new wp.media.view.Modal( {
         controller: { trigger: function() {} },
         className: 'wpzinc-quicktags-modal'

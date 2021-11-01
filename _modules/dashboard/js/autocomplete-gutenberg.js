@@ -142,7 +142,7 @@ function wp_zinc_auto_complete_gutenberg_register( completers, blockName ) {
  *
  * @since 	1.0.0
  */
-if ( typeof wp.hooks !== 'undefined' ) {
+if ( typeof wp !== 'undefined' && typeof wp.hooks !== 'undefined' ) {
 
     wpzinc_autocomplete_gutenberg.forEach( function( autocompleter, i ) {
 
