@@ -806,7 +806,7 @@ class WP_To_Social_Pro_Publish {
             $image = $this->get_post_image( $post, $service );
 
             // If we have a Featured Image, add it to the Status is required
-            if ( $image != false ) {
+            if ( ! is_wp_error( $image ) && $image != false ) {
                 switch ( $status['image'] ) {
                     /**
                      * Use OpenGraph Settings
@@ -1321,7 +1321,7 @@ class WP_To_Social_Pro_Publish {
         $searches_replacements['excerpt']   = $this->get_excerpt( $post, $excerpt_fallback );
         $searches_replacements['content']   = $this->get_content( $post );
         $searches_replacements['content_more_tag'] = $this->get_content( $post, true );
-        $searches_replacements['date']      = date( 'dS F Y', strtotime( $post->post_date ) );
+        $searches_replacements['date']      = $this->get_date( $post );
         $searches_replacements['url']       = $this->get_permalink( $post );
         $searches_replacements['url_short'] = $this->get_short_permalink( $post );
         $searches_replacements['id']        = absint( $post->ID );
@@ -1522,6 +1522,33 @@ class WP_To_Social_Pro_Publish {
 
         // Return
         return $content;
+
+    }
+
+    /**
+     * Returns the date in the locale specified in WordPress.
+     * 
+     * @since 	4.7.7
+     * 
+     * @param 	WP_Post 	$post 	WordPress Post
+     * @return 	string 				Date
+     */
+    private function get_date( $post ) {
+
+    	$date = date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) );
+
+    	/*
+    	 * Filters the dynamic {date} replacement, when a Post's status is being built.
+         *
+         * @since   4.7.7
+         *
+         * @param   string      $date 						Date
+         * @param   WP_Post     $post                       WordPress Post
+         */
+        $date = apply_filters( $this->base->plugin->filter_name . '_publish_get_date', $date, $post );
+
+    	// Return.
+    	return $date;
 
     }
 

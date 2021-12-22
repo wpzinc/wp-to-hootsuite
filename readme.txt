@@ -88,6 +88,11 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
+= 1.4.0 (2021-12-22) =
+* Added: Support for images added to the Media Library by Plugins that don't store images locally e.g. External Media without Import
+* Added: Status: Tags: {date} uses WordPress Admin > Settings > Site Language and Date Format options.  See Docs: https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/status-text-tags/#available-tags
+* Fix: Always include WordPress media functions when converting a WebP image to JPEG and storing it in the Media Library to avoid PHP errors
+
 = 1.3.9 (2021-09-17) =
 * Fix: Logs: Correctly escape search and form action
 

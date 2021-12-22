@@ -2,7 +2,7 @@
 /**
 * Plugin Name: WP to Hootsuite
 * Plugin URI: http://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
-* Version: 1.3.9
+* Version: 1.4.0
 * Author: WP Zinc
 * Author URI: http://www.wpzinc.com
 * Description: Send WordPress Pages, Posts or Custom Post Types to your Hootsuite (hootsuite.com) account for scheduled publishing to social networks.
@@ -69,10 +69,10 @@ class WP_To_Hootsuite {
         
         $this->plugin->settingsName     = 'wp-to-hootsuite-pro'; // Settings key - used in both Free + Pro, and for oAuth
         $this->plugin->account          = 'Hootsuite';
-        $this->plugin->version          = '1.3.9';
-        $this->plugin->buildDate        = '2021-09-17 18:00:00';
+        $this->plugin->version          = '1.4.0';
+        $this->plugin->buildDate        = '2021-12-22 18:00:00';
         $this->plugin->requires         = '5.0';
-        $this->plugin->tested           = '5.8.1';
+        $this->plugin->tested           = '5.8.2';
         $this->plugin->folder           = plugin_dir_path( __FILE__ );
         $this->plugin->url              = plugin_dir_url( __FILE__ );
         $this->plugin->documentation_url= 'https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro';
@@ -181,6 +181,7 @@ class WP_To_Hootsuite {
         $this->classes->image     	= new WP_To_Social_Pro_Image( self::$instance );
         $this->classes->install       = new WP_To_Social_Pro_Install( self::$instance );
         $this->classes->log           = new WP_To_Social_Pro_Log( self::$instance );
+        $this->classes->media_library = new WP_To_Social_Pro_Media_Library( self::$instance );
         $this->classes->notices       = new WP_To_Social_Pro_Notices( self::$instance );
         $this->classes->owly_api      = new WP_To_Social_Pro_Owly_API( self::$instance );
         $this->classes->post          = new WP_To_Social_Pro_Post( self::$instance );
