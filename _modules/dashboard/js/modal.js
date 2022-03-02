@@ -1,4 +1,11 @@
 /**
+ * Modal window functionality.
+ *
+ * @package WPZincDashboardWidget
+ * @author WP Zinc
+ */
+
+/**
  * Shows the overlay and modal.
  *
  * @since 	1.0.0
@@ -8,7 +15,7 @@
  */
 function wpzinc_modal_open( title, message ) {
 
-	// Show overlay and progress UI
+	// Show overlay and progress UI.
 	jQuery( '.js-notices' ).text( '' );
 	jQuery( '.wpzinc-modal h2.title div.spinner' ).css( 'display', 'inline-block' ).css( 'visibility', 'visible' );
 	jQuery( '.wpzinc-modal h2.title div.tick' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
@@ -17,12 +24,12 @@ function wpzinc_modal_open( title, message ) {
 	jQuery( '.wpzinc-modal div.notices' ).text( '' );
 	jQuery( '.wpzinc-modal button.close' ).hide();
 
-	// If there's no message, show the mini version of the modal
+	// If there's no message, show the mini version of the modal.
 	if ( typeof message === 'undefined' || ! message.length ) {
-		jQuery( '.wpzinc-modal' ).addClass( 'wpzinc-modal-mini' );	
+		jQuery( '.wpzinc-modal' ).addClass( 'wpzinc-modal-mini' );
 	}
 
-	// Show
+	// Show.
 	jQuery( '.wpzinc-modal-overlay, .wpzinc-modal' ).show();
 
 }
@@ -34,18 +41,19 @@ function wpzinc_modal_open( title, message ) {
  */
 function wpzinc_modal_close() {
 
-	jQuery( '.wpzinc-modal-overlay, .wpzinc-modal' ).fadeOut( 'fast', function() {
-		jQuery( '.wpzinc-modal h2.title div.spinner' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
-		jQuery( '.wpzinc-modal h2.title div.tick' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
-		wpzinc_modal_update_title( '' );
-		wpzinc_modal_update_message( '' );
-		jQuery( '.wpzinc-modal div.notices' ).text( '' );
-		jQuery( '.wpzinc-modal button.close' ).hide();
-		jQuery( '.wpzinc-modal' ).removeClass( 'wpzinc-modal-mini' );	
-		jQuery( '.wpzinc-modal-overlay, .wpzinc-modal' ).hide();	
-	} );
-
-
+	jQuery( '.wpzinc-modal-overlay, .wpzinc-modal' ).fadeOut(
+		'fast',
+		function() {
+			jQuery( '.wpzinc-modal h2.title div.spinner' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
+			jQuery( '.wpzinc-modal h2.title div.tick' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
+			wpzinc_modal_update_title( '' );
+			wpzinc_modal_update_message( '' );
+			jQuery( '.wpzinc-modal div.notices' ).text( '' );
+			jQuery( '.wpzinc-modal button.close' ).hide();
+			jQuery( '.wpzinc-modal' ).removeClass( 'wpzinc-modal-mini' );
+			jQuery( '.wpzinc-modal-overlay, .wpzinc-modal' ).hide();
+		}
+	);
 
 }
 
@@ -54,7 +62,7 @@ function wpzinc_modal_close() {
  *
  * @since 	1.0.0
  *
- * @param 	string 	message 		Modal Title
+ * @param 	string 	message 		Modal Title.
  */
 function wpzinc_modal_update_title( title ) {
 
@@ -67,7 +75,7 @@ function wpzinc_modal_update_title( title ) {
  *
  * @since 	1.0.0
  *
- * @param 	string 	message 		Modal Message
+ * @param 	string 	message 		Modal Message.
  */
 function wpzinc_modal_update_message( message ) {
 
@@ -81,7 +89,7 @@ function wpzinc_modal_update_message( message ) {
  *
  * @since 	1.8.3
  *
- * @param 	string 	message 	Message
+ * @param 	string 	message 	Message.
  */
 function wpzinc_modal_show_success_message( message ) {
 
@@ -99,7 +107,7 @@ function wpzinc_modal_show_success_message( message ) {
  *
  * @since 	1.8.3
  *
- * @param 	string 	message 	Message
+ * @param 	string 	message 	Message.
  */
 function wpzinc_modal_show_error_message( message ) {
 
@@ -118,13 +126,13 @@ function wpzinc_modal_show_error_message( message ) {
  *
  * @since 	1.0.0
  *
- * @param 	string 	message 	Message
+ * @param 	string 	message 	Message.
  */
 function wpzinc_modal_show_success_message_and_exit( message ) {
 
 	jQuery( '.wpzinc-modal' ).removeClass( 'wpzinc-modal-mini' );
 
-	// If no notice container exists, create one now
+	// If no notice container exists, create one now.
 	if ( ! jQuery( '.js-notices' ).length ) {
 		if ( jQuery( 'hr.wp-header-end' ).length > 0 ) {
 			jQuery( 'hr.wp-header-end' ).after( '<div class="js-notices"></div>' );
@@ -133,15 +141,18 @@ function wpzinc_modal_show_success_message_and_exit( message ) {
 		}
 	}
 
-	// Define notice
+	// Define notice.
 	jQuery( '.js-notices' ).html( '<div class="updated notice is-dismissible wpzinc-is-dismissible"><p>' + message + '</p><button type="button" class="notice-dismiss"></button></div>' );
 
-	// Scroll to notice
-	jQuery( 'html,body' ).animate( {
-		scrollTop: ( jQuery( '.js-notices' ).offset().top - 44 ) // wp admin bar = ~ 44px height
-	} );
+	// Scroll to notice.
+	jQuery( 'html,body' ).animate(
+		{
+			// wp admin bar = ~ 44px height.
+			scrollTop: ( jQuery( '.js-notices' ).offset().top - 44 )
+		}
+	);
 
-	// Close modal
+	// Close modal.
 	wpzinc_modal_close();
 
 	return false;
@@ -154,21 +165,24 @@ function wpzinc_modal_show_success_message_and_exit( message ) {
  *
  * @since 	1.8.3
  *
- * @param 	string 	message 	Message
+ * @param 	string 	message 	Message.
  */
 function wpzinc_modal_show_error_message_and_exit( message ) {
 
 	jQuery( '.wpzinc-modal' ).removeClass( 'wpzinc-modal-mini' );
 
-	// Define notice
+	// Define notice.
 	jQuery( '.js-notices' ).html( '<div class="notice notice-error is-dismissible wpzinc-is-dismissible"><p>' + message + '</p></div>' );
 
-	// Scroll to notice
-	jQuery( 'html,body' ).animate( {
-		scrollTop: ( jQuery( '.js-notices' ).offset().top - 44 ) // wp admin bar = ~ 44px height
-	} );
+	// Scroll to notice.
+	jQuery( 'html,body' ).animate(
+		{
+			// wp admin bar = ~ 44px height.
+			scrollTop: ( jQuery( '.js-notices' ).offset().top - 44 )
+		}
+	);
 
-	// Close modal
+	// Close modal.
 	wpzinc_modal_close();
 
 	return false;
@@ -180,53 +194,66 @@ function wpzinc_modal_show_error_message_and_exit( message ) {
  *
  * @since 	1.0.0
  *
- * @param 	string 	message 	Message
+ * @param 	string 	message 	Message.
  */
 function wpzinc_modal_show_success_and_exit( title, message ) {
 
-	// Update message
+	// Update message.
 	wpzinc_modal_update_title( title );
 
-	// If there's no message, show the mini version of the modal
+	// If there's no message, show the mini version of the modal.
 	if ( typeof message === 'undefined' || ! message.length ) {
-		jQuery( '.wpzinc-modal' ).addClass( 'wpzinc-modal-mini' );	
+		jQuery( '.wpzinc-modal' ).addClass( 'wpzinc-modal-mini' );
 	} else {
-		jQuery( '.wpzinc-modal' ).removeClass( 'wpzinc-modal-mini' );	
+		jQuery( '.wpzinc-modal' ).removeClass( 'wpzinc-modal-mini' );
 		wpzinc_modal_update_message( message );
 	}
 
-	// Hide spinner, show tick
+	// Hide spinner, show tick.
 	jQuery( '.wpzinc-modal h2.title div.spinner' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
 	jQuery( '.wpzinc-modal h2.title div.tick' ).css( 'display', 'inline-block' ).css( 'visibility', 'visible' );
 
-	setTimeout( function() {
+	setTimeout(
+		function() {
 
-		// Close modal
-		wpzinc_modal_close();	
+			// Close modal.
+			wpzinc_modal_close();
 
-	}, 750 );
+		},
+		750
+	);
 
 	return false;
 
 }
 
-jQuery( document ).ready(function( $ ) {
+jQuery( document ).ready(
+	function( $ ) {
 
-	// Close the modal when its close button is clicked
-	$( 'body' ).on( 'click', '.wpzinc-modal button.close', function( e ) {
+		// Close the modal when its close button is clicked.
+		$( 'body' ).on(
+			'click',
+			'.wpzinc-modal button.close',
+			function( e ) {
 
-		wpzinc_modal_close();
+				wpzinc_modal_close();
 
-	} );
+			}
+		);
 
-	// Allow notices added by this file using JS to be dismissed, as WordPress won't recognise
-	// the button.notice-dismiss being clicked for notices added after the page load
-	$( 'body' ).on( 'click', '.wpzinc-is-dismissible button.notice-dismiss', function( e ) {
+		// Allow notices added by this file using JS to be dismissed, as WordPress won't recognise
+		// the button.notice-dismiss being clicked for notices added after the page load.
+		$( 'body' ).on(
+			'click',
+			'.wpzinc-is-dismissible button.notice-dismiss',
+			function( e ) {
 
-		e.preventDefault();
-		
-		$( this ).closest( '.js-notices' ).remove();
-		
-	} );
+				e.preventDefault();
 
-} );
+				$( this ).closest( '.js-notices' ).remove();
+
+			}
+		);
+
+	}
+);

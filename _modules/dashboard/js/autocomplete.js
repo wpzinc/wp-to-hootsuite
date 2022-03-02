@@ -1,3 +1,10 @@
+/**
+ * Creates tribute.js autocompleters.
+ *
+ * @package WPZincDashboardWidget
+ * @author WP Zinc
+ */
+
 var wpzinc_autocompleters = [];
 
 /**
@@ -14,60 +21,77 @@ function wp_zinc_autocomplete_setup() {
 
 	wpzinc_autocompleters = [];
 
-	wpzinc_autocomplete.forEach( function( autocompleter, i ) {
+	wpzinc_autocomplete.forEach(
+		function( autocompleter, i ) {
 
-		// Build collection
-		var collection = [];
-		autocompleter.triggers.forEach( function( trigger, j ) {
-			// Don't include the opening trigger in the return value when selected
-			// This prevents e.g. {{something} when { is the trigger
-			trigger.selectTemplate = function( item ) {
-    			return item.original.value;
-  			};
+			// Build collection.
+			var collection = [];
+			autocompleter.triggers.forEach(
+				function( trigger, j ) {
+					// Don't include the opening trigger in the return value when selected.
+					// This prevents e.g. {{something} when { is the trigger.
+					trigger.selectTemplate = function( item ) {
+						return item.original.value;
+					};
 
-			// Check where values are sourced from for this trigger
-			if ( 'url' in trigger ) {
-				// Configure remote datasource
-				trigger.values = function( text, cb ) {
+					// Check where values are sourced from for this trigger.
+					if ( 'url' in trigger ) {
+						// Configure remote datasource.
+						trigger.values = function( text, cb ) {
 
-					// Build form data
-					data = new FormData();
-					data.append( 'action', trigger.action );
-					data.append( 'nonce', trigger.nonce );
-					data.append( 'search', text );
+							// Build form data.
+							data = new FormData();
+							data.append( 'action', trigger.action );
+							data.append( 'nonce', trigger.nonce );
+							data.append( 'search', text );
 
-					// Send AJAX request
-					fetch( trigger.url, {
-						method: trigger.method,
-						credentials: 'same-origin',
-						body: data
-					} ).then( function( response ) {
-						return response.json();
-					} ).then( function( result ) {
-						cb( result.data );
-					} ).catch( function( error ) {
-						console.error( error );
-					} );
+							// Send AJAX request.
+							fetch(
+								trigger.url,
+								{
+									method: trigger.method,
+									credentials: 'same-origin',
+									body: data
+								}
+							).then(
+								function( response ) {
+									return response.json();
+								}
+							).then(
+								function( result ) {
+									cb( result.data );
+								}
+							).catch(
+								function( error ) {
+									console.error( error );
+								}
+							);
 
+						}
+					}
+
+					// Add to collection.
+					collection.push( trigger );
 				}
-			}
+			);
 
-			// Add to collection
-			collection.push( trigger );
-		} );
+			// Initialize autocompleter.
+			var tribute = new Tribute(
+				{
+					collection: collection
+				}
+			);
 
-		// Initialize autocompleter
-		var tribute = new Tribute( {
-			collection: collection
-		} );
+			// Store in array.
+			wpzinc_autocompleters.push(
+				{
+					fields: autocompleter.fields,
+					instance: tribute
+				}
+			);
 
-		// Store in array
-		wpzinc_autocompleters.push( {
-			fields: autocompleter.fields,
-			instance: tribute
-		} );
-		
-	} );
+		}
+	);
 
 }
 
@@ -78,15 +102,19 @@ function wp_zinc_autocomplete_setup() {
  */
 function wp_zinc_autocomplete_initialize() {
 
-	wpzinc_autocompleters.forEach( function( autocompleter, i ) {
+	wpzinc_autocompleters.forEach(
+		function( autocompleter, i ) {
 
-		autocompleter.fields.forEach( function( field, j ) {
+			autocompleter.fields.forEach(
+				function( field, j ) {
 
-			autocompleter.instance.attach( document.querySelectorAll( field ) );
+					autocompleter.instance.attach( document.querySelectorAll( field ) );
 
-		} );
-		
-	} );
+				}
+			);
+
+		}
+	);
 
 }
 
@@ -97,20 +125,24 @@ function wp_zinc_autocomplete_initialize() {
  */
 function wp_zinc_autocomplete_destroy() {
 
-	wpzinc_autocompleters.forEach( function( autocompleter, i ) {
+	wpzinc_autocompleters.forEach(
+		function( autocompleter, i ) {
 
-		autocompleter.fields.forEach( function( field, j ) {
+			autocompleter.fields.forEach(
+				function( field, j ) {
 
-			autocompleter.instance.detach( document.querySelectorAll( field ) );
-			
-		} );
+					autocompleter.instance.detach( document.querySelectorAll( field ) );
 
-	} );
+				}
+			);
+
+		}
+	);
 
 	wpzinc_autocompleters = [];
 
 }
 
-// Setup and initialize
+// Setup and initialize.
 wp_zinc_autocomplete_setup();
 wp_zinc_autocomplete_initialize();

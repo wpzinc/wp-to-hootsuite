@@ -1,133 +1,163 @@
 /**
+ * Inserts shortcodes into TinyMCE and QuickTag instances when the TinyMCE
+ * modal's Insert or Cancel buttons are clicked.
+ *
+ * For QuickTags, sets up a Backbone modal to look similar to the TinyMCE
+ * modal.
+ *
+ * @package WPZincDashboardWidget
+ * @author WP Zinc
+ */
+
+/**
  * Handles the Insert and Cancel events on TinyMCE and QuickTag Modals
  *
  * @since   1.0.0
  */
-jQuery( document ).ready( function( $ ) {
-    
-    // Cancel
-    $( 'body' ).on( 'click', 'form.wpzinc-tinymce-popup button.close', function( e ) {
+jQuery( document ).ready(
+	function( $ ) {
 
-        // TinyMCE
-        if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
-            tinymce.activeEditor.windowManager.close();
-            return;
-        }
+		// Cancel.
+		$( 'body' ).on(
+			'click',
+			'form.wpzinc-tinymce-popup button.close',
+			function( e ) {
 
-        // Text Editor
-        wpZincQuickTagsModal.close();
+				// TinyMCE.
+				if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
+					tinymce.activeEditor.windowManager.close();
+					return;
+				}
 
-    } );
+				// Text Editor.
+				wpZincQuickTagsModal.close();
 
-    // Insert
-    $( 'body' ).on( 'click', 'form.wpzinc-tinymce-popup div.buttons input[type=button]', function( e ) {
+			}
+		);
 
-        // Prevent default action
-        e.preventDefault();
+		// Insert.
+		$( 'body' ).on(
+			'click',
+			'form.wpzinc-tinymce-popup div.buttons input[type=button]',
+			function( e ) {
 
-        // Get containing form
-        var form = $( this ).closest( 'form.wpzinc-tinymce-popup' );
+				// Prevent default action.
+				e.preventDefault();
 
-        // Build Shortcode
-        var shortcode = '[' + $( 'input[name=shortcode]', $( form ) ).val();
+				// Get containing form.
+				var form = $( this ).closest( 'form.wpzinc-tinymce-popup' );
 
-        $( 'input, select', $( form ) ).each( function( i ) {
-            // Skip if no data-shortcode attribute
-            if ( typeof $( this ).data( 'shortcode' ) === 'undefined' ) {
-                return true;
-            }
+				// Build Shortcode.
+				var shortcode = '[' + $( 'input[name=shortcode]', $( form ) ).val();
 
-            // Skip if the value is empty
-            if ( ! $( this ).val() ) {
-                return true;
-            }
-            if ( $( this ).val().length == 0 ) {
-                return true;
-            }
+				$( 'input, select', $( form ) ).each(
+					function( i ) {
+						// Skip if no data-shortcode attribute.
+						if ( typeof $( this ).data( 'shortcode' ) === 'undefined' ) {
+							return true;
+						}
 
-            // Get shortcode attribute
-            var key = $( this ).data( 'shortcode' ),
-                trim = ( $( this ).data( 'trim' ) == '0' ? false : true ),
-                val = $( this ).val();
+						// Skip if the value is empty.
+						if ( ! $( this ).val() ) {
+							return true;
+						}
+						if ( $( this ).val().length == 0 ) {
+							return true;
+						}
 
-            // Skip if the shortcode is empty
-            if ( ! key.length ) {
-                return true;
-            }
+						// Get shortcode attribute.
+						var key = $( this ).data( 'shortcode' ),
+						trim    = ( $( this ).data( 'trim' ) == '0' ? false : true ),
+						val     = $( this ).val();
 
-            // If the shortcode attribute is within curly braces, the shortcode attribute
-            // is the value of another field
-            if ( key.search( '}' ) > -1 && key.search( '{' ) > -1 ) {
-                // Remove curly braces
-                key = key.replace( /{|}/gi, function ( x ) {
-                    return '';
-                } );
+						// Skip if the shortcode is empty.
+						if ( ! key.length ) {
+							return true;
+						}
 
-                // Get value of input/select, which will form our attribute
-                key = $( key, $( this ).parent().parent() ).val();
-            }
+						// If the shortcode attribute is within curly braces, the shortcode attribute
+						// is the value of another field.
+						if ( key.search( '}' ) > -1 && key.search( '{' ) > -1 ) {
+							// Remove curly braces.
+							key = key.replace(
+								/{|}/gi,
+								function ( x ) {
+									return '';
+								}
+							);
 
-            // If a prepend is specified, prepend the key with it now
-            if ( typeof ( $( this ).data( 'shortcode-prepend' ) ) !== 'undefined' ) {
-                key = $( this ).data( 'shortcode-prepend' ) + key;
-            }
+							// Get value of input/select, which will form our attribute.
+							key = $( key, $( this ).parent().parent() ).val();
+						}
 
-            // If the value is an array (i.e. from selectize), implode it now
-            if ( Array.isArray( val ) ) {
-                val = val.join( ',' );
-            }
+						// If a prepend is specified, prepend the key with it now.
+						if ( typeof ( $( this ).data( 'shortcode-prepend' ) ) !== 'undefined' ) {
+							key = $( this ).data( 'shortcode-prepend' ) + key;
+						}
 
-            // Trim the value, unless the shortcode attribute disables string trimming
-            if ( trim ) {
-                val = val.trim();
-            }
+						// If the value is an array (i.e. from selectize), implode it now.
+						if ( Array.isArray( val ) ) {
+							val = val.join( ',' );
+						}
 
-            // Append attribute and value to shortcode string
-            shortcode += ' ' + key.trim() + '="' + val + '"';
-        } );
+						// Trim the value, unless the shortcode attribute disables string trimming.
+						if ( trim ) {
+							val = val.trim();
+						}
 
-        // Close Shortcode
-        shortcode += ']';
+						// Append attribute and value to shortcode string.
+						shortcode += ' ' + key.trim() + '="' + val + '"';
+					}
+				);
 
-        /**
-         * Finish building the link, and insert it, depending on whether we were initialized from
-         * the Visual Editor or Text Editor
-         */
-        if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
-            // Insert into editor
-            tinyMCE.activeEditor.execCommand( 'mceReplaceContent', false, shortcode );
+				// Close Shortcode.
+				shortcode += ']';
 
-            // Close modal
-            tinyMCE.activeEditor.windowManager.close();
+				/**
+				 * Finish building the link, and insert it, depending on whether we were initialized from
+				 * the Visual Editor or Text Editor.
+				 */
+				if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
+					// Insert into editor.
+					tinyMCE.activeEditor.execCommand( 'mceReplaceContent', false, shortcode );
 
-            // Done
-            return;
-        }
+					// Close modal.
+					tinyMCE.activeEditor.windowManager.close();
 
-        // Text Editor
-        if ( typeof QTags !== 'undefined' ) {
-            // Insert into editor
-            QTags.insertContent( shortcode );
+					// Done.
+					return;
+				}
 
-            // Close modal
-            wpZincQuickTagsModal.close();
+				// Text Editor.
+				if ( typeof QTags !== 'undefined' ) {
+					// Insert into editor.
+					QTags.insertContent( shortcode );
 
-            // Done
-            return;
-        }
+					// Close modal.
+					wpZincQuickTagsModal.close();
 
-    } );
+					// Done.
+					return;
+				}
 
-} );
+			}
+		);
 
-// QuickTags: Setup Backbone Modal and Template
+	}
+);
+
+// QuickTags: Setup Backbone Modal and Template.
 if ( typeof wp !== 'undefined' && typeof wp.media !== 'undefined' ) {
-    var wpZincQuickTagsModal = new wp.media.view.Modal( {
-        controller: { trigger: function() {} },
-        className: 'wpzinc-quicktags-modal'
-    } );
-    var wpZincQuickTagsModalContent = wp.Backbone.View.extend( {
-        template: wp.template( 'wpzinc-quicktags-modal' )
-    } );
-    wpZincQuickTagsModal.content( new wpZincQuickTagsModalContent() );
+	var wpZincQuickTagsModal        = new wp.media.view.Modal(
+		{
+			controller: { trigger: function() {} },
+			className: 'wpzinc-quicktags-modal'
+		}
+	);
+	var wpZincQuickTagsModalContent = wp.Backbone.View.extend(
+		{
+			template: wp.template( 'wpzinc-quicktags-modal' )
+		}
+	);
+	wpZincQuickTagsModal.content( new wpZincQuickTagsModalContent() );
 }

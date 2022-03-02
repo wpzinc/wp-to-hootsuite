@@ -153,8 +153,8 @@ class WP_To_Hootsuite {
     
         // Dashboard Submodule
         if ( ! class_exists( 'WPZincDashboardWidget' ) ) {
-            require_once( $this->plugin->folder . '_modules/dashboard/dashboard.php' );
-        }
+			require_once $this->plugin->folder . '_modules/dashboard/class-wpzincdashboardwidget.php';
+		}
         $this->dashboard = new WPZincDashboardWidget( $this->plugin, 'https://www.wpzinc.com/wp-content/plugins/lum-deactivation' );
 
         // Defer loading of Plugin Classes

@@ -1,121 +1,133 @@
 /**
- * jQuery Conditionals 1.0.0
+ * Conditional Fields for jQuery
  *
- * Copyright 2015 n7 Studios
- * Released under the MIT license.
- * http://jquery.org/license
+ * @package WPZincDashboardWidget
+ * @author WP Zinc
  */
+
 (function( $ ) {
+
 	"use strict";
 
 	/**
-	* Create .conditional() function
-	*
-	* @param object options Override Default Settings
-	*/
+	 * Create .conditional() function
+	 *
+	 * @param object options Override Default Settings
+	 */
 	$.fn.conditional = function(options) {
-		// Default Settings
-		var settings = $.extend({
-			data: 'conditional',
-			value: 'conditional-value',
-			displayOnEnabled: 'conditional-display'
-		}, options);
+		// Default Settings.
+		var settings = $.extend(
+			{
+				data: 'conditional',
+				value: 'conditional-value',
+				displayOnEnabled: 'conditional-display'
+			},
+			options
+		);
 
-		// Setup conditionals on each DOM element
-		this.each(function() {
-			// Check for conditional elements
-			if ( typeof $( this ).data( settings.data ) === 'undefined' ) {
-				return true;
-			}
+		// Setup conditionals on each DOM element.
+		this.each(
+			function() {
+				// Check for conditional elements.
+				if ( typeof $( this ).data( settings.data ) === 'undefined' ) {
+					return true;
+				}
 
-			// Setup vars
-			var conditionalElements,
+				// Setup vars.
+				var conditionalElements,
 				displayOnEnabled,
 				value,
 				displayElements;
-			
-			// Toggle + toggle on change
-			$( this ).on( 'change', function() {
-				// List the DOM elements to toggle
-				conditionalElements = $( this ).data( settings.data ).split(',');
 
-				// Determine whether to display DOM elements when the input is 'enabled'
-				displayOnEnabled = $( this ).data( settings.displayOnEnabled );
-				if ( typeof displayOnEnabled === 'undefined' ) {
-					displayOnEnabled = true;
-				}
+				// Toggle + toggle on change.
+				$( this ).on(
+					'change',
+					function() {
+						// List the DOM elements to toggle.
+						conditionalElements = $( this ).data( settings.data ).split( ',' );
 
-				// Determine the value required to display elements
-				value = $( this ).data( settings.value );
-				if ( typeof value === 'undefined' ) {
-					value = '';
-				} else {
-					value = String( value ).split( ',' );
-				}
+						// Determine whether to display DOM elements when the input is 'enabled'.
+						displayOnEnabled = $( this ).data( settings.displayOnEnabled );
+						if ( typeof displayOnEnabled === 'undefined' ) {
+							displayOnEnabled = true;
+						}
 
-				// By default, don't display elements
-				displayElements = false;
-
-				// Determine whether to display relational elements or not
-				switch ( $( this ).attr( 'type' ) ) {
-					case 'checkbox':
-						if ( displayOnEnabled ) {
-							displayElements = $( this ).is( ':checked' );
+						// Determine the value required to display elements.
+						value = $( this ).data( settings.value );
+						if ( typeof value === 'undefined' ) {
+							value = '';
 						} else {
-							displayElements = ( $( this ).is( ':checked' ) ? false : true );
-						}	
-						break;
+							value = String( value ).split( ',' );
+						}
 
-					default:
-						if ( displayOnEnabled ) {
-							if ( value.length > 0 ) {
-								displayElements = ( ( value.indexOf( String( $( this ).val() ) ) == -1 ) ? false : true );
+						// By default, don't display elements.
+						displayElements = false;
+
+						// Determine whether to display relational elements or not.
+						switch ( $( this ).attr( 'type' ) ) {
+							case 'checkbox':
+								if ( displayOnEnabled ) {
+									displayElements = $( this ).is( ':checked' );
+								} else {
+									displayElements = ( $( this ).is( ':checked' ) ? false : true );
+								}
+								break;
+
+							default:
+								if ( displayOnEnabled ) {
+									if ( value.length > 0 ) {
+										displayElements = ( ( value.indexOf( String( $( this ).val() ) ) == -1 ) ? false : true );
+									} else {
+										displayElements = ( ( $( this ).val() === '' || $( this ).val() === '0' ) ? false : true );
+									}
+								} else {
+									if ( value.length > 0 ) {
+										displayElements = ( ( value.indexOf( String( $( this ).val() ) ) == -1 ) ? true : false );
+									} else {
+										displayElements = ( ( $( this ).val() === '' || $( this ).val() === '0' ) ? true : false );
+									}
+								}
+								break;
+						}
+
+						// Show/hide elements.
+						var length = conditionalElements.length;
+						for (var i = 0; i < length; i++) {
+							// Check if we are finding an element by ID or class.
+							var conditionalElement;
+							if ( $( '#' + conditionalElements[i] ).length > 0 ) {
+								conditionalElement = $( '#' + conditionalElements[i] );
 							} else {
-								displayElements = ( ( $( this ).val() === '' || $( this ).val() === '0' ) ? false : true );	
+								conditionalElement = $( '.' + conditionalElements[i], $( this ).parent() );
 							}
-						} else {
-							if ( value.length > 0 ) {
-								displayElements = ( ( value.indexOf( String( $( this ).val() ) ) == -1 ) ? true : false );
+
+							if ( displayElements ) {
+								$( conditionalElement ).fadeIn( 300 );
 							} else {
-								displayElements = ( ( $( this ).val() === '' || $( this ).val() === '0' ) ? true : false );
+								$( conditionalElement ).fadeOut( 300 );
 							}
 						}
-						break;
-				}
-
-				// Show/hide elements
-				for (var i = 0; i < conditionalElements.length; i++) {
-					// Check if we are finding an element by ID or class
-					var conditionalElement;
-					if ( $( '#' + conditionalElements[i] ).length > 0 ) {
-						conditionalElement = $( '#' + conditionalElements[i] );
-					} else {
-						conditionalElement = $( '.' + conditionalElements[i], $( this ).parent() );
 					}
+				);
 
-			    	if ( displayElements ) {
-			    		$( conditionalElement ).fadeIn( 300 );
-				    } else {
-					    $( conditionalElement ).fadeOut( 300 );
-				    }
-				}
-			});
+				// Trigger a change on init so we run the above routine.
+				$( this ).trigger( 'change' );
+			}
+		);
 
-			// Trigger a change on init so we run the above routine
-			$ ( this).trigger( 'change' );
-		});
-
-		// Return DOM elements 
+		// Return DOM elements.
 		return this;
-   	};
+	};
 
-})(jQuery);
+} )( jQuery );
 
 /**
- * Initialize
+ * Initialize.
  */
-jQuery( document ).ready( function( $ ) {
+jQuery( document ).ready(
+	function( $ ) {
 
-    $( 'input,select' ).conditional();
+		$( 'input,select' ).conditional();
 
-} );
+	}
+);

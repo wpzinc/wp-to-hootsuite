@@ -129,6 +129,15 @@
 		}
 
 		/**
+		 * Don't apply line heights to <strong> inside selectize dropdowns
+		 */
+		div.selectize-dropdown-content {
+			strong {
+				line-height: normal;
+			}
+		}
+
+		/**
 		 * Success / Error Colors
 		 */
 		.success {

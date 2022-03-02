@@ -1,38 +1,45 @@
 /**
- * Adds a Table Row
+ * Add / delete table row functionality, for repeaters
+ * in tables.
+ *
+ * @package WPZincDashboardWidget
+ * @author WP Zinc
+ */
+
+/**
+ * Adds a Table Row.
  *
  * @since 	1.0.0
  *
- * @param 	string 	selector 	Selector
- * @param 	string 	table 		Table
+ * @param 	string 	selector 	Selector.
+ * @param 	string 	table 		Table.
  */
 function wpzinc_table_row_add( selector, table ) {
 
 	( function( $ ) {
 
-		// Get row
+		// Get row.
 		var row = $( 'tbody tr.' + selector, $( table ) );
 
-		// Clone row
+		// Clone row.
 		$( 'tbody tr:last-child', $( table ) ).after( '<tr class="' + selector + '">' + $( row ).html() + '</tr>' );
-
 
 	} )( jQuery );
 
 }
 
 /**
- * Deletes the table row for the given button
+ * Deletes the table row for the given button.
  *
  * @since 	1.0.0
  *
- * @param 	object 	button 	Delete Table Row Button
+ * @param 	object 	button 	Delete Table Row Button.
  */
 function wpzinc_table_row_delete( button ) {
 
 	( function( $ ) {
 
-		// Remove row
+		// Remove row.
 		$( button ).closest( 'tr' ).remove();
 
 	} )( jQuery );
@@ -44,31 +51,41 @@ function wpzinc_table_row_delete( button ) {
  *
  * @since 	1.0.0
  */
-jQuery( document ).ready( function( $ ) {
+jQuery( document ).ready(
+	function( $ ) {
 
-	/**
-	 * Add Table Row
-	 */
-	$( 'body' ).on( 'click', '.wpzinc-add-table-row', function( e ) {
+		/**
+		 * Add Table Row.
+		 */
+		$( 'body' ).on(
+			'click',
+			'.wpzinc-add-table-row',
+			function( e ) {
 
-		e.preventDefault();
+				e.preventDefault();
 
-		wpzinc_table_row_add(
-			$( this ).attr( 'data-table-row-selector' ),
-			$( this ).closest( 'table' )
+				wpzinc_table_row_add(
+					$( this ).attr( 'data-table-row-selector' ),
+					$( this ).closest( 'table' )
+				);
+
+			}
 		);
 
-    } );
+		/**
+		 * Delete Table Row.
+		 */
+		$( 'body' ).on(
+			'click',
+			'.wpzinc-delete-table-row',
+			function( e ) {
 
-    /**
-	 * Delete Table Row
-	 */
-	$( 'body' ).on( 'click', '.wpzinc-delete-table-row', function( e ) {
+				e.preventDefault();
 
-		e.preventDefault();
+				wpzinc_table_row_delete( this );
 
-		wpzinc_table_row_delete( this );
+			}
+		);
 
-    } );
-
-} );
+	}
+);
