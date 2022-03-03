@@ -88,6 +88,10 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
+= 1.4.1 (2022-03-03) =
+* Added: Status: Insert Tags: Insert tag at textarea caret position, with leading/trailing space as applicable
+* Fix: Multisite: Activation: Use wp_insert_site hook when available in WordPress 5.1 and higher
+
 = 1.4.0 (2021-12-22) =
 * Added: Support for images added to the Media Library by Plugins that don't store images locally e.g. External Media without Import
 * Added: Status: Tags: {date} uses WordPress Admin > Settings > Site Language and Date Format options.  See Docs: https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/status-text-tags/#available-tags

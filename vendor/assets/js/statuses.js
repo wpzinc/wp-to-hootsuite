@@ -71,8 +71,29 @@ function wpToSocialProInitTags() {
 					tag = tag.replace( $( option ).data( 'replace' ), tag_replacement );
 				}
 
-				// Insert the tag
-				$( sel ).val( val += ' ' + tag ).trigger( 'change' );
+				// Get position of cursor.
+				var pos = $( sel )[0].selectionStart;
+
+				// Pad tag if cursor not at start and the character immediately preceding and/or following
+				// the cursor isn't a space.
+				if ( pos > 0 ) {
+					if ( val.substring( ( pos - 1 ), pos ) != ' ' ) {
+						tag = ' ' + tag;
+					}
+					if ( val.substring( pos, ( pos + 1 ) ) != ' ' ) {
+						tag = tag + ' ';
+					}
+				}
+
+				// Insert tag if it has a value.
+				if ( tag.trim().length > 0 ) {
+					$( sel ).val( val.substring( 0, pos ) + tag + val.substring( pos ) ).trigger( 'change' );
+				}
+
+				// Reset tag selector (if we don't, selecting the same option twice results in the tag not being inserted
+				// the second time).
+				$( this ).val( '' );
+
 			} );
 		} );
 
@@ -1112,6 +1133,13 @@ function wpToSocialProClearStatusForm() {
 
 		// Remove Custom Field Condition Rows
 		$( 'tr.custom-field:not(.hide-delete-button)', $( wp_to_social_pro.status_form ) ).each( function() {
+
+			$( this ).remove();
+
+		} );
+
+		// Remove Author Custom Field Condition Rows
+		$( 'tr.authors-custom-field:not(.hide-delete-button)', $( wp_to_social_pro.status_form ) ).each( function() {
 
 			$( this ).remove();
 
