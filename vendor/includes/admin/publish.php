@@ -117,10 +117,22 @@ class WP_To_Social_Pro_Publish {
          * Metadata is included in the call to wp_insert_post(), meaning that it's saved to the Post before we use it.
          */
 
-        // Flag to determine if the current Post is a Gutenberg Post
+        $this->base->get_class( 'log' )->add_to_debug_log( 'Post ID: #' . $post->ID );
+
+        // If transitioning from future to publish, this is a scheduled Post being published by WordPress Cron.
+        // We don't need to know whether it's a Gutenberg, Classic Editor or REST API request.
+        if ( $old_status == 'future' && $new_status == 'publish' ) {
+        	$this->base->get_class( 'log' )->add_to_debug_log( 'Scheduled Post being published by WordPress' );
+
+			add_action( 'wp_insert_post', array( $this, 'wp_insert_post_publish' ), 999 );
+
+            // Don't need to do anything else, so exit.
+            return;
+        }
+
+        // Flag to determine if the current Post is a Gutenberg Post or Rest API Request.
         $is_gutenberg_post = $this->is_gutenberg_post( $post );
         $is_rest_api_request = $this->is_rest_api_request();
-        $this->base->get_class( 'log' )->add_to_debug_log( 'Post ID: #' . $post->ID );
         $this->base->get_class( 'log' )->add_to_debug_log( 'Gutenberg Post: ' . ( $is_gutenberg_post ? 'Yes' : 'No' ) );
         $this->base->get_class( 'log' )->add_to_debug_log( 'REST API Request: ' . ( $is_rest_api_request ? 'Yes' : 'No' ) );
 
@@ -158,7 +170,7 @@ class WP_To_Social_Pro_Publish {
              * Classic Editor
              */
             if ( ! $is_rest_api_request ) {
-                $this->base->get_class( 'log' )->add_to_debug_log( 'Classic Editor: Publish' );
+            	$this->base->get_class( 'log' )->add_to_debug_log( 'Classic Editor: Publish' );
 
                 add_action( 'wp_insert_post', array( $this, 'wp_insert_post_publish' ), 999 );
 
@@ -254,10 +266,6 @@ class WP_To_Social_Pro_Publish {
     /**
      * Helper function to determine if the Post can use, or has used, the Gutenberg Editor.
      *
-     * It's never 100% reliable, because:
-     * - Post Content may contain Block markup, even though the user reverted back to the Classic Editor,
-     * - Just because a Post (i.e. a Post's Post Type) can use the Block Editor, doesn't mean it does!
-     *
      * Should be used in conjunction with REST_REQUEST checks; if both are true, we're using Gutenberg.
      *
      * @since   3.6.8
@@ -267,33 +275,19 @@ class WP_To_Social_Pro_Publish {
      */
     private function is_gutenberg_post( $post ) {
 
-        // If the Post's content contains Gutenberg block markup, we might be editing a Gutenberg Post
-        if ( strpos( $post->post_content, '<!-- wp:' ) !== false ) {
-            return true;
-        }
+    	// Load post.php so that functions required for checking the Post are loaded.
+    	if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+    		require_once ABSPATH . 'wp-admin/includes/post.php';
+    	}
 
-        if ( ! post_type_exists( $post->post_type ) ) {
-            return false;
-        }
+    	// If the function still doesn't exist, assume the Post isn't a Gutenberg Post.
+    	if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+    		error_log( 'use_block_editor_for_post() function does not exist.' );
+    		return false;
+    	}
 
-        if ( ! post_type_supports( $post->post_type, 'editor' ) ) {
-            return false;
-        }
-
-        $post_type_object = get_post_type_object( $post->post_type );
-        if ( $post_type_object && ! $post_type_object->show_in_rest ) {
-            return false;
-        }
-
-        /**
-         * Filter whether a post is able to be edited in the block editor.
-         *
-         * @since 5.0.0
-         *
-         * @param bool   $use_block_editor  Whether the post type can be edited or not. Default true.
-         * @param string $post_type         The post type being checked.
-         */
-        return apply_filters( 'use_block_editor_for_post_type', true, $post->post_type );
+    	// Return whether Post is Gutenberg Post.
+    	return use_block_editor_for_post( $post );
 
     }
 

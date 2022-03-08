@@ -253,23 +253,26 @@ class WP_To_Social_Pro_Admin {
         // CSS - always load
         // Menu Icon is inline, because when Gravity Forms no conflict mode is ON, it kills all enqueued styles,
         // which results in a large menu SVG icon displaying.
-        ?>
-        <style type="text/css">
-            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?>-settings a div.wp-menu-image, 
-            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?> a div.wp-menu-image, 
-            li.toplevel_page_<?php echo $this->base->plugin->name; ?>-settings a div.wp-menu-image,
-            li.toplevel_page_<?php echo $this->base->plugin->name; ?> a div.wp-menu-image {
-                background: url(<?php echo $this->base->plugin->url; ?>/vendor/assets/images/icons/<?php echo strtolower( $this->base->plugin->account ); ?>-light.svg) center no-repeat;
-                background-size: 16px 16px;
-            }
-            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?>-settings a div.wp-menu-image img, 
-            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?> a div.wp-menu-image img, 
-            li.toplevel_page_<?php echo $this->base->plugin->name; ?>-settings a div.wp-menu-image img,
-            li.toplevel_page_<?php echo $this->base->plugin->name; ?> a div.wp-menu-image img {
-                display: none;
-            }
-        </style>
-        <?php
+        // However, don't load this on customize.php, as it wrongly outputs above the opening <html> tag.
+        if ( $screen['screen'] != 'customize' ) {
+	        ?>
+	        <style type="text/css">
+	            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?>-settings a div.wp-menu-image, 
+	            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?> a div.wp-menu-image, 
+	            li.toplevel_page_<?php echo $this->base->plugin->name; ?>-settings a div.wp-menu-image,
+	            li.toplevel_page_<?php echo $this->base->plugin->name; ?> a div.wp-menu-image {
+	                background: url(<?php echo $this->base->plugin->url; ?>/vendor/assets/images/icons/<?php echo strtolower( $this->base->plugin->account ); ?>-light.svg) center no-repeat;
+	                background-size: 16px 16px;
+	            }
+	            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?>-settings a div.wp-menu-image img, 
+	            li.toplevel_page_<?php echo $this->base->plugin->settingsName; ?> a div.wp-menu-image img, 
+	            li.toplevel_page_<?php echo $this->base->plugin->name; ?>-settings a div.wp-menu-image img,
+	            li.toplevel_page_<?php echo $this->base->plugin->name; ?> a div.wp-menu-image img {
+	                display: none;
+	            }
+	        </style>
+	        <?php
+    	}
         wp_enqueue_style( $this->base->plugin->name, $this->base->plugin->url . 'vendor/assets/css/admin.css', array(), $this->base->plugin->version );
 
         // Don't load anything else if we're not on a Plugin or Post screen

@@ -111,12 +111,32 @@ class WP_To_Social_Pro_Screen {
                 break;
 
             /**
+             * Bulk Publish
+             */
+            case $this->base->plugin->name . '-bulk-publish':
+                return array(
+                    'screen'    => 'bulk_publish',
+                    'section'   => 'bulk_publish',
+                );
+                break;
+
+            /**
              * Log
              */
             case $this->base->plugin->name . '-log':
                 return array(
                     'screen'    => 'log',
                     'section'   => 'log',
+                );
+                break;
+
+            /**
+             * WordPress Screens
+             */
+            case 'customize':
+            	return array(
+                    'screen'    => 'customize',
+                    'section'   => 'customize',
                 );
                 break;
 
