@@ -88,6 +88,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
+= 1.4.3 (2022-04-24) =
+* Fix: Upgrade link would incorrectly redirect to WordPress Admin dashboard
+
 = 1.4.2 (2022-03-08) =
 * Fix: Call to undefined function _disable_block_editor_for_navigation_post_type when creating/updating Post in Gutenberg or via the REST API in WordPress 5.9+
 * Fix: Scheduled Posts: Publish action would not run when using Gutenberg

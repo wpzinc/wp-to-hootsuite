@@ -1152,13 +1152,13 @@ class WPZincDashboardWidget {
 
 		// Redirect to Support.
 		if ( $page === $this->plugin->name . '-support' ) {
-			wp_safe_redirect( $this->plugin->support_url );
+			wp_redirect( $this->plugin->support_url ); // phpcs:ignore
 			die();
 		}
 
 		// Redirect to Upgrade.
 		if ( $page === $this->plugin->name . '-upgrade' ) {
-			wp_safe_redirect( $this->get_upgrade_url( 'menu' ) );
+			wp_redirect( $this->get_upgrade_url( 'menu' ) ); // phpcs:ignore
 			die();
 		}
 
