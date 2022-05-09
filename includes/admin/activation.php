@@ -36,16 +36,21 @@ function wp_to_hootsuite_activate( $network_wide ) {
  *
  * @since   3.0.0
  *
- * @param   int     $blog_id    Site ID
+ * @param   mixed $site_or_blog_id    WP_Site or Blog ID.
  */
-function wp_to_hootsuite_activate_new_site( $blog_id ) {
+function wp_to_hootsuite_activate_new_site( $site_or_blog_id ) {
+
+	// Check if $site_or_blog_id is a WP_Site or a blog ID.
+	if ( is_a( $site_or_blog_id, 'WP_Site' ) ) {
+		$site_or_blog_id = $site_or_blog_id->blog_id;
+	}
 
     // Initialise Plugin
     $wp_to_hootsuite = WP_To_Hootsuite::get_instance();
     $wp_to_hootsuite->initialize();
 
     // Run installation routine
-    switch_to_blog( $blog_id );
+    switch_to_blog( $site_or_blog_id );
     $wp_to_hootsuite->get_class( 'install' )->install();
     restore_current_blog();
 

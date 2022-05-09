@@ -88,6 +88,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
+= 1.4.4 (2022-05-12) =
+* Fix: Multisite: Activation: Conditionally load required hook depending on WordPress version
+
 = 1.4.3 (2022-04-24) =
 * Fix: Upgrade link would incorrectly redirect to WordPress Admin dashboard
 
