@@ -1001,6 +1001,24 @@ div.wpzinc-vertical-tabbed-ui {
 /**
 * Settings UI - TinyMCE Popups
 */
+#wpzinc-tinymce-modal {
+	#wpzinc-tinymce-modal-body {
+		/* Scroll inner contents so that modal height doesn't need to exceed screen resolution. */
+		overflow-y: auto;
+	}
+	div.mce-foot {
+		div.mce-insert {
+			
+		}
+		div.mce-cancel {
+			left: 10px !important;
+		}
+	}
+}
+
+/**
+* Settings UI - TinyMCE and QuickTags
+*/
 form.wpzinc-tinymce-popup {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	
@@ -1271,6 +1289,12 @@ body.wpzinc.block-editor-page {
 		display: none;
 	}
 }
+
+/**
+* QuickTags Backbone Modal
+* - used by tinymce-modal.js
+* - override styles set by WordPress
+*/
 .wpzinc-quicktags-modal {
 	.media-modal {
 		position: absolute;
@@ -1281,12 +1305,20 @@ body.wpzinc.block-editor-page {
   		.media-frame-title {
   			left: 0;
   			height: 30px;
-
   		}
   		.media-frame-content {
   			left: 0;
   			top: 54px;
-  			bottom: 0;
+  			bottom: 54px; /* 34px + .media-toolbar top and bottom padding */
+  		}
+  		.media-frame-toolbar {
+  			left: 0;
+  			bottom: 47px;
+  			background: #fff;
+
+  			.media-toolbar {
+  				padding: 10px;
+  			}
   		}
 	}
 }

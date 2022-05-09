@@ -20,7 +20,7 @@ jQuery( document ).ready(
 		// Cancel.
 		$( 'body' ).on(
 			'click',
-			'form.wpzinc-tinymce-popup button.close',
+			'#wpzinc-tinymce-modal div.mce-cancel button, .wpzinc-quicktags-modal .media-frame-toolbar .media-toolbar button.cancel',
 			function( e ) {
 
 				// TinyMCE.
@@ -38,14 +38,14 @@ jQuery( document ).ready(
 		// Insert.
 		$( 'body' ).on(
 			'click',
-			'form.wpzinc-tinymce-popup div.buttons input[type=button]',
+			'#wpzinc-tinymce-modal div.mce-insert button, .wpzinc-quicktags-modal .media-frame-toolbar .media-toolbar button.insert',
 			function( e ) {
 
 				// Prevent default action.
 				e.preventDefault();
 
 				// Get containing form.
-				var form = $( this ).closest( 'form.wpzinc-tinymce-popup' );
+				var form = $( 'form.wpzinc-tinymce-popup' );
 
 				// Build Shortcode.
 				var shortcode = '[' + $( 'input[name=shortcode]', $( form ) ).val();
