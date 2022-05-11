@@ -123,6 +123,23 @@
 				},
 
 				/**
+				 * Change any settings configuration, which will be included in the next request.
+				 *
+				 * Called immediately before the next request is made, if the current request
+				 * was successful.
+				 *
+				 * @since   1.0.0
+				 *
+				 * @param   object  settings    Settings.
+				 * @return  object              Settings
+				 */
+				updateSettings: function( settings ) {
+
+					return settings;
+
+				},
+
+				/**
 				 * Called when all requests have completed, or the user cancelled.
 				 *
 				 * @since   1.0.0
@@ -272,6 +289,9 @@
 							settings.wait
 						);
 					} else {
+						// Call updateSettings closure.
+		    			settings = settings.updateSettings( settings );
+
 						// Start next request.
 						synchronousAjaxRequest( settings, currentIndex, progressbar, progressCounter );
 						return;
