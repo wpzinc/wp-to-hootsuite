@@ -290,7 +290,7 @@
 						);
 					} else {
 						// Call updateSettings closure.
-		    			settings = settings.updateSettings( settings );
+						settings = settings.updateSettings( settings );
 
 						// Start next request.
 						synchronousAjaxRequest( settings, currentIndex, progressbar, progressCounter );

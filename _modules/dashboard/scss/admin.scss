@@ -68,8 +68,6 @@ body#wpzinc-error-page {
  * and .wrap into a new div.wrap-inner which the Plugin outputs.
  */
 body.wpzinc {
-	position: relative; /* required for tribute.js positioning */
-
 	#wpcontent {
  		padding-left: 0;
  	}
