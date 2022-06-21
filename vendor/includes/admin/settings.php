@@ -291,6 +291,9 @@ class WP_To_Social_Pro_Settings {
      */
     public function update_settings( $type, $settings ) {
 
+		// Iterate through array of Post Type Settings to strip HTML tags.
+		$settings = $this->strip_tags_deep( $settings );
+
         /**
          * Filters Post Type Settings before they are saved.
          *
@@ -340,6 +343,20 @@ class WP_To_Social_Pro_Settings {
         return true;
 
     }
+
+	/**
+	 * Strip HTML tags from the given array or string.
+	 *
+	 * @since   4.8.9
+	 *
+	 * @param   string|array $value  Setting value.
+	 * @return  string                  Setting value
+	 */
+	private function strip_tags_deep( $value ) {
+
+		return is_array( $value ) ? array_map( array( $this, 'strip_tags_deep' ), $value ) : wp_strip_all_tags( $value );
+
+	}
 
     /**
      * Returns an array of default settings for a new installation.

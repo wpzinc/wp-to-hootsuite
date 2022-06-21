@@ -88,6 +88,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
+= 1.4.6 (2022-06-21) =
+* Fix: Status: Correctly sanitize and escape status textarea field value to prevent possible XSS
+
 = 1.4.5 (2022-06-09) =
 * Added: Support for WordPress 6.0
 
