@@ -32,9 +32,6 @@ class WP_To_Social_Pro_Image {
         // Store base class
         $this->base = $base;
 
-        // Register a square, cropped image size
-        add_image_size( $this->base->plugin->name . '-square', 1200, 1200, true );
-        
     }
 
     /**
