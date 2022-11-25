@@ -48,7 +48,8 @@ jQuery( document ).ready(
 				var form = $( 'form.wpzinc-tinymce-popup' );
 
 				// Build Shortcode.
-				var shortcode = '[' + $( 'input[name=shortcode]', $( form ) ).val();
+				var shortcode  = '[' + $( 'input[name="shortcode"]', $( form ) ).val(),
+				shortcodeClose = ( $( 'input[name="close_shortcode"]', $( form ) ).val() == '1' ? true : false );
 
 				$( 'input, select', $( form ) ).each(
 					function( i ) {
@@ -113,31 +114,31 @@ jQuery( document ).ready(
 				// Close Shortcode.
 				shortcode += ']';
 
-				/**
-				 * Finish building the link, and insert it, depending on whether we were initialized from
-				 * the Visual Editor or Text Editor.
-				 */
-				if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
-					// Insert into editor.
-					tinyMCE.activeEditor.execCommand( 'mceReplaceContent', false, shortcode );
-
-					// Close modal.
-					tinyMCE.activeEditor.windowManager.close();
-
-					// Done.
-					return;
+				// If the shortcode includes a closing element, append it now.
+				if ( shortcodeClose ) {
+					shortcode += '[/' + $( 'input[name="shortcode"]', $( form ) ).val() + ']';
 				}
 
-				// Text Editor.
-				if ( typeof QTags !== 'undefined' ) {
-					// Insert into editor.
-					QTags.insertContent( shortcode );
+				// Depending on the editor type, insert the shortcode.
+				switch ( $( 'input[name="editor_type"]', $( form ) ).val() ) {
+					case 'tinymce':
+						// Sanity check that a Visual editor exists and is active.
+						if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
+							// Insert into editor.
+							tinyMCE.activeEditor.execCommand( 'mceReplaceContent', false, shortcode );
 
-					// Close modal.
-					wpZincQuickTagsModal.close();
+							// Close modal.
+							tinyMCE.activeEditor.windowManager.close();
+						}
+						break;
 
-					// Done.
-					return;
+					case 'quicktags':
+						// Insert into editor.
+						QTags.insertContent( shortcode );
+
+						// Close modal.
+						wpZincQuickTagsModal.close();
+						break;
 				}
 
 			}
