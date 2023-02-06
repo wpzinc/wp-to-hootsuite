@@ -8,7 +8,7 @@
  * @wordpress-plugin
  * Plugin Name: WP to Hootsuite
  * Plugin URI: http://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
- * Version: 1.4.7
+ * Version: 1.4.8
  * Author: WP Zinc
  * Author URI: http://www.wpzinc.com
  * Description: Send WordPress Pages, Posts or Custom Post Types to your Hootsuite (hootsuite.com) account for scheduled publishing to social networks.
