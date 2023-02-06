@@ -98,7 +98,7 @@
 		?>
 		<form name="post" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>" id="<?php echo esc_attr( $this->base->plugin->name ); ?>" class="wp-to-social-pro">      
 			<div id="poststuff">
-				<div id="post-body" class="metabox-holder columns-1">
+				<div id="post-body" class="metabox-holder columns-2">
 					<!-- Content -->
 					<div id="post-body-content">
 						<div id="normal-sortables" class="meta-box-sortables ui-sortable publishing-defaults">  
@@ -122,9 +122,22 @@
 						?>
 					</div>
 					<!-- /post-body-content -->
+
+					<!-- Sidebar -->
+					<div id="postbox-container-1" class="postbox-container">
+						<?php require $this->base->plugin->folder . '/_modules/dashboard/views/sidebar-upgrade.php'; ?>		
+					</div>
+					<!-- /Sidebar -->
 				</div>
 			</div> 
 		</form>
-		<!-- /form end -->		
+		<!-- /form end -->
+
+		<!-- Upgrade -->
+		<div class="metabox-holder columns-1">
+			<div id="post-body-content">
+				<?php require $this->base->plugin->folder . '/_modules/dashboard/views/footer-upgrade.php'; ?>
+			</div>
+		</div>
 	</div><!-- ./wrap-inner -->         
 </div>
