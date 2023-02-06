@@ -8,7 +8,7 @@
 
 ?>
 <select size="1" class="left tags" data-textarea="<?php echo esc_attr( $textarea ); ?>">
-	<option value=""><?php esc_attr_e( '--- Insert Tag ---', 'wp-to-buffer' ); ?></option>
+	<option value=""><?php esc_attr_e( '--- Insert Tag ---', 'wp-to-hootsuite' ); ?></option>
 	<?php
 	foreach ( $this->base->get_class( 'common' )->get_tags( $post_type ) as $tag_group => $tag_group_tags ) {
 		?>

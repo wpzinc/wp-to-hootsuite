@@ -106,18 +106,18 @@ class WP_To_Social_Pro_Validation {
 				$this->base->plugin->filter_name . '_timezones_invalid',
 				sprintf(
 					'%1$s<br /><br />%2$s<br />%3$s %4$s (%5$s) [<a href="%6$s" target="_blank">%7$s</a>]<br />%8$s Profile Timezone: %9$s (%10$s) [<a href="%11$s" target="_blank">%12$s</a>]',
-					__( 'This Profile\'s Timezone does not match your WordPress timezone.  They must be the same, to ensure that statuses can be scheduled, and are scheduled at the correct time.', 'wp-to-buffer' ),
-					__( 'Right now, your timezones are configured as:', 'wp-to-buffer' ),
-					__( 'WordPress Timezone:', 'wp-to-buffer' ),
+					__( 'This Profile\'s Timezone does not match your WordPress timezone.  They must be the same, to ensure that statuses can be scheduled, and are scheduled at the correct time.', 'wp-to-hootsuite' ),
+					__( 'Right now, your timezones are configured as:', 'wp-to-hootsuite' ),
+					__( 'WordPress Timezone:', 'wp-to-hootsuite' ),
 					esc_html( $wordpress_timezone ),
 					esc_html( $wordpress_date ),
 					admin_url( 'options-general.php#timezone_string' ),
-					__( 'Fix', 'wp-to-buffer' ),
+					__( 'Fix', 'wp-to-hootsuite' ),
 					esc_html( $api_profile_name ),
 					esc_html( $api_profile_timezone ),
 					esc_html( $api_date ),
 					esc_html( $api_profile_change_timezone_url ),
-					__( 'Fix', 'wp-to-buffer' )
+					__( 'Fix', 'wp-to-hootsuite' )
 				)
 			);
 		}

@@ -15,7 +15,7 @@
 				<!-- Tags and Feat. Image -->
 				<div class="tags-featured-image">
 					<select name="<?php echo esc_attr( $this->base->plugin->name ); ?>_sub_profile" size="1" class="right"></select> 
-					<input type="url" name="<?php echo esc_attr( $this->base->plugin->name ); ?>_sub_profile" placeholder="<?php esc_attr_e( 'Pinterest Board URL', 'wp-to-buffer' ); ?>" class="right" />
+					<input type="url" name="<?php echo esc_attr( $this->base->plugin->name ); ?>_sub_profile" placeholder="<?php esc_attr_e( 'Pinterest Board URL', 'wp-to-hootsuite' ); ?>" class="right" />
 				   
 					<!-- Image -->
 					<select name="<?php echo esc_attr( $this->base->plugin->name ); ?>_image" size="1" class="right image">

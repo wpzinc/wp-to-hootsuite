@@ -88,7 +88,7 @@ class WP_To_Social_Pro_Admin {
 					$this->base->get_class( 'notices' )->add_error_notice(
 						sprintf(
 							/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-							__( 'You did not grant our Plugin access to your %1$s account. We are unable to post to %2$s until you do this. Please click on the Authorize Plugin button.', 'wp-to-buffer' ),
+							__( 'You did not grant our Plugin access to your %1$s account. We are unable to post to %2$s until you do this. Please click on the Authorize Plugin button.', 'wp-to-hootsuite' ),
 							$this->base->plugin->account,
 							$this->base->plugin->account
 						)
@@ -105,11 +105,11 @@ class WP_To_Social_Pro_Admin {
 							'%1$s <a href="%2$s" target="_blank">%3$s</a>',
 							sprintf(
 								/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-								__( 'We were unable to complete authentication with %s.  Please try again, or', 'wp-to-buffer' ),
+								__( 'We were unable to complete authentication with %s.  Please try again, or', 'wp-to-hootsuite' ),
 								$this->base->plugin->account
 							),
 							esc_html( $this->base->plugin->support_url ),
-							__( 'contact us for support', 'wp-to-buffer' )
+							__( 'contact us for support', 'wp-to-hootsuite' )
 						)
 					);
 					break;
@@ -122,10 +122,10 @@ class WP_To_Social_Pro_Admin {
 					$this->base->get_class( 'notices' )->add_error_notice(
 						sprintf(
 							'%1$s <a href="%2$s" target="_blank">%3$s</a> %4$s',
-							__( 'The oAuth process has expired.  Please try again, or', 'wp-to-buffer' ),
+							__( 'The oAuth process has expired.  Please try again, or', 'wp-to-hootsuite' ),
 							esc_html( $this->base->plugin->support_url ),
-							__( 'contact us for support', 'wp-to-buffer' ),
-							__( 'if this issue persists.', 'wp-to-buffer' )
+							__( 'contact us for support', 'wp-to-hootsuite' ),
+							__( 'if this issue persists.', 'wp-to-hootsuite' )
 						)
 					);
 					break;
@@ -177,7 +177,7 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'notices' )->add_success_notice(
 				sprintf(
 					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( 'Thanks! You\'ve connected our Plugin to %1$s.', 'wp-to-buffer' ),
+					__( 'Thanks! You\'ve connected our Plugin to %1$s.', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)
 			);
@@ -204,7 +204,7 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'notices' )->add_error_notice(
 				sprintf(
 					/* translators: Plugin Name */
-					__( '%s requires the PHP cURL extension to be installed and enabled by your web host.', 'wp-to-buffer' ),
+					__( '%s requires the PHP cURL extension to be installed and enabled by your web host.', 'wp-to-hootsuite' ),
 					$this->base->plugin->displayName
 				)
 			);
@@ -224,13 +224,13 @@ class WP_To_Social_Pro_Admin {
 					'%1$s <a href="%2$s">%3$s</a>',
 					sprintf(
 						/* translators: %1$s: Plugin Name, %2$s, %3$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %4$s: URL to Authorize Plugin Screen, %5$s: URL to Register Account with Service */
-						esc_html__( '%1$s needs to be authorized with %2$s before you can start sending Posts to %3$s.', 'wp-to-buffer' ),
+						esc_html__( '%1$s needs to be authorized with %2$s before you can start sending Posts to %3$s.', 'wp-to-hootsuite' ),
 						$this->base->plugin->displayName,
 						$this->base->plugin->account,
 						$this->base->plugin->account
 					),
 					admin_url( 'admin.php?page=' . $this->base->plugin->name . '-settings' ),
-					esc_html__( 'Click here to Authorize.', 'wp-to-buffer' )
+					esc_html__( 'Click here to Authorize.', 'wp-to-hootsuite' )
 				)
 			);
 		}
@@ -310,14 +310,14 @@ class WP_To_Social_Pro_Admin {
 			'clear_log_nonce'          => wp_create_nonce( $this->base->plugin->name . '-clear-log' ),
 			'clear_log_completed'      => sprintf(
 				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-				__( 'No log entries exist, or no status updates have been sent to %s.', 'wp-to-buffer' ),
+				__( 'No log entries exist, or no status updates have been sent to %s.', 'wp-to-hootsuite' ),
 				$this->base->plugin->account
 			),
 
 			'get_log_nonce'            => wp_create_nonce( $this->base->plugin->name . '-get-log' ),
 
-			'delete_condition_message' => __( 'Are you sure you want to delete this condition?', 'wp-to-buffer' ),
-			'delete_status_message'    => __( 'Are you sure you want to delete this status?', 'wp-to-buffer' ),
+			'delete_condition_message' => __( 'Are you sure you want to delete this condition?', 'wp-to-hootsuite' ),
+			'delete_status_message'    => __( 'Are you sure you want to delete this status?', 'wp-to-hootsuite' ),
 
 			'get_status_row_action'    => $this->base->plugin->filter_name . '_get_status_row',
 			'get_status_row_nonce'     => wp_create_nonce( $this->base->plugin->name . '-get-status-row' ),
@@ -391,8 +391,8 @@ class WP_To_Social_Pro_Admin {
 						$localization['prompt_unsaved_changes'] = true;
 						$localization['save_statuses_action']   = $this->base->plugin->filter_name . '_save_statuses';
 						$localization['save_statuses_modal']    = array(
-							'title'         => __( 'Saving', 'wp-to-buffer' ),
-							'title_success' => __( 'Saved!', 'wp-to-buffer' ),
+							'title'         => __( 'Saving', 'wp-to-hootsuite' ),
+							'title_success' => __( 'Saved!', 'wp-to-hootsuite' ),
 						);
 						$localization['save_statuses_nonce']    = wp_create_nonce( $this->base->plugin->name . '-save-statuses' );
 
@@ -477,15 +477,15 @@ class WP_To_Social_Pro_Admin {
 		add_menu_page( $this->base->plugin->displayName, $this->base->plugin->displayName, 'manage_options', $this->base->plugin->name . '-settings', array( $this, 'settings_screen' ), $this->base->plugin->url . 'lib/assets/images/icons/' . strtolower( $this->base->plugin->account ) . '-light.svg' );
 
 		// Register Submenu Pages.
-		$settings_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Settings', 'wp-to-buffer' ), __( 'Settings', 'wp-to-buffer' ), 'manage_options', $this->base->plugin->name . '-settings', array( $this, 'settings_screen' ) );
+		$settings_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Settings', 'wp-to-hootsuite' ), __( 'Settings', 'wp-to-hootsuite' ), 'manage_options', $this->base->plugin->name . '-settings', array( $this, 'settings_screen' ) );
 
 		// Logs.
 		if ( $this->base->get_class( 'log' )->is_enabled() ) {
-			$log_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Logs', 'wp-to-buffer' ), __( 'Logs', 'wp-to-buffer' ), 'manage_options', $this->base->plugin->name . '-log', array( $this, 'log_screen' ) );
+			$log_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Logs', 'wp-to-hootsuite' ), __( 'Logs', 'wp-to-hootsuite' ), 'manage_options', $this->base->plugin->name . '-log', array( $this, 'log_screen' ) );
 			add_action( "load-$log_page", array( $this->base->get_class( 'log' ), 'add_screen_options' ) );
 		}
 
-		$upgrade_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Upgrade', 'wp-to-buffer' ), __( 'Upgrade', 'wp-to-buffer' ), 'manage_options', $this->base->plugin->name . '-upgrade', array( $this, 'upgrade_screen' ) );
+		$upgrade_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Upgrade', 'wp-to-hootsuite' ), __( 'Upgrade', 'wp-to-hootsuite' ), 'manage_options', $this->base->plugin->name . '-upgrade', array( $this, 'upgrade_screen' ) );
 
 	}
 
@@ -514,7 +514,7 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'notices' )->add_success_notice(
 				sprintf(
 					/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( '%s account disconnected successfully.', 'wp-to-buffer' ),
+					__( '%s account disconnected successfully.', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)
 			);
@@ -527,7 +527,7 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'notices' )->add_error_notice( $result->get_error_message() );
 		} elseif ( $result === true ) {
 			// Success notice.
-			$this->base->get_class( 'notices' )->add_success_notice( __( 'Settings saved successfully.', 'wp-to-buffer' ) );
+			$this->base->get_class( 'notices' )->add_success_notice( __( 'Settings saved successfully.', 'wp-to-hootsuite' ) );
 		}
 
 		// If the Plugin isn't connected to the API, show the screen to do this now.
@@ -557,7 +557,7 @@ class WP_To_Social_Pro_Admin {
 				$this->base->get_class( 'notices' )->add_error_notice(
 					sprintf(
 						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-						__( 'Hmm, it looks like you revoked access to %1$s through your %2$s account, or your account no longer exists. This means we can no longer post updates to your social networks.  To re-authorize, click the Authorize Plugin button.', 'wp-to-buffer' ),
+						__( 'Hmm, it looks like you revoked access to %1$s through your %2$s account, or your account no longer exists. This means we can no longer post updates to your social networks.  To re-authorize, click the Authorize Plugin button.', 'wp-to-hootsuite' ),
 						$this->base->plugin->displayName,
 						$this->base->plugin->account
 					)
@@ -633,12 +633,12 @@ class WP_To_Social_Pro_Admin {
 							'%1$s <a href="%2$s" target="_blank">%3$s</a>',
 							sprintf(
 								/* translators: %1$s: Post Type, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Documentation URL */
-								__( 'To send %1$s to %2$s, at least one action on the Defaults tab must be enabled with a status defined, and at least one social media profile must be enabled below by clicking the applicable profile name and ticking the "Account Enabled" box.', 'wp-to-buffer' ),
+								__( 'To send %1$s to %2$s, at least one action on the Defaults tab must be enabled with a status defined, and at least one social media profile must be enabled below by clicking the applicable profile name and ticking the "Account Enabled" box.', 'wp-to-hootsuite' ),
 								$post_type_object->label,
 								$this->base->plugin->account
 							),
 							$documentation_url,
-							__( 'See Documentation', 'wp-to-buffer' )
+							__( 'See Documentation', 'wp-to-hootsuite' )
 						)
 					);
 				}
@@ -768,7 +768,7 @@ class WP_To_Social_Pro_Admin {
 		if ( ! isset( $_POST[ $this->base->plugin->name . '_nonce' ] ) ) {
 			return new WP_Error(
 				'wp_to_social_pro_admin_save_settings_error',
-				__( 'Nonce field is missing. Settings NOT saved.', 'wp-to-buffer' )
+				__( 'Nonce field is missing. Settings NOT saved.', 'wp-to-hootsuite' )
 			);
 		}
 
@@ -776,7 +776,7 @@ class WP_To_Social_Pro_Admin {
 		if ( ! wp_verify_nonce( $_POST[ $this->base->plugin->name . '_nonce' ], $this->base->plugin->name ) ) {
 			return new WP_Error(
 				'wp_to_social_pro_admin_save_settings_error',
-				__( 'Invalid nonce specified. Settings NOT saved.', 'wp-to-buffer' )
+				__( 'Invalid nonce specified. Settings NOT saved.', 'wp-to-hootsuite' )
 			);
 		}
 

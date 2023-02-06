@@ -63,10 +63,10 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 		$bulk_actions_name = 'bulk_action' . ( $which !== 'top' ? '2' : '' );
 		?>
 		<label for="bulk-action-selector-<?php echo esc_attr( $which ); ?>" class="screen-reader-text">
-			<?php esc_html_e( 'Select bulk action', 'wp-to-buffer' ); ?>
+			<?php esc_html_e( 'Select bulk action', 'wp-to-hootsuite' ); ?>
 		</label>
 		<select name="<?php echo esc_attr( $bulk_actions_name ); ?>" id="bulk-action-selector-<?php echo esc_attr( $which ); ?>" size="1">
-			<option value="-1"><?php esc_attr_e( 'Bulk Actions', 'wp-to-buffer' ); ?></option>
+			<option value="-1"><?php esc_attr_e( 'Bulk Actions', 'wp-to-hootsuite' ); ?></option>
 
 			<?php
 			foreach ( $this->_actions as $name => $title ) {
@@ -84,7 +84,7 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 			?>
 			<!-- Custom Filters -->
 			<select name="action" size="1">
-				<option value=""<?php selected( $this->get_action(), '' ); ?>><?php esc_attr_e( 'Filter by Action', 'wp-to-buffer' ); ?></option>
+				<option value=""<?php selected( $this->get_action(), '' ); ?>><?php esc_attr_e( 'Filter by Action', 'wp-to-hootsuite' ); ?></option>
 				<?php
 				foreach ( $this->base->get_class( 'common' )->get_post_actions() as $action => $label ) {
 					?>
@@ -94,7 +94,7 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 				?>
 			</select>
 			<select name="profile_id" size="1">
-				<option value=""<?php selected( $this->get_profile(), '' ); ?>><?php esc_attr_e( 'Filter by Profile', 'wp-to-buffer' ); ?></option>
+				<option value=""<?php selected( $this->get_profile(), '' ); ?>><?php esc_attr_e( 'Filter by Profile', 'wp-to-hootsuite' ); ?></option>
 				<?php
 				foreach ( $profiles as $profile_id => $label ) {
 					?>
@@ -104,7 +104,7 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 				?>
 			</select>
 			<select name="result" size="1">
-				<option value=""<?php selected( $this->get_result(), '' ); ?>><?php esc_attr_e( 'Filter by Result', 'wp-to-buffer' ); ?></option>
+				<option value=""<?php selected( $this->get_result(), '' ); ?>><?php esc_attr_e( 'Filter by Result', 'wp-to-hootsuite' ); ?></option>
 				<?php
 				foreach ( $this->base->get_class( 'log' )->get_result_options() as $result_option => $label ) {
 					?>
@@ -122,11 +122,11 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 			<?php
 		}
 
-		submit_button( __( 'Apply', 'wp-to-buffer' ), 'action', '', false, array( 'id' => 'doaction' ) );
+		submit_button( __( 'Apply', 'wp-to-hootsuite' ), 'action', '', false, array( 'id' => 'doaction' ) );
 		?>
 
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . $this->base->plugin->name . '-log&bulk_action3=delete_all' ) ); ?>" class="<?php echo esc_attr( $this->base->plugin->name ); ?>-clear-log button wpzinc-button-red" data-message="<?php esc_html_e( 'Are you sure you want to clear ALL logs?', 'wp-to-buffer' ); ?>">
-			<?php esc_html_e( 'Clear Log', 'wp-to-buffer' ); ?>
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . $this->base->plugin->name . '-log&bulk_action3=delete_all' ) ); ?>" class="<?php echo esc_attr( $this->base->plugin->name ); ?>-clear-log button wpzinc-button-red" data-message="<?php esc_html_e( 'Are you sure you want to clear ALL logs?', 'wp-to-hootsuite' ); ?>">
+			<?php esc_html_e( 'Clear Log', 'wp-to-hootsuite' ); ?>
 		</a>
 		<?php
 
@@ -139,7 +139,7 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	public function no_items() {
 
-		esc_html_e( 'No log entries found based on the given search and filter criteria.', 'wp-to-buffer' );
+		esc_html_e( 'No log entries found based on the given search and filter criteria.', 'wp-to-hootsuite' );
 
 	}
 
@@ -166,7 +166,7 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 		?>
 		<p class="search-box">
 			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_attr( $text ); ?>:</label>
-			<input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_attr_e( 'Post ID or Title', 'wp-to-buffer' ); ?>" />
+			<input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_attr_e( 'Post ID or Title', 'wp-to-hootsuite' ); ?>" />
 			<?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
 		</p>
 		<?php
@@ -183,21 +183,21 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 
 		return array(
 			'cb'                => '<input type="checkbox" class="toggle" />',
-			'post_id'           => __( 'Post ID', 'wp-to-buffer' ),
-			'request_sent'      => __( 'Request Sent', 'wp-to-buffer' ),
-			'action'            => __( 'Action', 'wp-to-buffer' ),
-			'profile_name'      => __( 'Profile', 'wp-to-buffer' ),
-			'status_text'       => __( 'Status Text', 'wp-to-buffer' ),
-			'result'            => __( 'Result', 'wp-to-buffer' ),
-			'result_message'    => __( 'Response', 'wp-to-buffer' ),
+			'post_id'           => __( 'Post ID', 'wp-to-hootsuite' ),
+			'request_sent'      => __( 'Request Sent', 'wp-to-hootsuite' ),
+			'action'            => __( 'Action', 'wp-to-hootsuite' ),
+			'profile_name'      => __( 'Profile', 'wp-to-hootsuite' ),
+			'status_text'       => __( 'Status Text', 'wp-to-hootsuite' ),
+			'result'            => __( 'Result', 'wp-to-hootsuite' ),
+			'result_message'    => __( 'Response', 'wp-to-hootsuite' ),
 			'status_created_at' => sprintf(
 				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-				__( '%s: Status Created At', 'wp-to-buffer' ),
+				__( '%s: Status Created At', 'wp-to-hootsuite' ),
 				$this->base->plugin->account
 			),
 			'status_due_at'     => sprintf(
 				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-				__( '%s: Status Scheduled For', 'wp-to-buffer' ),
+				__( '%s: Status Scheduled For', 'wp-to-hootsuite' ),
 				$this->base->plugin->account
 			),
 		);
@@ -237,7 +237,7 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	public function get_bulk_actions() {
 
 		return array(
-			'delete' => __( 'Delete', 'wp-to-buffer' ),
+			'delete' => __( 'Delete', 'wp-to-hootsuite' ),
 		);
 
 	}

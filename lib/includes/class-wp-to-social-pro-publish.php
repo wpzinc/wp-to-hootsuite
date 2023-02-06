@@ -489,7 +489,7 @@ class WP_To_Social_Pro_Publish {
 				'no_access_token',
 				sprintf(
 					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Plugin Name */
-					__( 'The Plugin has not been authorized with %1$s! Go to %2$s > Settings to setup the plugin.', 'wp-to-buffer' ),
+					__( 'The Plugin has not been authorized with %1$s! Go to %2$s > Settings to setup the plugin.', 'wp-to-hootsuite' ),
 					$this->base->plugin->account,
 					$this->base->plugin->displayName
 				)
@@ -598,7 +598,7 @@ class WP_To_Social_Pro_Publish {
 					$this->base->plugin->filter_name . '_no_statuses_conditions',
 					sprintf(
 						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
-						__( 'Status(es) exist for sending this %1$s to %2$s when you %3$s a %4$s, but no status was sent because the %5$s did not meet the status conditions. If you want this %6$s to be sent to %7$s, navigate to <a href="%8$s" target="_blank">%9$s > Settings > %10$s Tab > %11$s Action Tab</a>, ensuring that no Conditions are set on the defined statuses.', 'wp-to-buffer' ),
+						__( 'Status(es) exist for sending this %1$s to %2$s when you %3$s a %4$s, but no status was sent because the %5$s did not meet the status conditions. If you want this %6$s to be sent to %7$s, navigate to <a href="%8$s" target="_blank">%9$s > Settings > %10$s Tab > %11$s Action Tab</a>, ensuring that no Conditions are set on the defined statuses.', 'wp-to-hootsuite' ),
 						$post_type_object->labels->singular_name,
 						$this->base->plugin->account,
 						ucwords( str_replace( '_', ' ', $action ) ),
@@ -621,7 +621,7 @@ class WP_To_Social_Pro_Publish {
 					$this->base->plugin->filter_name . '_no_statuses_enabled',
 					sprintf(
 						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
-						__( 'No Plugin Settings are defined for sending %1$s to %2$s when you %3$s a %4$s. To send statuses to %5$s on %6$s, navigate to <a href="%7$s" target="_blank">%8$s > Settings > %9$s Tab > %10$s Action Tab</a>, tick "Enabled", and also enable at least one social media profile.', 'wp-to-buffer' ),
+						__( 'No Plugin Settings are defined for sending %1$s to %2$s when you %3$s a %4$s. To send statuses to %5$s on %6$s, navigate to <a href="%7$s" target="_blank">%8$s > Settings > %9$s Tab > %10$s Action Tab</a>, tick "Enabled", and also enable at least one social media profile.', 'wp-to-hootsuite' ),
 						$post_type_object->labels->name,
 						$this->base->plugin->account,
 						ucwords( str_replace( '_', ' ', $action ) ),
@@ -690,7 +690,7 @@ class WP_To_Social_Pro_Publish {
 				'wp_to_social_pro_publish_invalid_action',
 				sprintf(
 					/* translators: Action */
-					__( 'The %s action is not supported.', 'wp-to-buffer' ),
+					__( 'The %s action is not supported.', 'wp-to-hootsuite' ),
 					$action
 				)
 			);
@@ -703,7 +703,7 @@ class WP_To_Social_Pro_Publish {
 				'no_post',
 				sprintf(
 					/* translators: Post ID */
-					__( 'No WordPress Post could be found for Post ID %s', 'wp-to-buffer' ),
+					__( 'No WordPress Post could be found for Post ID %s', 'wp-to-hootsuite' ),
 					$post_id
 				)
 			);
@@ -1876,7 +1876,7 @@ class WP_To_Social_Pro_Publish {
 					'result_message' => sprintf(
 						/* translators: %1$s: Plugin Error string, %2$s: Error message from Plugin */
 						'%1$s: %2$s',
-						__( 'Plugin Error', 'wp-to-buffer' ),
+						__( 'Plugin Error', 'wp-to-hootsuite' ),
 						$status['error']->get_error_message()
 					),
 					'status_text'    => false,

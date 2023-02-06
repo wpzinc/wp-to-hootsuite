@@ -16,7 +16,7 @@
 				echo esc_html(
 					sprintf(
 					/* translators: Translated Action (Publish, Update, Repost, Bulk Publish) */
-						__( 'Defaults: ', 'wp-to-buffer' ),
+						__( 'Defaults: ', 'wp-to-hootsuite' ),
 						$action_label
 					)
 				);
@@ -27,7 +27,7 @@
 
 			<label for="<?php echo esc_attr( $profile_id ); ?>_<?php echo esc_attr( $post_action ); ?>_enabled">
 				<input type="checkbox" id="<?php echo esc_attr( $profile_id ); ?>_<?php echo esc_attr( $post_action ); ?>_enabled" class="enable" name="<?php echo esc_attr( $this->base->plugin->name ); ?>[<?php echo esc_attr( $profile_id ); ?>][<?php echo esc_attr( $post_action ); ?>][enabled]" value="1"<?php checked( $this->get_setting( $post_type, '[' . $profile_id . '][' . $post_action . '][enabled]', 0 ), 1, true ); ?> data-tab="profile-<?php echo esc_attr( $profile_id ); ?>-<?php echo esc_attr( $post_action ); ?>" data-conditional="<?php echo esc_attr( $post_type ); ?>-<?php echo esc_attr( $profile_id ); ?>-<?php echo esc_attr( $post_action ); ?>-statuses" />
-				<?php esc_html_e( 'Enabled', 'wp-to-buffer' ); ?>
+				<?php esc_html_e( 'Enabled', 'wp-to-hootsuite' ); ?>
 			</label>
 		</h3>
 
@@ -36,13 +36,13 @@
 			echo esc_html(
 				sprintf(
 				/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Post Type, Singular, %3$s: Translated Action (Publish, Update, Repost, Bulk Publish), %4$s: Additional Translated Message */
-					__( 'If enabled, any status(es) defined here will be sent to %1$s when a %2$s is %3$s %4$s', 'wp-to-buffer' ),
+					__( 'If enabled, any status(es) defined here will be sent to %1$s when a %2$s is %3$s %4$s', 'wp-to-hootsuite' ),
 					$this->base->plugin->account,
 					$post_type_object->labels->singular_name,
 					$actions_plural[ $post_action ],
 					( $profile_id === 'default' ? '' : sprintf(
 					/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-						__( 'to %s. These override the status(es) specified on the Defaults tab.', 'wp-to-buffer' ),
+						__( 'to %s. These override the status(es) specified on the Defaults tab.', 'wp-to-hootsuite' ),
 						$profile['formatted_username']
 					) )
 				)
@@ -58,10 +58,10 @@
 					<thead>
 						<tr>
 							<th>&nbsp;</th>
-							<th><?php esc_html_e( 'Actions', 'wp-to-buffer' ); ?></th>
-							<th><?php esc_html_e( 'Text', 'wp-to-buffer' ); ?></th>
-							<th><?php esc_html_e( 'Image', 'wp-to-buffer' ); ?></th>
-							<th><?php esc_html_e( 'Schedule', 'wp-to-buffer' ); ?></th>
+							<th><?php esc_html_e( 'Actions', 'wp-to-hootsuite' ); ?></th>
+							<th><?php esc_html_e( 'Text', 'wp-to-hootsuite' ); ?></th>
+							<th><?php esc_html_e( 'Image', 'wp-to-hootsuite' ); ?></th>
+							<th><?php esc_html_e( 'Schedule', 'wp-to-hootsuite' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>

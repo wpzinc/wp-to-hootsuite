@@ -52,11 +52,11 @@ class WP_To_Social_Pro_Common {
 		// Build schedule options, depending on the Plugin.
 		switch ( $this->base->plugin->name ) {
 
-			case 'wp-to-buffer':
+			case 'wp-to-hootsuite':
 				$schedule = array(
 					'queue_bottom' => sprintf(
 						/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-						__( 'Add to End of %s Queue', 'wp-to-buffer' ),
+						__( 'Add to End of %s Queue', 'wp-to-hootsuite' ),
 						$this->base->plugin->account
 					),
 				);
@@ -64,7 +64,7 @@ class WP_To_Social_Pro_Common {
 
 			case 'wp-to-hootsuite':
 				$schedule = array(
-					'now' => __( 'Post Immediately', 'wp-to-buffer' ),
+					'now' => __( 'Post Immediately', 'wp-to-hootsuite' ),
 				);
 				break;
 
@@ -98,7 +98,7 @@ class WP_To_Social_Pro_Common {
 
 		// Build schedule options.
 		$schedule = array(
-			'custom' => __( 'Custom Field / Post Meta Value', 'wp-to-buffer' ),
+			'custom' => __( 'Custom Field / Post Meta Value', 'wp-to-hootsuite' ),
 		);
 
 		/**
@@ -127,7 +127,7 @@ class WP_To_Social_Pro_Common {
 
 		// Build schedule options.
 		$schedule = array(
-			'custom' => __( 'Custom Field / Post Meta Value', 'wp-to-buffer' ),
+			'custom' => __( 'Custom Field / Post Meta Value', 'wp-to-hootsuite' ),
 		);
 
 		/**
@@ -335,51 +335,51 @@ class WP_To_Social_Pro_Common {
 		// Build tags array.
 		$tags = array(
 			'post' => array(
-				'{sitename}'              => __( 'Site Name', 'wp-to-buffer' ),
-				'{title}'                 => __( 'Post Title', 'wp-to-buffer' ),
-				'{excerpt}'               => __( 'Post Excerpt (Full)', 'wp-to-buffer' ),
+				'{sitename}'              => __( 'Site Name', 'wp-to-hootsuite' ),
+				'{title}'                 => __( 'Post Title', 'wp-to-hootsuite' ),
+				'{excerpt}'               => __( 'Post Excerpt (Full)', 'wp-to-hootsuite' ),
 				'{excerpt:characters(?)}' => array(
-					'question'      => __( 'Enter the maximum number of characters the Post Excerpt should display.', 'wp-to-buffer' ),
+					'question'      => __( 'Enter the maximum number of characters the Post Excerpt should display.', 'wp-to-hootsuite' ),
 					'default_value' => '150',
 					'replace'       => '?',
-					'label'         => __( 'Post Excerpt (Character Limited)', 'wp-to-buffer' ),
+					'label'         => __( 'Post Excerpt (Character Limited)', 'wp-to-hootsuite' ),
 				),
 				'{excerpt:words(?)}'      => array(
-					'question'      => __( 'Enter the maximum number of words the Post Excerpt should display.', 'wp-to-buffer' ),
+					'question'      => __( 'Enter the maximum number of words the Post Excerpt should display.', 'wp-to-hootsuite' ),
 					'default_value' => '55',
 					'replace'       => '?',
-					'label'         => __( 'Post Excerpt (Word Limited)', 'wp-to-buffer' ),
+					'label'         => __( 'Post Excerpt (Word Limited)', 'wp-to-hootsuite' ),
 				),
 				'{excerpt:sentences(?)}'  => array(
-					'question'      => __( 'Enter the maximum number of sentences the Post Excerpt should display.', 'wp-to-buffer' ),
+					'question'      => __( 'Enter the maximum number of sentences the Post Excerpt should display.', 'wp-to-hootsuite' ),
 					'default_value' => '1',
 					'replace'       => '?',
-					'label'         => __( 'Post Excerpt (Sentence Limited)', 'wp-to-buffer' ),
+					'label'         => __( 'Post Excerpt (Sentence Limited)', 'wp-to-hootsuite' ),
 				),
-				'{content}'               => __( 'Post Content (Full)', 'wp-to-buffer' ),
-				'{content_more_tag}'      => __( 'Post Content (Up to More Tag)', 'wp-to-buffer' ),
+				'{content}'               => __( 'Post Content (Full)', 'wp-to-hootsuite' ),
+				'{content_more_tag}'      => __( 'Post Content (Up to More Tag)', 'wp-to-hootsuite' ),
 				'{content:characters(?)}' => array(
-					'question'      => __( 'Enter the maximum number of characters the Post Content should display.', 'wp-to-buffer' ),
+					'question'      => __( 'Enter the maximum number of characters the Post Content should display.', 'wp-to-hootsuite' ),
 					'default_value' => '150',
 					'replace'       => '?',
-					'label'         => __( 'Post Content (Character Limited)', 'wp-to-buffer' ),
+					'label'         => __( 'Post Content (Character Limited)', 'wp-to-hootsuite' ),
 				),
 				'{content:words(?)}'      => array(
-					'question'      => __( 'Enter the maximum number of words the Post Content should display.', 'wp-to-buffer' ),
+					'question'      => __( 'Enter the maximum number of words the Post Content should display.', 'wp-to-hootsuite' ),
 					'default_value' => '55',
 					'replace'       => '?',
-					'label'         => __( 'Post Content (Word Limited)', 'wp-to-buffer' ),
+					'label'         => __( 'Post Content (Word Limited)', 'wp-to-hootsuite' ),
 				),
 				'{content:sentences(?)}'  => array(
-					'question'      => __( 'Enter the maximum number of sentences the Post Content should display.', 'wp-to-buffer' ),
+					'question'      => __( 'Enter the maximum number of sentences the Post Content should display.', 'wp-to-hootsuite' ),
 					'default_value' => '1',
 					'replace'       => '?',
-					'label'         => __( 'Post Content (Sentence Limited)', 'wp-to-buffer' ),
+					'label'         => __( 'Post Content (Sentence Limited)', 'wp-to-hootsuite' ),
 				),
-				'{date}'                  => __( 'Post Date', 'wp-to-buffer' ),
-				'{url}'                   => __( 'Post URL', 'wp-to-buffer' ),
-				'{url_short}'             => __( 'Post URL, Shortened', 'wp-to-buffer' ),
-				'{id}'                    => __( 'Post ID', 'wp-to-buffer' ),
+				'{date}'                  => __( 'Post Date', 'wp-to-hootsuite' ),
+				'{url}'                   => __( 'Post URL', 'wp-to-hootsuite' ),
+				'{url_short}'             => __( 'Post URL, Shortened', 'wp-to-hootsuite' ),
+				'{id}'                    => __( 'Post ID', 'wp-to-hootsuite' ),
 			),
 		);
 
@@ -399,7 +399,7 @@ class WP_To_Social_Pro_Common {
 			foreach ( $taxonomies as $tax => $details ) {
 				$tags['taxonomy'][ '{taxonomy_' . $tax . '}' ] = sprintf(
 					/* translators: Taxonomy Name, Singular */
-					__( 'Taxonomy: %s: Hashtag Format', 'wp-to-buffer' ),
+					__( 'Taxonomy: %s: Hashtag Format', 'wp-to-hootsuite' ),
 					$details->labels->singular_name
 				);
 			}
@@ -457,8 +457,8 @@ class WP_To_Social_Pro_Common {
 
 		// Build post actions.
 		$actions = array(
-			'publish' => __( 'Publish', 'wp-to-buffer' ),
-			'update'  => __( 'Update', 'wp-to-buffer' ),
+			'publish' => __( 'Publish', 'wp-to-hootsuite' ),
+			'update'  => __( 'Update', 'wp-to-hootsuite' ),
 		);
 
 		/**
@@ -486,8 +486,8 @@ class WP_To_Social_Pro_Common {
 
 		// Build post actions.
 		$actions = array(
-			'publish' => __( 'Published', 'wp-to-buffer' ),
-			'update'  => __( 'Updated', 'wp-to-buffer' ),
+			'publish' => __( 'Published', 'wp-to-hootsuite' ),
+			'update'  => __( 'Updated', 'wp-to-hootsuite' ),
 		);
 
 		/**

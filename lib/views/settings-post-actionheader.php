@@ -15,7 +15,7 @@
 			echo esc_html(
 				sprintf(
 				/* translators: %1$s: Social Media Service (Facebook, Twitter etc.), %2$s: Social Media Profile Name */
-					__( '%1$s: %2$s: Settings', 'wp-to-buffer' ),
+					__( '%1$s: %2$s: Settings', 'wp-to-hootsuite' ),
 					$profile['formatted_service'],
 					$profile['formatted_username']
 				)
@@ -47,11 +47,11 @@
 	<!-- Account Enabled -->
 	<div class="wpzinc-option">        
 		<div class="left">
-			<label for="<?php echo esc_attr( $profile_id ); ?>_enabled"><?php esc_html_e( 'Account Enabled', 'wp-to-buffer' ); ?></label>
+			<label for="<?php echo esc_attr( $profile_id ); ?>_enabled"><?php esc_html_e( 'Account Enabled', 'wp-to-hootsuite' ); ?></label>
 		</div>
 		<div class="right">
 			<input type="checkbox" id="<?php echo esc_attr( $profile_id ); ?>_enabled" class="enable" name="<?php echo esc_attr( $this->base->plugin->name ); ?>[<?php echo esc_attr( $profile_id ); ?>][enabled]" id="<?php echo esc_attr( $profile_id ); ?>_enabled" value="1"<?php checked( $this->get_setting( $post_type, '[' . $profile_id . '][enabled]', 0 ), 1, true ); ?> data-tab="profile-<?php echo esc_attr( $profile_id ); ?>" />
-			<p class="description"><?php esc_html_e( 'Enabling this social media account means that Posts will be sent to this social media account, if the conditions in the Settings are met.', 'wp-to-buffer' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Enabling this social media account means that Posts will be sent to this social media account, if the conditions in the Settings are met.', 'wp-to-hootsuite' ); ?></p>
 		</div>
 	</div>
 

@@ -87,7 +87,7 @@ class WP_To_Social_Pro_Post {
 					echo esc_html(
 						sprintf(
 						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-							__( '%1$s: Post successfully added to %2$s.', 'wp-to-buffer' ),
+							__( '%1$s: Post successfully added to %2$s.', 'wp-to-hootsuite' ),
 							$this->base->plugin->displayName,
 							$this->base->plugin->account
 						)
@@ -110,7 +110,7 @@ class WP_To_Social_Pro_Post {
 					echo esc_html(
 						sprintf(
 						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-							__( '%1$s: Some status(es) could not be sent to %2$s', 'wp-to-buffer' ),
+							__( '%1$s: Some status(es) could not be sent to %2$s', 'wp-to-hootsuite' ),
 							$this->base->plugin->displayName,
 							$this->base->plugin->account
 						)

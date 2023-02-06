@@ -158,7 +158,7 @@ class WP_To_Social_Pro_Log {
 		add_screen_option(
 			'per_page',
 			array(
-				'label'   => __( 'Log Entries per Page', 'wp-to-buffer' ),
+				'label'   => __( 'Log Entries per Page', 'wp-to-hootsuite' ),
 				'default' => 20,
 				'option'  => $this->base->plugin->filter_name . '_logs_per_page',
 			)
@@ -216,7 +216,7 @@ class WP_To_Social_Pro_Log {
 				// Get Post IDs.
 				if ( ! isset( $_REQUEST['ids'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 					$this->base->get_class( 'notices' )->add_error_notice(
-						__( 'No logs were selected for deletion.', 'wp-to-buffer' )
+						__( 'No logs were selected for deletion.', 'wp-to-hootsuite' )
 					);
 					break;
 				}
@@ -228,7 +228,7 @@ class WP_To_Social_Pro_Log {
 				$this->base->get_class( 'notices' )->add_success_notice(
 					sprintf(
 						/* translators: Number of log entries deleted */
-						__( '%s Logs deleted.', 'wp-to-buffer' ),
+						__( '%s Logs deleted.', 'wp-to-hootsuite' ),
 						count( $_REQUEST['ids'] ) // phpcs:ignore WordPress.Security.NonceVerification
 					)
 				);
@@ -243,7 +243,7 @@ class WP_To_Social_Pro_Log {
 
 				// Add success notice.
 				$this->base->get_class( 'notices' )->add_success_notice(
-					__( 'All Logs deleted.', 'wp-to-buffer' )
+					__( 'All Logs deleted.', 'wp-to-hootsuite' )
 				);
 				break;
 
@@ -328,7 +328,7 @@ class WP_To_Social_Pro_Log {
 				$this->base->plugin->name . '-log',
 				sprintf(
 					/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( '%s Log', 'wp-to-buffer' ),
+					__( '%s Log', 'wp-to-hootsuite' ),
 					$this->base->plugin->displayName
 				),
 				array( $this, 'output_post_log' ),
@@ -490,7 +490,7 @@ class WP_To_Social_Pro_Log {
 			if ( empty( $result['profile_id'] ) ) {
 				continue;
 			}
-			$profiles[ $result['profile_id'] ] = ( empty( $result['profile_name'] ) ? __( 'Unknown', 'wp-to-buffer' ) : $result['profile_name'] );
+			$profiles[ $result['profile_id'] ] = ( empty( $result['profile_name'] ) ? __( 'Unknown', 'wp-to-hootsuite' ) : $result['profile_name'] );
 		}
 
 		return $profiles;
@@ -508,10 +508,10 @@ class WP_To_Social_Pro_Log {
 
 		// Define log result options.
 		$result_options = array(
-			'success' => __( 'Success', 'wp-to-buffer' ),
-			'test'    => __( 'Test', 'wp-to-buffer' ),
-			'warning' => __( 'Warning', 'wp-to-buffer' ),
-			'error'   => __( 'Error', 'wp-to-buffer' ),
+			'success' => __( 'Success', 'wp-to-hootsuite' ),
+			'test'    => __( 'Test', 'wp-to-hootsuite' ),
+			'warning' => __( 'Warning', 'wp-to-hootsuite' ),
+			'error'   => __( 'Error', 'wp-to-hootsuite' ),
 		);
 
 		/**
@@ -539,11 +539,11 @@ class WP_To_Social_Pro_Log {
 
 		// Define log levels.
 		$log_levels = array(
-			'success' => __( 'Success', 'wp-to-buffer' ),
-			'test'    => __( 'Tests', 'wp-to-buffer' ),
-			'pending' => __( 'Pending', 'wp-to-buffer' ),
-			'warning' => __( 'Warnings', 'wp-to-buffer' ),
-			'error'   => __( 'Errors', 'wp-to-buffer' ),
+			'success' => __( 'Success', 'wp-to-hootsuite' ),
+			'test'    => __( 'Tests', 'wp-to-hootsuite' ),
+			'pending' => __( 'Pending', 'wp-to-hootsuite' ),
+			'warning' => __( 'Warnings', 'wp-to-hootsuite' ),
+			'error'   => __( 'Errors', 'wp-to-hootsuite' ),
 		);
 
 		/**
@@ -936,7 +936,7 @@ class WP_To_Social_Pro_Log {
                         <td colspan="' . $colspan . '">' .
 							sprintf(
 								/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-								__( 'No log entries exist, or no status updates have been sent to %s.', 'wp-to-buffer' ),
+								__( 'No log entries exist, or no status updates have been sent to %s.', 'wp-to-hootsuite' ),
 								$this->base->plugin->account
 							)
 							.
@@ -969,8 +969,8 @@ class WP_To_Social_Pro_Log {
                 ' . ( $is_wp_list_table ? $checkbox_id : '' ) . '
                 <td class="request_sent column-request_sent' . ( in_array( 'request_sent', $hidden, true ) ? ' hidden' : '' ) . '">' . get_date_from_gmt( $result['request_sent'], get_option( 'date_format' ) . ' H:i:s' ) . '</td>
                 <td class="action column-action' . ( in_array( 'action', $hidden, true ) ? ' hidden' : '' ) . '">' . ( isset( $post_actions[ $result['action'] ] ) ? $post_actions[ $result['action'] ] : '&nbsp;' ) . '</td>
-                <td class="profile_name column-profile_name' . ( in_array( 'profile_name', $hidden, true ) ? ' hidden' : '' ) . '">' . ( empty( $result['profile_name'] ) ? __( 'N/A', 'wp-to-buffer' ) : $result['profile_name'] ) . '</td>
-                <td class="status_text column-status_text' . ( in_array( 'status_text', $hidden, true ) ? ' hidden' : '' ) . '">' . ( empty( $result['status_text'] ) ? __( 'N/A', 'wp-to-buffer' ) : nl2br( $result['status_text'] ) ) . '</td>
+                <td class="profile_name column-profile_name' . ( in_array( 'profile_name', $hidden, true ) ? ' hidden' : '' ) . '">' . ( empty( $result['profile_name'] ) ? __( 'N/A', 'wp-to-hootsuite' ) : $result['profile_name'] ) . '</td>
+                <td class="status_text column-status_text' . ( in_array( 'status_text', $hidden, true ) ? ' hidden' : '' ) . '">' . ( empty( $result['status_text'] ) ? __( 'N/A', 'wp-to-hootsuite' ) : nl2br( $result['status_text'] ) ) . '</td>
                 <td class="result column-result' . ( in_array( 'result', $hidden, true ) ? ' hidden' : '' ) . '">' . ucfirst( $result['result'] ) . '</td>';
 
 			switch ( $result['result'] ) {

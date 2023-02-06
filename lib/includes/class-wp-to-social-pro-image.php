@@ -53,7 +53,7 @@ class WP_To_Social_Pro_Image {
 	public function get_featured_image_options( $network = false, $post_type = false ) {
 
 		// If a Post Type has been specified, get its featured_image label.
-		$label = __( 'Feat. Image', 'wp-to-buffer' );
+		$label = __( 'Feat. Image', 'wp-to-hootsuite' );
 		if ( $post_type !== false && $post_type !== 'bulk' ) {
 			$post_type_object = get_post_type_object( $post_type );
 			$label            = $post_type_object->labels->featured_image;
@@ -62,13 +62,13 @@ class WP_To_Social_Pro_Image {
 		// Build featured image options, depending on the Plugin.
 		switch ( $this->base->plugin->name ) {
 
-			case 'wp-to-buffer':
+			case 'wp-to-hootsuite':
 				$options = array(
-					-1 => __( 'No Image', 'wp-to-buffer' ),
-					0  => __( 'Use OpenGraph Settings', 'wp-to-buffer' ),
+					-1 => __( 'No Image', 'wp-to-hootsuite' ),
+					0  => __( 'Use OpenGraph Settings', 'wp-to-hootsuite' ),
 					2  => sprintf(
 						/* translators: Translated name for a Post Type's Featured Image (e.g. for WooCommerce, might be "Product image") */
-						__( 'Use %s, not Linked to Post', 'wp-to-buffer' ),
+						__( 'Use %s, not Linked to Post', 'wp-to-hootsuite' ),
 						$label
 					),
 				);
@@ -76,10 +76,10 @@ class WP_To_Social_Pro_Image {
 
 			case 'wp-to-hootsuite':
 				$options = array(
-					-1 => __( 'No Image', 'wp-to-buffer' ),
+					-1 => __( 'No Image', 'wp-to-hootsuite' ),
 					2  => sprintf(
 						/* translators: Translated name for a Post Type's Featured Image (e.g. for WooCommerce, might be "Product image") */
-						__( 'Use %s, not Linked to Post', 'wp-to-buffer' ),
+						__( 'Use %s, not Linked to Post', 'wp-to-hootsuite' ),
 						$label
 					),
 				);

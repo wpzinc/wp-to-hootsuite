@@ -15,7 +15,7 @@ class AnyErrorsOnBlankInstallCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateWPToBufferPlugin($I);
+		$I->activateWPToHootsuitePlugin($I);
 	}
 
 	/**
@@ -29,7 +29,7 @@ class AnyErrorsOnBlankInstallCest
 	public function testSettingsScreen(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Settings Screen.
-		$I->amOnAdminPage('admin.php?page=wp-to-buffer');
+		$I->amOnAdminPage('admin.php?page=wp-to-hootsuite');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -81,6 +81,6 @@ class AnyErrorsOnBlankInstallCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateWPToBufferPlugin($I);
+		$I->deactivateWPToHootsuitePlugin($I);
 	}
 }

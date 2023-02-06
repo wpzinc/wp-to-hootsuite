@@ -33,7 +33,7 @@ $I->pressKey('#input-remarks', 'foo');
 
 wp-browser further extends Codeception's test syntax, with functions and assertions that are *specific for WordPress*.  For example,
 ```php
-$I->activatePlugin('wp-to-buffer');
+$I->activatePlugin('wp-to-hootsuite');
 ```
 
 ## Types of Test
@@ -131,10 +131,10 @@ class ActivatePluginCest
         $I->amOnPluginsPage();
 
         // Activate the Plugin.
-        $I->activatePlugin('wp-to-buffer');
+        $I->activatePlugin('wp-to-hootsuite');
 
         // Check that the Plugin activated successfully.
-        $I->seePluginActivated('wp-to-buffer');
+        $I->seePluginActivated('wp-to-hootsuite');
 
         // Check that the <body> class does not have a php-error class, which indicates an error in activation.
         $I->dontSeeElement('body.php-error');
@@ -159,10 +159,10 @@ class ActivatePluginCest
         $I->amOnPluginsPage();
 
         // Activate the Plugin.
-        $I->activatePlugin('wp-to-buffer');
+        $I->activatePlugin('wp-to-hootsuite');
 
         // Check that the Plugin activated successfully.
-        $I->seePluginActivated('wp-to-buffer');
+        $I->seePluginActivated('wp-to-hootsuite');
 
         // Check that the <body> class does not have a php-error class, which indicates an error in activation.
         $I->dontSeeElement('body.php-error');
@@ -174,10 +174,10 @@ class ActivatePluginCest
         $I->amOnPluginsPage();
 
         // Activate the Plugin.
-        $I->deactivatePlugin('wp-to-buffer');
+        $I->deactivatePlugin('wp-to-hootsuite');
 
         // Check that the Plugin activated successfully.
-        $I->seePluginDeactivated('wp-to-buffer');
+        $I->seePluginDeactivated('wp-to-hootsuite');
 
         // Check that the <body> class does not have a php-error class, which indicates an error in activation.
         $I->dontSeeElement('body.php-error');
@@ -242,7 +242,7 @@ class ExampleCest
      */
     public function _before(AcceptanceTester $I)
     {
-        $I->activateWPToBufferPlugin($I);
+        $I->activateWPToHootsuitePlugin($I);
         $I->activateThirdPartyPlugin($I, 'third-party-plugin-slug');
     }
 
@@ -269,7 +269,7 @@ class ExampleCest
      */
     public function _passed(AcceptanceTester $I)
     {
-        $I->deactivateWPToBufferPlugin($I);
+        $I->deactivateWPToHootsuitePlugin($I);
         $I->deactivateThirdPartyPlugin($I, 'third-party-plugin-slug');
     }
 }
@@ -291,12 +291,12 @@ error check for every test.
 
 Further Acceptance Test Helpers that are provided include:
 - `maybeCloseGutenbergWelcomeModal($I)`: Closes the Gutenberg welcome modal when adding a Page or Post.
-- `activateWPToBufferPlugin($I)`: Logs in to WordPress as the `admin` user, and activates the Plugin.
-- `deactivateWPToBufferPlugin($I)`: Logs in to WordPress as the `admin` user, and deactivates the Plugin.
+- `activateWPToHootsuitePlugin($I)`: Logs in to WordPress as the `admin` user, and activates the Plugin.
+- `deactivateWPToHootsuitePlugin($I)`: Logs in to WordPress as the `admin` user, and deactivates the Plugin.
 - `activateThirdPartyPlugin($I, $name)`: Logs in to WordPress as the `admin` user, and activates the given third party Plugin by its slug.
 - `deactivateThirdPartyPlugin($I, $name)`: Logs in to WordPress as the `admin` user, and deactivates the given third party Plugin by its slug.
 
-Other helpers most likely exist; refer to the [Acceptance.php](https://github.com/n7studios/wp-to-buffer/blob/main/tests/_support/Helper/Acceptance/)
+Other helpers most likely exist; refer to the [Acceptance.php](https://github.com/n7studios/wp-to-hootsuite/blob/main/tests/_support/Helper/Acceptance/)
 folder of helper files for all available functions.
 
 ## Writing Helpers
@@ -321,7 +321,7 @@ public function yourCustomFunctionNameInHelper($I)
 
 If the function doesn't fit into any existing helper file:
 - create a new file in the `tests/_support/Helper/Acceptance` directory
-- edit the [acceptance.suite.yml](https://github.com/n7studios/wp-to-buffer/blob/main/tests/acceptance.suite.yml) file, adding
+- edit the [acceptance.suite.yml](https://github.com/n7studios/wp-to-hootsuite/blob/main/tests/acceptance.suite.yml) file, adding
 the Helper's namespace and class under the `enabled` section.
 
 Need to change how Codeception runs?  Edit the [codeception.dist.xml](codeception.dist.xml) file.
@@ -479,7 +479,7 @@ Need to change the PHP or WordPress coding standard rules applied?  Either:
 
 ## Next Steps
 
-Once your test(s) are written and successfully run locally, submit your branch via a new [Pull Request](https://github.com/n7studios/wp-to-buffer/compare).
+Once your test(s) are written and successfully run locally, submit your branch via a new [Pull Request](https://github.com/n7studios/wp-to-hootsuite/compare).
 
 It's best to create a Pull Request in draft mode, as this will trigger all tests to run as a GitHub Action, allowing you to
 double check all tests pass.

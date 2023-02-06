@@ -93,13 +93,13 @@ parameters:
     # Paths to scan
     # This should comprise of the base Plugin PHP file, plus directories that contain Plugin PHP files
     paths:
-        - wp-to-buffer.php
+        - wp-to-hootsuite.php
         - includes/
         - lib/
 
     # Files that include Plugin-specific PHP constants
     bootstrapFiles:
-        - wp-to-buffer.php
+        - wp-to-hootsuite.php
 
     # Location of WordPress Plugins for PHPStan to scan, building symbols.
     scanDirectories:

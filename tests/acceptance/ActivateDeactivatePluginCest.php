@@ -16,7 +16,7 @@ class ActivateDeactivatePluginCest
 	 */
 	public function testPluginActivation(AcceptanceTester $I)
 	{
-		$I->activateWPToBufferPlugin($I);
+		$I->activateWPToHootsuitePlugin($I);
 	}
 
 	/**
@@ -29,6 +29,6 @@ class ActivateDeactivatePluginCest
 	 */
 	public function testPluginDeactivation(AcceptanceTester $I)
 	{
-		$I->deactivateWPToBufferPlugin($I);
+		$I->deactivateWPToHootsuitePlugin($I);
 	}
 }

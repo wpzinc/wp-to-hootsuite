@@ -19,7 +19,7 @@
 			echo esc_html(
 				sprintf(
 				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( 'Visit your %s account to resolve this error.', 'wp-to-buffer' ),
+					__( 'Visit your %s account to resolve this error.', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)
 			);
@@ -32,7 +32,7 @@
 			echo esc_html(
 				sprintf(
 				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( 'Visit %s', 'wp-to-buffer' ),
+					__( 'Visit %s', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)
 			);

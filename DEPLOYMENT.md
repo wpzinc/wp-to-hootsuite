@@ -12,15 +12,15 @@ On your local machine, switch to the `master` branch.
 
 Run the `.scripts/build.sh` script, which will:
 
-- Generate the `languages/wp-to-buffer.pot` file
+- Generate the `languages/wp-to-hootsuite.pot` file
 - Generate the [ACTIONS-FILTERS.md](ACTIONS-FILTERS.md) file
 
 ## Update the Plugin's Version Number
 
 We follow [Semantic Versioning](https://semver.org/).
 
-- In `wp-to-buffer.php`, change the Version header to the new version number.
-- In `wp-to-buffer.php`, change the `PLUGIN_VERSION` constant to the new version number.
+- In `wp-to-hootsuite.php`, change the Version header to the new version number.
+- In `wp-to-hootsuite.php`, change the `PLUGIN_VERSION` constant to the new version number.
 
 ## Update the Plugin's readme.txt Changelog
 
@@ -41,14 +41,14 @@ Each line in the changelog should start with `Added` or `Fix`.
 
 Commit the updated files, which should comprise of:
 
-- `languages/wp-to-buffer.pot`
+- `languages/wp-to-hootsuite.pot`
 - `readme.txt`
-- `wp-to-buffer.php`
+- `wp-to-hootsuite.php`
 - `ACTIONS-FILTERS.md`
 
 ## Create a New Release
 
-[Create a New Release](https://github.com/n7studios/wp-to-buffer/releases/new), completing the following:
+[Create a New Release](https://github.com/n7studios/wp-to-hootsuite/releases/new), completing the following:
 
 - Choose a tag: Click this button and enter the new version number (e.g. `1.9.6`)
 - Release title: The version number (e.g. `1.9.6`)
@@ -62,4 +62,4 @@ When you're happy with the above, click `Publish Release`.
 
 This will then trigger the [deploy.yml](.github/workflows/deploy.yml) workflow, which will upload this new version to the wordpress.org repository.
 
-The release will also be available to view on the [Releases](https://github.com/n7studios/wp-to-buffer/releases) section of this GitHub repository.
+The release will also be available to view on the [Releases](https://github.com/n7studios/wp-to-hootsuite/releases) section of this GitHub repository.

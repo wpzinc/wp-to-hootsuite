@@ -12,7 +12,7 @@
 		<?php echo esc_html( $this->base->plugin->displayName ); ?>
 
 		<span>
-			<?php esc_html_e( 'Settings', 'wp-to-buffer' ); ?>
+			<?php esc_html_e( 'Settings', 'wp-to-hootsuite' ); ?>
 		</span>
 	</h1>
 
@@ -32,7 +32,7 @@
 		<!-- Tabs -->
 		<h2 class="nav-tab-wrapper wpzinc-horizontal-tabbed-ui">
 			<!-- Settings -->
-			<a href="admin.php?page=<?php echo esc_attr( $this->base->plugin->name ); ?>-settings" class="nav-tab<?php echo esc_attr( $tab === 'auth' ? ' nav-tab-active' : '' ) . ( ! empty( $access_token ) ? ' enabled' : ' error' ); ?>" title="<?php esc_attr_e( 'Settings', 'wp-to-buffer' ); ?>">
+			<a href="admin.php?page=<?php echo esc_attr( $this->base->plugin->name ); ?>-settings" class="nav-tab<?php echo esc_attr( $tab === 'auth' ? ' nav-tab-active' : '' ) . ( ! empty( $access_token ) ? ' enabled' : ' error' ); ?>" title="<?php esc_attr_e( 'Settings', 'wp-to-hootsuite' ); ?>">
 				<span class="dashicons dashicons-lock"></span> 
 				<?php
 				if ( ! empty( $access_token ) ) {
@@ -46,7 +46,7 @@
 				}
 				?>
 				<span class="text">
-					<?php esc_html_e( 'Settings', 'wp-to-buffer' ); ?>
+					<?php esc_html_e( 'Settings', 'wp-to-hootsuite' ); ?>
 				</span>
 			</a>
 
@@ -81,12 +81,12 @@
 			?>
 
 			<!-- Documentation -->
-			<a href="<?php echo esc_attr( $documentation_url ); ?>" class="nav-tab last documentation" title="<?php esc_html_e( 'Documentation', 'wp-to-buffer' ); ?>" target="_blank">
+			<a href="<?php echo esc_attr( $documentation_url ); ?>" class="nav-tab last documentation" title="<?php esc_html_e( 'Documentation', 'wp-to-hootsuite' ); ?>" target="_blank">
 				<span class="text">
-					<?php esc_html_e( 'Documentation', 'wp-to-buffer' ); ?>
+					<?php esc_html_e( 'Documentation', 'wp-to-hootsuite' ); ?>
 				</span>
 				<span class="text-mobile">
-					<?php esc_html_e( 'Docs', 'wp-to-buffer' ); ?>
+					<?php esc_html_e( 'Docs', 'wp-to-hootsuite' ); ?>
 				</span>
 				<span class="dashicons dashicons-admin-page"></span>
 			</a>
@@ -115,7 +115,7 @@
 							<!-- Save -->
 							<div>
 								<?php wp_nonce_field( $this->base->plugin->name, $this->base->plugin->name . '_nonce' ); ?>
-								<input type="submit" name="submit" value="<?php esc_attr_e( 'Save', 'wp-to-buffer' ); ?>" class="button button-primary" />
+								<input type="submit" name="submit" value="<?php esc_attr_e( 'Save', 'wp-to-hootsuite' ); ?>" class="button button-primary" />
 							</div>
 							<?php
 						}

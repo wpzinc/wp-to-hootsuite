@@ -18,9 +18,9 @@ class Plugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function activateWPToBufferPlugin($I)
+	public function activateWPToHootsuitePlugin($I)
 	{
-		$I->activateThirdPartyPlugin($I, 'wp-to-buffer');
+		$I->activateThirdPartyPlugin($I, 'wp-to-hootsuite');
 	}
 
 	/**
@@ -31,9 +31,9 @@ class Plugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function deactivateWPToBufferPlugin($I)
+	public function deactivateWPToHootsuitePlugin($I)
 	{
-		$I->deactivateThirdPartyPlugin($I, 'wp-to-buffer');
+		$I->deactivateThirdPartyPlugin($I, 'wp-to-hootsuite');
 	}
 
 	/**
