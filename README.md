@@ -9,7 +9,7 @@ Welcome to the WordPress to Hootsuite Plugin repository on GitHub. Here you can 
 If you are having issues setting up this plugin on your WordPress site, or have issues with WordPress to Hootsuite, please do the following:
 
 * Check the [Documentation](https://www.wpzinc.com/documentation/)
-* Request [email support](https://www.wpzinc.com/support)
+* Review the [support forum](https://wordpress.org/support/plugin/wp-to-hootsuite/)
 
 ## Developers
 
@@ -19,5 +19,5 @@ For Developers, there are guides covering:
 - [Testing](TESTING.md) - how to write and run tests
 - [Actions and Filters](ACTIONS-FILTERS.md) - Actions and Filters available to WordPress Developers looking to extend WordPress to Hootsuite's functionality
 
-For n7 Studios, there is a separate guide to deploying new versions to wpzinc.com:
-- [Deployment](DEPLOYMENT.md) - how to deploy a new Plugin version to [wpzinc.com](https://www.wpzinc.com)
+For n7 Studios, there is a separate guide to deploying new versions to wordpress.org:
+- [Deployment](DEPLOYMENT.md) - how to deploy a new Plugin version to [wordpress.org](https://wordpress.org/plugins/wp-to-hootsuite)
