@@ -124,8 +124,8 @@ class WP_To_Hootsuite {
 				__( 'Manually re-share evergreen WordPress content and revive old posts with the Bulk Publish option', 'wp-to-hootsuite' ),
 			),
 			array(
-				__( 'The Events Calendar and Event Manager Integration', 'wp-to-hootsuite' ),
-				__( 'Schedule Posts to Hootsuite based on your Event\'s Start or End date, and display Event-specific details in your status updates', 'wp-to-hootsuite' ),
+				__( 'The Events Calendar, Event Manager and Modern Events Calendar Integration', 'wp-to-hootsuite' ),
+				__( 'Schedule Posts to Buffer based on your Event\'s Start or End date, and display Event-specific details in your status updates', 'wp-to-hootsuite' ),
 			),
 			array(
 				__( 'SEO Integration', 'wp-to-hootsuite' ),

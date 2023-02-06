@@ -96,10 +96,10 @@
 		<?php
 		// id is deliberate; to ensure CSS, JS etc. works for all versions.
 		?>
-		<form name="post" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>" id="<?php echo esc_attr( $this->base->plugin->name ); ?>" class="wp-to-social-pro">      
-			<div id="poststuff">
-				<div id="post-body" class="metabox-holder columns-2">
-					<!-- Content -->
+		<div id="poststuff">
+			<div id="post-body" class="metabox-holder columns-2">
+				<!-- Content -->
+				<form name="post" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>" id="<?php echo esc_attr( $this->base->plugin->name ); ?>" class="wp-to-social-pro">      
 					<div id="post-body-content">
 						<div id="normal-sortables" class="meta-box-sortables ui-sortable publishing-defaults">  
 							<?php
@@ -122,16 +122,15 @@
 						?>
 					</div>
 					<!-- /post-body-content -->
+				</form>
 
-					<!-- Sidebar -->
-					<div id="postbox-container-1" class="postbox-container">
-						<?php require $this->base->plugin->folder . '/_modules/dashboard/views/sidebar-upgrade.php'; ?>		
-					</div>
-					<!-- /Sidebar -->
+				<!-- Sidebar -->
+				<div id="postbox-container-1" class="postbox-container">
+					<?php require $this->base->plugin->folder . '/_modules/dashboard/views/sidebar-upgrade.php'; ?>		
 				</div>
-			</div> 
-		</form>
-		<!-- /form end -->
+				<!-- /Sidebar -->
+			</div>
+		</div>
 
 		<!-- Upgrade -->
 		<div class="metabox-holder columns-1">
