@@ -83,7 +83,7 @@ class WP_To_Hootsuite {
 		);
 
 		// Default Settings.
-		$this->plugin->default_schedule = 'queue_bottom';
+		$this->plugin->default_schedule = 'now';
 
 		// Dashboard Submodule.
 		if ( ! class_exists( 'WPZincDashboardWidget' ) ) {

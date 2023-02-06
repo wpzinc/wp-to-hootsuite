@@ -62,7 +62,7 @@ class WP_To_Social_Pro_Image {
 		// Build featured image options, depending on the Plugin.
 		switch ( $this->base->plugin->name ) {
 
-			case 'wp-to-hootsuite':
+			case 'wp-to-buffer':
 				$options = array(
 					-1 => __( 'No Image', 'wp-to-hootsuite' ),
 					0  => __( 'Use OpenGraph Settings', 'wp-to-hootsuite' ),

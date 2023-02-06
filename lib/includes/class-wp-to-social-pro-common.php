@@ -52,7 +52,7 @@ class WP_To_Social_Pro_Common {
 		// Build schedule options, depending on the Plugin.
 		switch ( $this->base->plugin->name ) {
 
-			case 'wp-to-hootsuite':
+			case 'wp-to-buffer':
 				$schedule = array(
 					'queue_bottom' => sprintf(
 						/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
