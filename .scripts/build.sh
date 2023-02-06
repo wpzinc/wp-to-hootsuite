@@ -2,12 +2,12 @@
 php create-actions-filters-docs.php
 
 # Generate .pot file
-php -n $(which wp) i18n make-pot ../ ../languages/wp-to-buffer.pot
+php -n $(which wp) i18n make-pot ../ ../languages/wp-to-hootsuite.pot
 
 # Build ZIP file, excluding non-Plugin files
 cd ..
-rm wp-to-buffer.zip
-zip -r wp-to-buffer.zip . \
+rm wp-to-hootsuite.zip
+zip -r wp-to-hootsuite.zip . \
 -x "*.scss" \
 -x "*.git*" \
 -x ".scripts/*" \
