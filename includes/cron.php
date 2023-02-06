@@ -13,15 +13,15 @@
  */
 function wp_to_hootsuite_log_cleanup_cron() {
 
-    // Initialise Plugin.
-    $wp_to_hootsuite = WP_To_Hootsuite::get_instance();
-    $wp_to_hootsuite->initialize();
+	// Initialise Plugin.
+	$wp_to_hootsuite = WP_To_Hootsuite::get_instance();
+	$wp_to_hootsuite->initialize();
 
-    // Call CRON Log Cleanup function.
-    $wp_to_hootsuite->get_class( 'cron' )->log_cleanup();
+	// Call CRON Log Cleanup function.
+	$wp_to_hootsuite->get_class( 'cron' )->log_cleanup();
 
-    // Shutdown.
-    unset( $wp_to_hootsuite );
+	// Shutdown.
+	unset( $wp_to_hootsuite );
 
 }
 add_action( 'wp_to_hootsuite_log_cleanup_cron', 'wp_to_hootsuite_log_cleanup_cron' );

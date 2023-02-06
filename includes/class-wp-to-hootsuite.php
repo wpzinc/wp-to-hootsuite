@@ -86,72 +86,72 @@ class WP_To_Hootsuite {
 		$this->plugin->default_schedule = 'now';
 
 		// Upgrade Reasons.
-        $this->plugin->upgrade_reasons = array(
-            array(
-                __( 'Post to Instagram and Pinterest', 'wp-to-hootsuite' ), 
-                __( 'Post to Instagram (Personal Profiles only, using Reminders) and Pinterest Boards', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Multiple, Customisable Status Messages', 'wp-to-hootsuite' ), 
-                __( 'Each Post Type and Social Network can have multiple, unique status message and settings', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Conditionally send Status Messages', 'wp-to-hootsuite' ), 
-                __( 'Only send status(es) to Hootsuite based on Post Author(s), Taxonomy Term(s) and/or Custom Field Values', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'More Scheduling Options', 'wp-to-hootsuite' ), 
-                __( 'Each status update can be added to the start/end of your Hootsuite queue, posted immediately or scheduled at a specific time', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Dynamic Status Tags', 'wp-to-hootsuite' ), 
-                __( 'Dynamically build status updates with data from the Post Author and Custom Fields', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Separate Statuses per Social Network', 'wp-to-hootsuite' ), 
-                __( 'Define different statuses for each Post Type and Social Network', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Per-Post Settings', 'wp-to-hootsuite' ), 
-                __( 'Override Settings on Individual Posts: Each Post can have its own Hootsuite settings', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Repost Old Posts', 'wp-to-hootsuite' ), 
-                __( 'Automatically Revive Old Posts that haven\'t been updated in a while, choosing the number of days, weeks or years to re-share content on social media.', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Bulk Publish Old Posts', 'wp-to-hootsuite' ), 
-                __( 'Manually re-share evergreen WordPress content and revive old posts with the Bulk Publish option', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'The Events Calendar and Event Manager Integration', 'wp-to-hootsuite' ), 
-                __( 'Schedule Posts to Hootsuite based on your Event\'s Start or End date, and display Event-specific details in your status updates', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'SEO Integration', 'wp-to-hootsuite' ), 
-                __( 'Display SEO-specific information in your status updates from All-In-One SEO Pack, Rank Math, SEOPress and Yoast SEO', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'WooCommerce Integration', 'wp-to-hootsuite' ), 
-                __( 'Display Product-specific information in your status updates', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Autoblogging and Frontend Post Submission Integration', 'wp-to-hootsuite' ), 
-                __( 'Pro supports autoblogging and frontend post submission Plugins, including User Submitted Posts, WP Property Feed, WPeMatico and WP Job Manager', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Shortcode Support', 'wp-to-hootsuite' ), 
-                __( 'Use shortcodes in status updates', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'Full Image Control', 'wp-to-hootsuite' ), 
-                __( 'Choose to display the WordPress Featured Image with your status updates, or define up to 4 custom images for each Post.', 'wp-to-hootsuite' ),
-            ),
-            array(
-                __( 'WP-Cron and WP-CLI Compatible', 'wp-to-hootsuite' ), 
-                __( 'Optionally enable WP-Cron to send status updates via Cron, speeding up UI performance and/or choose to use WP-CLI for reposting old posts', 'wp-to-hootsuite' ),
-            ),
-        );
+		$this->plugin->upgrade_reasons = array(
+			array(
+				__( 'Post to Instagram and Pinterest', 'wp-to-hootsuite' ),
+				__( 'Post to Instagram (Personal Profiles only, using Reminders) and Pinterest Boards', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Multiple, Customisable Status Messages', 'wp-to-hootsuite' ),
+				__( 'Each Post Type and Social Network can have multiple, unique status message and settings', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Conditionally send Status Messages', 'wp-to-hootsuite' ),
+				__( 'Only send status(es) to Hootsuite based on Post Author(s), Taxonomy Term(s) and/or Custom Field Values', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'More Scheduling Options', 'wp-to-hootsuite' ),
+				__( 'Each status update can be added to the start/end of your Hootsuite queue, posted immediately or scheduled at a specific time', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Dynamic Status Tags', 'wp-to-hootsuite' ),
+				__( 'Dynamically build status updates with data from the Post Author and Custom Fields', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Separate Statuses per Social Network', 'wp-to-hootsuite' ),
+				__( 'Define different statuses for each Post Type and Social Network', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Per-Post Settings', 'wp-to-hootsuite' ),
+				__( 'Override Settings on Individual Posts: Each Post can have its own Hootsuite settings', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Repost Old Posts', 'wp-to-hootsuite' ),
+				__( 'Automatically Revive Old Posts that haven\'t been updated in a while, choosing the number of days, weeks or years to re-share content on social media.', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Bulk Publish Old Posts', 'wp-to-hootsuite' ),
+				__( 'Manually re-share evergreen WordPress content and revive old posts with the Bulk Publish option', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'The Events Calendar and Event Manager Integration', 'wp-to-hootsuite' ),
+				__( 'Schedule Posts to Hootsuite based on your Event\'s Start or End date, and display Event-specific details in your status updates', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'SEO Integration', 'wp-to-hootsuite' ),
+				__( 'Display SEO-specific information in your status updates from All-In-One SEO Pack, Rank Math, SEOPress and Yoast SEO', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'WooCommerce Integration', 'wp-to-hootsuite' ),
+				__( 'Display Product-specific information in your status updates', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Autoblogging and Frontend Post Submission Integration', 'wp-to-hootsuite' ),
+				__( 'Pro supports autoblogging and frontend post submission Plugins, including User Submitted Posts, WP Property Feed, WPeMatico and WP Job Manager', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Shortcode Support', 'wp-to-hootsuite' ),
+				__( 'Use shortcodes in status updates', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'Full Image Control', 'wp-to-hootsuite' ),
+				__( 'Choose to display the WordPress Featured Image with your status updates, or define up to 4 custom images for each Post.', 'wp-to-hootsuite' ),
+			),
+			array(
+				__( 'WP-Cron and WP-CLI Compatible', 'wp-to-hootsuite' ),
+				__( 'Optionally enable WP-Cron to send status updates via Cron, speeding up UI performance and/or choose to use WP-CLI for reposting old posts', 'wp-to-hootsuite' ),
+			),
+		);
 
 		// Dashboard Submodule.
 		if ( ! class_exists( 'WPZincDashboardWidget' ) ) {
