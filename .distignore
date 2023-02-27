@@ -18,9 +18,11 @@ composer.lock
 config.codekit3
 DEPLOYMENT.md
 DEVELOPMENT.md
-wp-to-hootsuite.zip
 phpcs.tests.xml
 phpcs.xml
+phpstan.neon
+phpstan.neon.dist
+phpstan.neon.example
 README.md
 SETUP.md
 TESTING.md
