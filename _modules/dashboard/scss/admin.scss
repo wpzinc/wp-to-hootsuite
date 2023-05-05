@@ -1066,6 +1066,11 @@ form.wpzinc-tinymce-popup {
 		select {
 			background-color: #fff;
 		}
+		textarea {
+			padding: 5px; 
+			background-color: #fff;
+			border: 1px solid #7e8993;
+		}
 
 		/**
 		* One column layout
@@ -1293,7 +1298,7 @@ body.wpzinc.block-editor-page {
 * - used by tinymce-modal.js
 * - override styles set by WordPress
 */
-.wpzinc-quicktags-modal {
+.wpzinc-backbone-modal {
 	.media-modal {
 		position: absolute;
   		left: 50%;

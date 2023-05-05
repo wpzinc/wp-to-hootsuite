@@ -20,7 +20,7 @@ jQuery( document ).ready(
 		// Cancel.
 		$( 'body' ).on(
 			'click',
-			'#wpzinc-tinymce-modal div.mce-cancel button, .wpzinc-quicktags-modal .media-frame-toolbar .media-toolbar button.cancel',
+			'#wpzinc-tinymce-modal div.mce-cancel button, .wpzinc-backbone-modal .media-frame-toolbar .media-toolbar button.cancel',
 			function( e ) {
 
 				// TinyMCE.
@@ -30,7 +30,7 @@ jQuery( document ).ready(
 				}
 
 				// Text Editor.
-				wpZincQuickTagsModal.close();
+				wpZincModal.close();
 
 			}
 		);
@@ -38,7 +38,7 @@ jQuery( document ).ready(
 		// Insert.
 		$( 'body' ).on(
 			'click',
-			'#wpzinc-tinymce-modal div.mce-insert button, .wpzinc-quicktags-modal .media-frame-toolbar .media-toolbar button.insert',
+			'#wpzinc-tinymce-modal div.mce-insert button, .wpzinc-backbone-modal .media-frame-toolbar .media-toolbar button.insert',
 			function( e ) {
 
 				// Prevent default action.
@@ -51,7 +51,7 @@ jQuery( document ).ready(
 				var shortcode  = '[' + $( 'input[name="shortcode"]', $( form ) ).val(),
 				shortcodeClose = ( $( 'input[name="close_shortcode"]', $( form ) ).val() == '1' ? true : false );
 
-				$( 'input, select', $( form ) ).each(
+				$( 'input, select, textarea', $( form ) ).each(
 					function( i ) {
 						// Skip if no data-shortcode attribute.
 						if ( typeof $( this ).data( 'shortcode' ) === 'undefined' ) {
@@ -137,7 +137,7 @@ jQuery( document ).ready(
 						QTags.insertContent( shortcode );
 
 						// Close modal.
-						wpZincQuickTagsModal.close();
+						wpZincModal.close();
 						break;
 				}
 
@@ -149,16 +149,16 @@ jQuery( document ).ready(
 
 // QuickTags: Setup Backbone Modal and Template.
 if ( typeof wp !== 'undefined' && typeof wp.media !== 'undefined' ) {
-	var wpZincQuickTagsModal        = new wp.media.view.Modal(
+	var wpZincModal        = new wp.media.view.Modal(
 		{
 			controller: { trigger: function() {} },
-			className: 'wpzinc-quicktags-modal'
+			className: 'wpzinc-backbone-modal'
 		}
 	);
-	var wpZincQuickTagsModalContent = wp.Backbone.View.extend(
+	var wpZincModalContent = wp.Backbone.View.extend(
 		{
-			template: wp.template( 'wpzinc-quicktags-modal' )
+			template: wp.template( 'wpzinc-modal' )
 		}
 	);
-	wpZincQuickTagsModal.content( new wpZincQuickTagsModalContent() );
+	wpZincModal.content( new wpZincModalContent() );
 }
