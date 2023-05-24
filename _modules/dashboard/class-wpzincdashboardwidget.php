@@ -585,9 +585,26 @@ class WPZincDashboardWidget {
 
 		// Define the deactivation reasons.
 		$reasons = array(
-			'not_working'        => __( 'The Plugin didn\'t work', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-			'better_alternative' => __( 'I found a better Plugin', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-			'other'              => __( 'Other', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+			'temporary'          => array(
+				'label'       => __( 'This is temporary / debugging an issue.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+				'placeholder' => __( 'Optional: What problem are you experiencing?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+			),
+			'not_working'        => array(
+				'label'       => __( 'Could not get the plugin to work.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+				'placeholder' => __( 'Optional: What problem are you experiencing?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+			),
+			'better_alternative' => array(
+				'label'       => __( 'Found a better plugin.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+				'placeholder' => __( 'Optional: What\'s the plugin\'s name?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+			),
+			'not_required'       => array(
+				'label'       => __( 'Don\'t need this plugin.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+				'placeholder' => __( 'Optional: What\'s one thing we could improve?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+			),
+			'other'              => array(
+				'label'       => __( 'Other.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+				'placeholder' => __( 'Optional: What can we do better?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
+			),
 		);
 
 		/**

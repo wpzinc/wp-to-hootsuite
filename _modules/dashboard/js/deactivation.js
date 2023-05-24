@@ -36,13 +36,33 @@ jQuery( document ).ready(
 				// Store the target URL.
 				wpzinc_deactivation_url = $( this ).attr( 'href' );
 
+				// Position the modal.
+				$( '#wpzinc-deactivation-modal' ).css(
+					{
+						top: ( $( this ).offset().top - $( this ).height() - 25 ) + 'px',
+						left: ( $( this ).offset().left + $( this ).width() + 20 ) + 'px'
+					}
+				);
+
 				// Show the modal.
 				$( '#wpzinc-deactivation-modal, #wpzinc-deactivation-modal-overlay' ).show();
 
-				// Resize and position the modal.
-				$( '#wpzinc-deactivation-modal' ).css( 'margin-top', '-210px' );
-				$( '#wpzinc-deactivation-modal' ).outerHeight( 420 );
+			}
+		);
 
+		/**
+		 * Update input text field's placeholder when a reason radio button is clicked
+		 */
+		$( 'input[name="wpzinc-deactivation-reason"]' ).on(
+			'change',
+			function( e ) {
+
+				$( 'input[name="wpzinc-deactivation-reason-text"]' ).attr(
+					'placeholder',
+					$( this ).data( 'placeholder' )
+				).show();
+				$( 'input[name="wpzinc-deactivation-reason-email"]' ).show();
+				$( 'small.wpzinc-deactivation-reason-email' ).css( 'display', 'block' );
 			}
 		);
 
@@ -56,9 +76,9 @@ jQuery( document ).ready(
 
 				e.preventDefault();
 
-				var wpzinc_dashboard_deactivation_reason   = $( 'input[name=reason]:checked', $( this ) ).val(),
-				wpzinc_dashboard_deactivation_reason_text  = $( 'input[name=reason_text]', $( this ) ).val(),
-				wpzinc_dashboard_deactivation_reason_email = $( 'input[name=reason_email]', $( this ) ).val();
+				var wpzinc_dashboard_deactivation_reason   = $( 'input[name=wpzinc-deactivation-reason]:checked', $( this ) ).val(),
+				wpzinc_dashboard_deactivation_reason_text  = $( 'input[name=wpzinc-deactivation-reason-text]', $( this ) ).val(),
+				wpzinc_dashboard_deactivation_reason_email = $( 'input[name=wpzinc-deactivation-reason-email]', $( this ) ).val();
 
 				// Submit the form via AJAX if a reason was given.
 				if ( typeof wpzinc_dashboard_deactivation_reason !== 'undefined' ) {
@@ -88,6 +108,18 @@ jQuery( document ).ready(
 
 				// Load the deactivation URL.
 				window.location.href = wpzinc_deactivation_url;
+
+			}
+		);
+
+		/**
+		 * Hide the overlay and modal when the overlay is clicked.
+		 */
+		$( '#wpzinc-deactivation-modal-overlay' ).on(
+			'click',
+			function( e ) {
+
+				$( '#wpzinc-deactivation-modal, #wpzinc-deactivation-modal-overlay' ).hide();
 
 			}
 		);

@@ -32,6 +32,11 @@ jQuery( document ).ready(
 				// Text Editor.
 				wpZincModal.close();
 
+				// Reset the non-TinyMCE modal content.
+				// If we don't do this, switching from Text to Visual Editor for the same shortcode results
+				// code picking up data from the QuickTags modal, not the TinyMCE one.
+				wpZincModal.content( new wpZincModalContent() );
+
 			}
 		);
 
@@ -138,6 +143,11 @@ jQuery( document ).ready(
 
 						// Close modal.
 						wpZincModal.close();
+
+						// Reset the modal content.
+						// If we don't do this, switching from Text to Visual Editor for the same shortcode results
+						// code picking up data from the QuickTags modal, not the TinyMCE one.
+						wpZincModal.content( new wpZincModalContent() );
 						break;
 				}
 
