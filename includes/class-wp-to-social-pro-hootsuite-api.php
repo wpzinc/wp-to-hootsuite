@@ -402,13 +402,6 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 			// Check data is valid.
 			foreach ( $results as $result ) {
-				// We don't support Instagram or Pinterest in the Free version.
-				if ( $this->base->plugin->name === 'wp-to-hootsuite' ) {
-					if ( $result->type === 'INSTAGRAM' || $result->type === 'PINTEREST' ) {
-						continue;
-					}
-				}
-
 				// Hootsuite doesn't support Instagram Business profiles for statuses via the API.
 				if ( $result->type === 'INSTAGRAMBUSINESS' ) {
 					continue;

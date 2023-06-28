@@ -847,6 +847,7 @@ class WP_To_Social_Pro_Publish {
 							'description' => $this->get_excerpt( $post, false ),
 							'title'       => $this->get_title( $post ),
 							'picture'     => $image['image'],
+							'alt_text'    => $image['alt_text'],
 
 							// Dashboard Thumbnail.
 							// Supplied, as required when specifying media with no link.
@@ -907,6 +908,7 @@ class WP_To_Social_Pro_Publish {
 			return array(
 				'image'     => strtok( $matches[1][0], '?' ),
 				'thumbnail' => strtok( $matches[1][0], '?' ),
+				'alt_text'  => '',
 				'source'    => 'post_content',
 			);
 		}

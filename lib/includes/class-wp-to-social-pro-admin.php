@@ -54,7 +54,7 @@ class WP_To_Social_Pro_Admin {
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts_css' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_action( 'plugins_loaded', array( $this, 'load_language_files' ) );
+		add_filter( 'plugin_action_links_' . $this->base->plugin->name . '/' . $this->base->plugin->name . '.php', array( $this, 'plugin_action_links_settings_page' ) );
 
 	}
 
@@ -176,8 +176,9 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'notices' )->enable_store();
 			$this->base->get_class( 'notices' )->add_success_notice(
 				sprintf(
-					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( 'Thanks! You\'ve connected our Plugin to %1$s.', 'wp-to-hootsuite' ),
+					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+					__( 'Thanks! You\'ve connected our Plugin to %1$s. Now select profiles below to enable, and define your statuses to start sending Posts to %2$s', 'wp-to-hootsuite' ),
+					$this->base->plugin->account,
 					$this->base->plugin->account
 				)
 			);
@@ -486,6 +487,33 @@ class WP_To_Social_Pro_Admin {
 		}
 
 		$upgrade_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Upgrade', 'wp-to-hootsuite' ), __( 'Upgrade', 'wp-to-hootsuite' ), 'manage_options', $this->base->plugin->name . '-upgrade', array( $this, 'upgrade_screen' ) );
+
+	}
+
+	/**
+	 * Define links to display below the Plugin Name on the WP_List_Table at in the Plugins screen.
+	 *
+	 * @since   5.0.2
+	 *
+	 * @param   array $links      Links.
+	 * @return  array               Links
+	 */
+	public function plugin_action_links_settings_page( $links ) {
+
+		// Add link to Plugin settings screen.
+		$links['settings'] = sprintf(
+			'<a href="%s">%s</a>',
+			add_query_arg(
+				array(
+					'page' => $this->base->plugin->name . '-settings',
+				),
+				admin_url( 'admin.php' )
+			),
+			__( 'Settings', 'wp-to-hootsuite' )
+		);
+
+		// Return.
+		return $links;
 
 	}
 

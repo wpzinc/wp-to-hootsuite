@@ -36,10 +36,10 @@
 			echo esc_html(
 				sprintf(
 				/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Post Type, Singular, %3$s: Translated Action (Publish, Update, Repost, Bulk Publish), %4$s: Additional Translated Message */
-					__( 'If enabled, any status(es) defined here will be sent to %1$s when a %2$s is %3$s %4$s', 'wp-to-hootsuite' ),
+					__( 'If enabled, any status(es) defined here will be sent to %1$s when a WordPress %2$s is %3$s %4$s', 'wp-to-hootsuite' ),
 					$this->base->plugin->account,
 					$post_type_object->labels->singular_name,
-					$actions_plural[ $post_action ],
+					strtolower( $actions_plural[ $post_action ] ),
 					( $profile_id === 'default' ? '' : sprintf(
 					/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
 						__( 'to %s. These override the status(es) specified on the Defaults tab.', 'wp-to-hootsuite' ),
