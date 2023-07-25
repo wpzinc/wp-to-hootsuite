@@ -27,12 +27,13 @@
 	$.fn.synchronous_request = function( options ) {
 
 		// Default Settings.
-		var settings = $.extend(
+		let settings = $.extend(
 			{
 				// Required.
 				url: 			'', // AJAX url.
 				number_requests:0, // Total number of requests that will be sent.
 				offset: 		0, // The offset to start at.
+				index_increment:1, // The number to increment the current index by after each request.
 				action:         '', // The WordPress registered AJAX action name to use for each request.
 				nonce: 			'', // WordPress nonce, which your AJAX function should validate.
 				ids:            '', // Array of IDs or keys to iterate through, sending one with each request.
@@ -42,6 +43,7 @@
 				// Optional.
 				progress_count: '#progress-number', // DOM selector that contains successful request count.
 				log:  			'#log', // DOM selector for the log.
+				spinner: 		'#progress .spinner', // DOM selector for the spinner.
 				cancel_button:  '.cancel', // DOM selector for the cancel button.
 				type: 			'post', // AJAX request type.
 				cache: 			false, // Whether to cache requests.
@@ -66,7 +68,7 @@
 					} else {
 						// Something went wrong.
 						// Define message.
-						var message = ( currentIndex + 1 ) + '/' + this.number_requests + ': Response Error: ' + response.data;
+						let message = ( currentIndex + 1 ) + '/' + this.number_requests + ': Response Error: ' + response.data;
 						switch ( this.stop_on_error ) {
 							// Stop sending any further requests.
 							case 1:
@@ -104,13 +106,11 @@
 				 */
 				onRequestError: function( xhr, textStatus, e, currentIndex ) {
 
-					// If the log exceeds 100 items, reset it.
-					if ( $( '#log ul li' ).length >= 100 ) {
-						$( '#log ul' ).html( '' );
-					}
+					// Maybe reset log if it's more than 100 lines, for UI performance.
+					this.maybeResetLog();
 
 					// Output Log.
-					$( '#log ul' ).append( '<li class="error">' + ( currentIndex + 1 ) + '/' + ckwc_sync_past_orders.number_requests + ': Request Error: ' + xhr.status + ' ' + xhr.statusText + '</li>' );
+					$( '#log ul' ).append( '<li class="error">' + ( currentIndex + 1 ) + '/' + settings.number_requests + ': Request Error: ' + xhr.status + ' ' + xhr.statusText + '</li>' );
 
 					// Run the next request, unless the user clicked the cancel button.
 					if ( this.cancelled == true ) {
@@ -155,6 +155,9 @@
 						$( settings.cancel_button ).attr( 'disabled', 'disabled' );
 					}
 
+					// Remove the spinner.
+					$( this.spinner ).remove();
+
 				},
 
 				/**
@@ -164,6 +167,11 @@
 				 * @since 	1.0.0
 				 */
 				maybeResetLog: function() {
+
+					// If the spinner exists in the log, remove it.
+					if ( $( 'li.spinner', $( this.log ) ).length > 0 ) {
+						$( 'li.spinner', $( this.log ) ).remove();
+					}
 
 					// If the log exceeds 100 items, reset it.
 					if ( $( 'ul li', $( this.log ) ).length >= 100 ) {
@@ -201,7 +209,7 @@
 		}
 
 		// Initialize first request.
-		synchronousAjaxRequest( settings, ( -1 + Number( settings.offset ) ), progressbar, settings.progress_count );
+		synchronousAjaxRequest( settings, ( -1 + Number( settings.offset ) ), progressbar, settings.progress_count, true );
 
 	};
 
@@ -210,10 +218,13 @@
 	 *
 	 * @since 	1.0.0
 	 */
-	function synchronousAjaxRequest( settings, currentIndex, progressbar, progressCounter ) {
+	function synchronousAjaxRequest( settings, currentIndex, progressbar, progressCounter, isFirstRequest ) {
 
-		// Increment .
-		currentIndex++;
+		if ( isFirstRequest ) {
+			currentIndex++;
+		} else {
+			currentIndex = currentIndex + Number( settings.index_increment );
+		}
 
 		// If currentIndex exceeds or equals settings.number_requests, we have finished
 		// currentIndex is a zero based count.
@@ -224,14 +235,16 @@
 		}
 
 		// Merge data.
-		var data       = {
+		let data       = {
 			action: 		settings.action,
 			nonce: 			settings.nonce,
 			id: 			settings.ids[ currentIndex ],
 			current_index: 	currentIndex,
-			number_requests:settings.number_requests
+			index_increment:settings.index_increment,
+			number_requests:settings.number_requests,
+			offset: 		settings.offset,
 		};
-		var mergedData = {...data, ...settings.data};
+		let mergedData = {...data, ...settings.data};
 
 		// Send AJAX request.
 		$.ajax(
@@ -245,12 +258,19 @@
 				success: function( response ) {
 
 					// Call onRequestSuccess closure.
-					var cancelled = settings.onRequestSuccess( response, currentIndex );
+					let cancelled = settings.onRequestSuccess( response, currentIndex );
+
+					// Define the count, ensuring it doesn't go above the number of requests.
+					let nextIndex = currentIndex + Number( settings.index_increment );
+					if ( nextIndex > settings.number_requests ) {
+						nextIndex = settings.number_requests;
+					}
 
 					// If the response indicates success, update the progress bar and count.
 					if ( response.success ) {
-						progressbar.progressbar( 'value', Number( ( ( currentIndex + 1 ) / settings.number_requests ) * 100 ) );
-						$( progressCounter ).text( ( currentIndex + 1 ) );
+						// Update progress bar and text count.
+						progressbar.progressbar( 'value', Number( ( nextIndex / settings.number_requests ) * 100 ) );
+						$( progressCounter ).text( nextIndex );
 					} else {
 						// If Stop on Error is enabled, call onFinished closure and exit.
 						if ( settings.stop_on_error == 1 ) {
@@ -260,8 +280,8 @@
 
 						// If Stop on Error is -1, update the progress bar and count as this request won't be retried.
 						if ( settings.stop_on_error == -1 ) {
-							progressbar.progressbar( 'value', Number( ( ( currentIndex + 1 ) / settings.number_requests ) * 100 ) );
-							$( progressCounter ).text( ( currentIndex + 1 ) );
+							progressbar.progressbar( 'value', Number( ( nextIndex / settings.number_requests ) * 100 ) );
+							$( progressCounter ).text( nextIndex );
 						}
 
 						// If Stop on Error is zero, decrement the currentIndex so the same request is attempted again.
@@ -301,7 +321,7 @@
 				error: function(xhr, textStatus, e) {
 
 					// Call closure.
-					var cancelled = settings.onRequestError( xhr, textStatus, e, currentIndex );
+					let cancelled = settings.onRequestError( xhr, textStatus, e, currentIndex );
 
 					// If Stop on Error is enabled, call onFinished closure and exit.
 					if ( settings.stop_on_error == 1 ) {

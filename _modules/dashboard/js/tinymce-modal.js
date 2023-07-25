@@ -35,7 +35,9 @@ jQuery( document ).ready(
 				// Reset the non-TinyMCE modal content.
 				// If we don't do this, switching from Text to Visual Editor for the same shortcode results
 				// code picking up data from the QuickTags modal, not the TinyMCE one.
-				wpZincModal.content( new wpZincModalContent() );
+				if ( typeof wpZincModal !== 'undefined' ) {
+					wpZincModal.content( new wpZincModalContent() );
+				}
 
 			}
 		);
@@ -147,7 +149,9 @@ jQuery( document ).ready(
 						// Reset the modal content.
 						// If we don't do this, switching from Text to Visual Editor for the same shortcode results
 						// code picking up data from the QuickTags modal, not the TinyMCE one.
-						wpZincModal.content( new wpZincModalContent() );
+						if ( typeof wpZincModal !== 'undefined' ) {
+							wpZincModal.content( new wpZincModalContent() );
+						}
 						break;
 				}
 
