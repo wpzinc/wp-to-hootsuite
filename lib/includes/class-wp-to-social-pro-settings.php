@@ -25,6 +25,15 @@ class WP_To_Social_Pro_Settings {
 	public static $instance;
 
 	/**
+	 * Holds the base object.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @var     object
+	 */
+	public $base;
+
+	/**
 	 * Constructor
 	 *
 	 * @since   3.4.7
