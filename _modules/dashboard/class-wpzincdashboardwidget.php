@@ -90,6 +90,15 @@ class WPZincDashboardWidget {
 	private $show_review_request = true;
 
 	/**
+	 * Holds the message to display when importing a configuration file.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @var     string
+	 */
+	private $message = '';
+
+	/**
 	 * Constructor
 	 *
 	 * @since   1.0.0
