@@ -5,7 +5,7 @@ Tags: auto publish, auto post, social media automation, social media scheduling,
 Requires at least: 5.0
 Tested up to: 6.2.2
 Requires PHP: 7.4
-Stable tag: 1.5.1
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,12 +88,10 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
-= 1.5.1 (2023-08-03) =
-* Fix: PHP Deprecated notices in PHP 8.2
-
-= 1.5.0 (2023-06-28) =
+= 1.5.0 (2023-08-03) =
 * Added: Plugins: Link to settings screen
 * Fix: Remove duplicate call to load_language_files()
+* Fix: PHP Deprecated notices in PHP 8.2
 
 = 1.4.9 (2023-05-16) =
 * Fix: Post: Log: Export Log: Check user can edit posts to permit export log functionality
