@@ -20,12 +20,12 @@
 
 	<?php
 	// Notices.
-	if ( isset( $this->message ) ) {
+	if ( isset( $this->message ) && ! empty( $this->message ) ) {
 		?>
 		<div class="updated notice"><p><?php echo esc_html( $this->message ); ?></p></div>  
 		<?php
 	}
-	if ( isset( $this->error_message ) ) {
+	if ( isset( $this->error_message ) && ! empty( $this->error_message ) ) {
 		?>
 		<div class="error notice"><p><?php echo esc_html( $this->error_message ); ?></p></div>  
 		<?php

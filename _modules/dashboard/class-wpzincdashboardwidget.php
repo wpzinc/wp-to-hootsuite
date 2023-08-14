@@ -90,13 +90,22 @@ class WPZincDashboardWidget {
 	private $show_review_request = true;
 
 	/**
-	 * Holds the message to display when importing a configuration file.
+	 * Holds the message to display when importing or exporting a configuration file.
 	 *
 	 * @since   1.0.0
 	 *
 	 * @var     string
 	 */
 	private $message = '';
+
+	/**
+	 * Holds the error message to display when importing or exporting a configuration file.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @var     string
+	 */
+	private $error_message = '';
 
 	/**
 	 * Constructor
