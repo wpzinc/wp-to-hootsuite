@@ -59,10 +59,8 @@
 					$icon = '';
 					if ( ! empty( $post_type_obj->menu_icon ) ) {
 						$icon = 'dashicons ' . $post_type_obj->menu_icon;
-					} else {
-						if ( $public_post_type === 'post' || $public_post_type === 'page' ) {
+					} elseif ( $public_post_type === 'post' || $public_post_type === 'page' ) {
 							$icon = 'dashicons dashicons-admin-' . $public_post_type;
-						}
 					}
 
 					// Determine if the Post Type is set to post.
@@ -99,7 +97,7 @@
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
 				<!-- Content -->
-				<form name="post" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>" id="<?php echo esc_attr( $this->base->plugin->name ); ?>" class="wp-to-social-pro">      
+				<form name="post" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>" id="<?php echo esc_attr( $this->base->plugin->name ); ?>" class="wp-to-social-pro">      	
 					<div id="post-body-content">
 						<div id="normal-sortables" class="meta-box-sortables ui-sortable publishing-defaults">  
 							<?php
@@ -130,7 +128,7 @@
 				</div>
 				<!-- /Sidebar -->
 			</div>
-		</div>
+		</div> 
 
 		<!-- Upgrade -->
 		<div class="metabox-holder columns-1">

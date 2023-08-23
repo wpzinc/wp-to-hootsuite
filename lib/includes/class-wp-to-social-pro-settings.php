@@ -119,7 +119,7 @@ class WP_To_Social_Pro_Settings {
 						'image'       => ( isset( $old_settings['image'][ $post_type ][ $action ] ) ? $old_settings['image'][ $post_type ][ $action ] : 0 ),
 						'sub_profile' => 0, // Pinterest not supported in free or v2.x.
 						'message'     => ( isset( $old_settings['message'][ $post_type ][ $action ] ) ? $old_settings['message'][ $post_type ][ $action ] : '' ),
-						'schedule'    => ( ( isset( $old_settings['enabled'][ $post_type ]['instant'] ) && $old_settings['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore WordPress.PHP.StrictComparisons
+						'schedule'    => ( ( isset( $old_settings['enabled'][ $post_type ]['instant'] ) && $old_settings['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 						'days'        => 0,
 						'hours'       => 0,
 						'minutes'     => 0,
@@ -130,7 +130,7 @@ class WP_To_Social_Pro_Settings {
 							'image'       => ( isset( $old_settings['image'][ $post_type ][ $action ] ) ? $old_settings['image'][ $post_type ][ $action ] : 0 ),
 							'sub_profile' => 0, // Pinterest not supported in free or v2.x.
 							'message'     => ( isset( $old_settings['alternateMessage'][ $post_type ][ $action ] ) ? $old_settings['alternateMessage'][ $post_type ][ $action ] : '' ),
-							'schedule'    => ( ( isset( $old_settings['enabled'][ $post_type ]['instant'] ) && $old_settings['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore WordPress.PHP.StrictComparisons
+							'schedule'    => ( ( isset( $old_settings['enabled'][ $post_type ]['instant'] ) && $old_settings['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 							'days'        => 0,
 							'hours'       => 0,
 							'minutes'     => 0,
@@ -142,7 +142,7 @@ class WP_To_Social_Pro_Settings {
 							'image'       => ( isset( $old_settings['image'][ $post_type ][ $action ] ) ? $old_settings['image'][ $post_type ][ $action ] : 0 ),
 							'sub_profile' => 0, // Pinterest not supported in free or v2.x.
 							'message'     => ( isset( $old_settings['message'][ $post_type ][ $action ] ) ? $old_settings['message'][ $post_type ][ $action ] : '' ),
-							'schedule'    => ( ( isset( $old_settings['enabled'][ $post_type ]['instant'] ) && $old_settings['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore WordPress.PHP.StrictComparisons
+							'schedule'    => ( ( isset( $old_settings['enabled'][ $post_type ]['instant'] ) && $old_settings['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 							'days'        => 0,
 							'hours'       => 0,
 							'minutes'     => 0,
@@ -186,7 +186,7 @@ class WP_To_Social_Pro_Settings {
 							'image'       => ( isset( $old_settings[ $profile_id ]['image'][ $post_type ][ $action ] ) ? $old_settings[ $profile_id ]['image'][ $post_type ][ $action ] : 0 ),
 							'sub_profile' => 0, // Pinterest not supported in free or v2.x.
 							'message'     => ( isset( $old_settings[ $profile_id ]['message'][ $post_type ][ $action ] ) ? $old_settings[ $profile_id ]['message'][ $post_type ][ $action ] : '' ),
-							'schedule'    => ( ( isset( $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] ) && $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore WordPress.PHP.StrictComparisons
+							'schedule'    => ( ( isset( $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] ) && $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 							'days'        => 0,
 							'hours'       => 0,
 							'minutes'     => 0,
@@ -197,7 +197,7 @@ class WP_To_Social_Pro_Settings {
 								'image'       => ( isset( $old_settings[ $profile_id ]['image'][ $post_type ][ $action ] ) ? $old_settings[ $profile_id ]['image'][ $post_type ][ $action ] : 0 ),
 								'sub_profile' => 0, // Pinterest not supported in free or v2.x.
 								'message'     => ( isset( $old_settings[ $profile_id ]['alternateMessage'][ $post_type ][ $action ] ) ? $old_settings[ $profile_id ]['alternateMessage'][ $post_type ][ $action ] : '' ),
-								'schedule'    => ( ( isset( $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] ) && $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore WordPress.PHP.StrictComparisons
+								'schedule'    => ( ( isset( $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] ) && $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 								'days'        => 0,
 								'hours'       => 0,
 								'minutes'     => 0,
@@ -209,7 +209,7 @@ class WP_To_Social_Pro_Settings {
 								'image'       => ( isset( $old_settings[ $profile_id ]['image'][ $post_type ][ $action ] ) ? $old_settings[ $profile_id ]['image'][ $post_type ][ $action ] : 0 ),
 								'sub_profile' => 0, // Pinterest not supported in free or v2.x.
 								'message'     => ( isset( $old_settings[ $profile_id ]['message'][ $post_type ][ $action ] ) ? $old_settings[ $profile_id ]['message'][ $post_type ][ $action ] : '' ),
-								'schedule'    => ( ( isset( $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] ) && $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore WordPress.PHP.StrictComparisons
+								'schedule'    => ( ( isset( $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] ) && $old_settings[ $profile_id ]['enabled'][ $post_type ]['instant'] == 1 ) ? 'now' : 'queue_bottom' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 								'days'        => 0,
 								'hours'       => 0,
 								'minutes'     => 0,
@@ -236,12 +236,12 @@ class WP_To_Social_Pro_Settings {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string $type       Setting Type.
-	 * @param   string $key        Setting key value to retrieve.
-	 * @param   string $default    Default Value.
-	 * @return  string              Value/Default Value
+	 * @param   string $type            Setting Type.
+	 * @param   string $key             Setting key value to retrieve.
+	 * @param   string $default_value   Default Value.
+	 * @return  string                  Value/Default Value
 	 */
-	public function get_setting( $type, $key, $default = '' ) {
+	public function get_setting( $type, $key, $default_value = '' ) {
 
 		// Get settings.
 		$settings = $this->get_settings( $type );
@@ -255,7 +255,7 @@ class WP_To_Social_Pro_Settings {
 
 			// Check if key exists.
 			if ( ! isset( $settings[ $key ] ) ) {
-				return $default;
+				return $default_value;
 			}
 
 			// Key exists - make settings the value (which could be an array or the final value)
@@ -712,19 +712,19 @@ class WP_To_Social_Pro_Settings {
 			}
 
 			// Profile action enabled.
-			if ( isset( $profile_settings['publish']['enabled'] ) && $profile_settings['publish']['enabled'] == '1' ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+			if ( isset( $profile_settings['publish']['enabled'] ) && $profile_settings['publish']['enabled'] == '1' ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 				// Post Type is enabled with 1+ Profile with override and publish enabled.
 				return true;
 			}
-			if ( isset( $profile_settings['update']['enabled'] ) && $profile_settings['update']['enabled'] == '1' ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+			if ( isset( $profile_settings['update']['enabled'] ) && $profile_settings['update']['enabled'] == '1' ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 				// Post Type is enabled with 1+ Profile with override and update enabled.
 				return true;
 			}
-			if ( isset( $profile_settings['repost']['enabled'] ) && $profile_settings['repost']['enabled'] == '1' ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+			if ( isset( $profile_settings['repost']['enabled'] ) && $profile_settings['repost']['enabled'] == '1' ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 				// Post Type is enabled with 1+ Profile with override and repost enabled.
 				return true;
 			}
-			if ( isset( $profile_settings['bulk_publish']['enabled'] ) && $profile_settings['bulk_publish']['enabled'] == '1' ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+			if ( isset( $profile_settings['bulk_publish']['enabled'] ) && $profile_settings['bulk_publish']['enabled'] == '1' ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 				// Post Type is enabled with 1+ Profile with override and bulk publish enabled.
 				return true;
 			}
@@ -958,15 +958,15 @@ class WP_To_Social_Pro_Settings {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string $key        Option Key.
-	 * @param   string $default    Default Value if key does not exist.
-	 * @return  string              Option Value
+	 * @param   string $key             Option Key.
+	 * @param   string $default_value   Default Value if key does not exist.
+	 * @return  string                  Option Value
 	 */
-	public function get_option( $key, $default = '' ) {
+	public function get_option( $key, $default_value = '' ) {
 
 		$result = get_option( $this->base->plugin->settingsName . '-' . $key );
 		if ( ! $result ) {
-			return $default;
+			return $default_value;
 		}
 
 		return $result;

@@ -188,8 +188,8 @@ class WP_To_Social_Pro_Log {
 		$bulk_action = array_values(
 			array_filter(
 				array(
-					( isset( $_REQUEST['bulk_action'] ) && $_REQUEST['bulk_action'] != -1 ? sanitize_text_field( $_REQUEST['bulk_action'] ) : '' ),  // phpcs:ignore WordPress.PHP.StrictComparisons, WordPress.Security.NonceVerification
-					( isset( $_REQUEST['bulk_action2'] ) && $_REQUEST['bulk_action2'] != -1 ? sanitize_text_field( $_REQUEST['bulk_action2'] ) : '' ),  // phpcs:ignore WordPress.PHP.StrictComparisons, WordPress.Security.NonceVerification
+					( isset( $_REQUEST['bulk_action'] ) && $_REQUEST['bulk_action'] != -1 ? sanitize_text_field( $_REQUEST['bulk_action'] ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
+					( isset( $_REQUEST['bulk_action2'] ) && $_REQUEST['bulk_action2'] != -1 ? sanitize_text_field( $_REQUEST['bulk_action2'] ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
 					( isset( $_REQUEST['bulk_action3'] ) && ! empty( $_REQUEST['bulk_action3'] ) ? sanitize_text_field( $_REQUEST['bulk_action3'] ) : '' ), // phpcs:ignore WordPress.Security.NonceVerification
 				)
 			)

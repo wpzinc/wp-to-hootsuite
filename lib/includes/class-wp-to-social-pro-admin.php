@@ -727,16 +727,16 @@ class WP_To_Social_Pro_Admin {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string $type         Setting Type.
-	 * @param   string $key          Setting Key.
-	 * @param   mixed  $default      Default Value if Setting does not exist.
+	 * @param   string $type            Setting Type.
+	 * @param   string $key             Setting Key.
+	 * @param   mixed  $default_value   Default Value if Setting does not exist.
 	 * @return  mixed                   Value
 	 */
-	public function get_setting( $type = '', $key = '', $default = '' ) {
+	public function get_setting( $type = '', $key = '', $default_value = '' ) {
 
 		// Post Type Setting or Bulk Setting.
 		if ( post_type_exists( $type ) ) {
-			return $this->base->get_class( 'settings' )->get_setting( $type, $key, $default );
+			return $this->base->get_class( 'settings' )->get_setting( $type, $key, $default_value );
 		}
 
 		// Access token.
@@ -757,10 +757,10 @@ class WP_To_Social_Pro_Admin {
 			case 'roles':
 			case 'custom_tags':
 			case 'repost':
-				return $this->base->get_class( 'settings' )->get_setting( $type, $key, $default );
+				return $this->base->get_class( 'settings' )->get_setting( $type, $key, $default_value );
 
 			default:
-				return $this->base->get_class( 'settings' )->get_option( $key, $default );
+				return $this->base->get_class( 'settings' )->get_option( $key, $default_value );
 		}
 
 	}

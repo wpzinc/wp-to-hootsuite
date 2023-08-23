@@ -125,7 +125,7 @@ class WP_To_Social_Pro_Date {
 	public function convert_wordpress_gmt_offset_to_offset_value( $gmt_offset ) {
 
 		// Don't do anything if the offset is zero.
-		if ( $gmt_offset == 0 ) { // phpcs:ignore WordPress.PHP.StrictComparisons
+		if ( $gmt_offset == 0 ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			return '+0000';
 		}
 

@@ -336,7 +336,6 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 			'result'                  => $this->get_result(),
 			'request_sent_start_date' => $this->get_request_sent_start_date(),
 			'request_sent_end_date'   => $this->get_request_sent_end_date(),
-			'result'                  => $this->get_result(),
 		);
 
 		// Return params if freeform search isn't supplied.

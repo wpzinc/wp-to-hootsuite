@@ -144,7 +144,7 @@
 							?>
 							<br />
 							<?php
-							echo sprintf(
+							printf(
 								'%1$s <a href="options-permalink.php">%2$s</a> %3$s',
 								esc_html__( 'It\'s better to ensure your', 'wp-to-hootsuite' ),
 								esc_html__( 'Permalink', 'wp-to-hootsuite' ),
@@ -207,7 +207,7 @@
 
 						<p>
 							<?php
-							echo sprintf(
+							printf(
 								/* translators: Service name (Buffer, Hootsuite, SocialPilot) */
 								esc_html__( '%s Pro provides options to generate images based on text, which are them submitted with your status message.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName )
@@ -240,7 +240,7 @@
 						<p class="description">
 							<?php
 							if ( $this->get_setting( 'log', '[enabled]' ) ) {
-								echo sprintf(
+								printf(
 									'%1$s <a href="%2$s">%3$s</a> %4$s',
 									esc_html__( 'If enabled, the', 'wp-to-hootsuite' ),
 									esc_html( admin_url( 'admin.php?page=' . $this->base->plugin->name . '-log' ) ),
@@ -279,7 +279,7 @@
 							<p class="description">
 								<?php
 								if ( $this->get_setting( 'log', '[enabled]' ) ) {
-									echo sprintf(
+									printf(
 										'%1$s <a href="%2$s">%3$s</a> %4$s',
 										esc_html__( 'If enabled, a Log will be displayed when editing a Post.  Logs are always available through the', 'wp-to-hootsuite' ),
 										esc_html( admin_url( 'admin.php?page=' . $this->base->plugin->name . '-log' ) ),
@@ -354,7 +354,7 @@
 					<p class="description">
 						<?php esc_html_e( 'Provides options for when to run the WordPress Repost Cron Event on this WordPress installation.', 'wp-to-hootsuite' ); ?><br />
 						<?php
-						echo sprintf(
+						printf(
 							/* translators: Service (Buffer, Hootsuite, SocialPilot) */
 							esc_html__( 'When Post(s) are scheduled on %s will depend on the Repost Status Settings.', 'wp-to-hootsuite' ),
 							esc_html( $this->base->plugin->displayName )
@@ -369,7 +369,7 @@
 
 						<p>
 							<?php
-							echo sprintf(
+							printf(
 								/* translators: %1$s: Service (Buffer, Hootsuite, SocialPilot), %2$s: Service (Buffer, Hootsuite, SocialPilot) */
 								esc_html__( 'Automatically schedule old Posts to %1$s with %2$s Pro.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName ),
@@ -400,7 +400,7 @@
 
 						<p>
 							<?php
-							echo sprintf(
+							printf(
 								/* translators: %1$s: Service (Buffer, Hootsuite, SocialPilot) */
 								esc_html__( '%s Pro provides options to limit which Post Types to show in the Settings screens, as well as prevent access to specific social media profiles linked to your Buffer account, on a per-WordPress Role basis.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName )
@@ -430,7 +430,7 @@
 
 						<p>
 							<?php
-							echo sprintf(
+							printf(
 								/* translators: %1$s: Service (Buffer, Hootsuite, SocialPilot) */
 								esc_html__( '%s Pro provides options to define Custom Field / ACF Tags, which will then populate with Post data when used in status messages.  Tags also appear in the Insert Tags dropdown.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName )

@@ -557,7 +557,7 @@ class WP_To_Social_Pro_Publish {
 
 			// Determine which social media service this profile ID belongs to.
 			foreach ( $profiles as $profile ) {
-				if ( $profile['id'] == $profile_id ) { // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $profile['id'] == $profile_id ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$service = $profile['service'];
 					break;
 				}
@@ -754,12 +754,12 @@ class WP_To_Social_Pro_Publish {
 			 * - Force Use Feat. Image, not Linked to Post if Use Feat. Image, Linked to Post chosen
 			 */
 			case 'twitter':
-				if ( $status['image'] == 1 ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $status['image'] == 1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = 2;
 				}
 
 				// Set Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
-				if ( $status['image'] == 3 ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $status['image'] == 3 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = 4;
 				}
 				break;
@@ -773,12 +773,12 @@ class WP_To_Social_Pro_Publish {
 			case 'instagram':
 			case 'googlebusiness':
 				// Set No Image, OpenGraph and Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
-				if ( $status['image'] == -1 || $status['image'] == 0 || $status['image'] == 1 ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $status['image'] == -1 || $status['image'] == 0 || $status['image'] == 1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = 2;
 				}
 
 				// Set Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
-				if ( $status['image'] == 3 ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $status['image'] == 3 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = 4;
 				}
 				break;
@@ -790,19 +790,19 @@ class WP_To_Social_Pro_Publish {
 			 */
 			case 'mastodon':
 				// Set Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
-				if ( $status['image'] == 1 ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $status['image'] == 1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = 2;
 				}
 
 				// Set Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
-				if ( $status['image'] == 3 ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $status['image'] == 3 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = 4;
 				}
 
 				// Set Use OpenGraph Settings = No Image.
 				// This prevents Buffer from parsing and removing the URL from the status, which results in
 				// Mastodon not displaying the link preview.
-				if ( $status['image'] == 0 ) { // phpcs:ignore WordPress.PHP.StrictComparisons
+				if ( $status['image'] == 0 ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = -1;
 				}
 				break;
@@ -810,7 +810,7 @@ class WP_To_Social_Pro_Publish {
 		}
 
 		// If the status is set to No Image, don't attempt to fetch an image.
-		if ( $status['image'] == -1 ) {  // phpcs:ignore WordPress.PHP.StrictComparisons
+		if ( $status['image'] == -1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$args['attachment'] = 'false';
 		} else {
 			// Featured, Additional Image or Content Image.

@@ -2,6 +2,13 @@
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WordPress Coding Standards for Plugins" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
 	<description>WordPress Coding Standards for Plugins</description>
 
+    <!-- Run in verbose mode and specify the precise rule that failed in output -->
+    <arg value="sv"/>
+    <arg name="colors"/>
+
+    <!-- Inspect files in the current folders -->
+    <file>./</file>
+
 	<!-- Exclude some directories. -->
 	<exclude-pattern>/.scripts/*</exclude-pattern>
 	<exclude-pattern>/.wordpress-org/*</exclude-pattern>
@@ -10,7 +17,6 @@
 
 	<!-- Exclude libraries. -->
 	<exclude-pattern>autosize.js</exclude-pattern>
-	<exclude-pattern>clipboard.js</exclude-pattern>
 	<exclude-pattern>jquery.ui-contextmenu.js</exclude-pattern>
 	<exclude-pattern>jstree.js</exclude-pattern>
 	<exclude-pattern>resize-sensor.js</exclude-pattern>
@@ -41,6 +47,9 @@
 		<exclude name="WordPress.Security.EscapeOutput"/>
 		-->
 		<exclude name="WordPress.PHP.YodaConditions" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="PSR2.Methods.FunctionClosingBrace.SpacingBeforeClose" />
+		<exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody" />
 	</rule>
 
 	<!-- Check that code is documented to WordPress Standards. -->

@@ -33,7 +33,6 @@ class AnyErrorsOnBlankInstallCest
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
-
 	}
 
 	/**
