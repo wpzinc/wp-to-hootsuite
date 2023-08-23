@@ -43,7 +43,7 @@ function wpzinc_modal_close() {
 
 	jQuery( '.wpzinc-modal-overlay, .wpzinc-modal' ).fadeOut(
 		'fast',
-		function() {
+		function () {
 			jQuery( '.wpzinc-modal h2.title div.spinner' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
 			jQuery( '.wpzinc-modal h2.title div.tick' ).css( 'display', 'none' ).css( 'visibility', 'hidden' );
 			wpzinc_modal_update_title( '' );
@@ -214,7 +214,7 @@ function wpzinc_modal_show_success_and_exit( title, message ) {
 	jQuery( '.wpzinc-modal h2.title div.tick' ).css( 'display', 'inline-block' ).css( 'visibility', 'visible' );
 
 	setTimeout(
-		function() {
+		function () {
 
 			// Close modal.
 			wpzinc_modal_close();
@@ -228,13 +228,13 @@ function wpzinc_modal_show_success_and_exit( title, message ) {
 }
 
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		// Close the modal when its close button is clicked.
 		$( 'body' ).on(
 			'click',
 			'.wpzinc-modal button.close',
-			function( e ) {
+			function ( e ) {
 
 				wpzinc_modal_close();
 
@@ -246,7 +246,7 @@ jQuery( document ).ready(
 		$( 'body' ).on(
 			'click',
 			'.wpzinc-is-dismissible button.notice-dismiss',
-			function( e ) {
+			function ( e ) {
 
 				e.preventDefault();
 

@@ -15,13 +15,13 @@
  * @since   1.0.0
  */
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		// Cancel.
 		$( 'body' ).on(
 			'click',
 			'#wpzinc-tinymce-modal div.mce-cancel button, .wpzinc-backbone-modal .media-frame-toolbar .media-toolbar button.cancel',
-			function( e ) {
+			function ( e ) {
 
 				// TinyMCE.
 				if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
@@ -46,7 +46,7 @@ jQuery( document ).ready(
 		$( 'body' ).on(
 			'click',
 			'#wpzinc-tinymce-modal div.mce-insert button, .wpzinc-backbone-modal .media-frame-toolbar .media-toolbar button.insert',
-			function( e ) {
+			function ( e ) {
 
 				// Prevent default action.
 				e.preventDefault();
@@ -59,7 +59,7 @@ jQuery( document ).ready(
 				shortcodeClose = ( $( 'input[name="close_shortcode"]', $( form ) ).val() == '1' ? true : false );
 
 				$( 'input, select, textarea', $( form ) ).each(
-					function( i ) {
+					function ( i ) {
 						// Skip if no data-shortcode attribute.
 						if ( typeof $( this ).data( 'shortcode' ) === 'undefined' ) {
 							return true;
@@ -165,7 +165,7 @@ jQuery( document ).ready(
 if ( typeof wp !== 'undefined' && typeof wp.media !== 'undefined' ) {
 	var wpZincModal        = new wp.media.view.Modal(
 		{
-			controller: { trigger: function() {} },
+			controller: { trigger: function () {} },
 			className: 'wpzinc-backbone-modal'
 		}
 	);

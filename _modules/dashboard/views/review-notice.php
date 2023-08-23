@@ -19,7 +19,7 @@
 	?>
 	<p>
 		<?php
-		echo sprintf(
+		printf(
 			/* translators: Plugin Name */
 			esc_html__( 'We\'d be super grateful if you could spread the word about %s and give it a 5 star rating on WordPress?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n 
 			esc_html( $this->plugin->displayName )
@@ -32,7 +32,7 @@
 		</a>
 		<a href="<?php echo esc_url( $this->plugin->support_url ); ?>" class="button" rel="noopener" target="_blank">
 			<?php
-			echo sprintf(
+			printf(
 				/* translators: Plugin Name */
 				esc_html__( 'No, I\'m having issues with %s', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
 				esc_html( $this->plugin->displayName )

@@ -11,7 +11,7 @@
  * @since 	1.0.0
  */
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		/**
 		 * Toggle Checkboxes with Checkbox
@@ -19,7 +19,7 @@ jQuery( document ).ready(
 		$( 'body' ).on(
 			'change',
 			'input.wpzinc-checkbox-toggle',
-			function() {
+			function () {
 
 				var checkboxes = $( 'input.' + $( this ).data( 'target' ) );
 
@@ -38,7 +38,7 @@ jQuery( document ).ready(
 		$( 'body' ).on(
 			'click',
 			'a.wpzinc-checkbox-toggle',
-			function( e ) {
+			function ( e ) {
 
 				e.preventDefault();
 

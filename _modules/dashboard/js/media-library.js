@@ -6,11 +6,11 @@
  * @author WP Zinc
  */
 
-( function( $ ) {
+( function ( $ ) {
 
 	// Make Attachment(s) sortable.
 	$( '.wpzinc-media-library-selector' ).each(
-		function() {
+		function () {
 
 			// Determine if this Media Library selector instance supports multiple Attachments.
 			var multiple = $( this ).data( 'multiple' );
@@ -33,7 +33,7 @@
 	$( '#wpbody' ).on(
 		'click',
 		'.wpzinc-media-library-insert',
-		function( e ) {
+		function ( e ) {
 
 			// Prevent default action.
 			e.preventDefault();
@@ -63,7 +63,7 @@
 			// Get existing Attachment(s) that were selected.
 			var existing_selected_attachment_ids = [];
 			$( 'input[type=hidden]', $( container ) ).each(
-				function() {
+				function () {
 					existing_selected_attachment_ids.push( $( this ).val() );
 				}
 			);
@@ -91,7 +91,7 @@
 			// When the modal is opened, select any existing Attachments that were previously selected.
 			wpzinc_plugin_media_manager.on(
 				'open',
-				function() {
+				function () {
 
 					// Get selected attachments.
 					var selection = wpzinc_plugin_media_manager.state().get( 'selection' );
@@ -99,7 +99,7 @@
 					// Add existing Attachment(s) that were selected to the selection, so they're
 					// marked as selected in the modal.
 					existing_selected_attachment_ids.forEach(
-						function( id ) {
+						function ( id ) {
 							attachment = wp.media.attachment( id );
 							attachment.fetch();
 							selection.add( attachment ? [attachment] : [] );
@@ -118,7 +118,7 @@
 			// If it does, remove (deselect) the selected attachment.
 			wpzinc_plugin_media_manager.on(
 				'selection:toggle',
-				function() {
+				function () {
 
 					var selection = wpzinc_plugin_media_manager.state().get( 'selection' );
 
@@ -132,11 +132,11 @@
 			// When the Select button in the modal is clicked, insert.
 			wpzinc_plugin_media_manager.on(
 				'select',
-				function() {
+				function () {
 
 					// Get selected attachments.
 					var selection = wpzinc_plugin_media_manager.state().get( 'selection' ).map(
-						function( attachment ) {
+						function ( attachment ) {
 
 							attachment.toJSON();
 							return attachment;
@@ -202,7 +202,7 @@
 	$( '#wpbody' ).on(
 		'click',
 		'.wpzinc-media-library-remove',
-		function( e ) {
+		function ( e ) {
 
 			// Prevent default action.
 			e.preventDefault();

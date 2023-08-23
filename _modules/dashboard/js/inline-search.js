@@ -6,12 +6,12 @@
  */
 
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		// Search on keyup.
 		$( 'input[type="search"]' ).on(
 			'search keyup',
-			function( e ) {
+			function ( e ) {
 
 				// Don't do anything if this search field doesn't have a data- attribute.
 				if ( typeof $( this ).data( 'list' ) == 'undefined' ) {
@@ -30,7 +30,7 @@ jQuery( document ).ready(
 
 				// Show or hide each list item depending on the search term.
 				$( 'li', $( search_list ) ).each(
-					function() {
+					function () {
 						if ( $( this ).text().toLowerCase().search( search_terms ) > -1 ) {
 							// Search Term in this list item - display.
 							$( this ).show();

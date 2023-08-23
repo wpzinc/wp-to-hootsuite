@@ -22,22 +22,22 @@ function wp_zinc_autocomplete_setup() {
 	wpzinc_autocompleters = [];
 
 	wpzinc_autocomplete.forEach(
-		function( autocompleter, i ) {
+		function ( autocompleter, i ) {
 
 			// Build collection.
 			var collection = [];
 			autocompleter.triggers.forEach(
-				function( trigger, j ) {
+				function ( trigger, j ) {
 					// Don't include the opening trigger in the return value when selected.
 					// This prevents e.g. {{something} when { is the trigger.
-					trigger.selectTemplate = function( item ) {
+					trigger.selectTemplate = function ( item ) {
 						return item.original.value;
 					};
 
 					// Check where values are sourced from for this trigger.
 					if ( 'url' in trigger ) {
 						// Configure remote datasource.
-						trigger.values = function( text, cb ) {
+						trigger.values = function ( text, cb ) {
 
 							// Build form data.
 							data = new FormData();
@@ -54,15 +54,15 @@ function wp_zinc_autocomplete_setup() {
 									body: data
 								}
 							).then(
-								function( response ) {
+								function ( response ) {
 									return response.json();
 								}
 							).then(
-								function( result ) {
+								function ( result ) {
 									cb( result.data );
 								}
 							).catch(
-								function( error ) {
+								function ( error ) {
 									console.error( error );
 								}
 							);
@@ -103,10 +103,10 @@ function wp_zinc_autocomplete_setup() {
 function wp_zinc_autocomplete_initialize() {
 
 	wpzinc_autocompleters.forEach(
-		function( autocompleter, i ) {
+		function ( autocompleter, i ) {
 
 			autocompleter.fields.forEach(
-				function( field, j ) {
+				function ( field, j ) {
 
 					autocompleter.instance.attach( document.querySelectorAll( field ) );
 
@@ -126,10 +126,10 @@ function wp_zinc_autocomplete_initialize() {
 function wp_zinc_autocomplete_destroy() {
 
 	wpzinc_autocompleters.forEach(
-		function( autocompleter, i ) {
+		function ( autocompleter, i ) {
 
 			autocompleter.fields.forEach(
-				function( field, j ) {
+				function ( field, j ) {
 
 					autocompleter.instance.detach( document.querySelectorAll( field ) );
 

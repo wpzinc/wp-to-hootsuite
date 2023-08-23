@@ -12,14 +12,14 @@
  */
 function wp_zinc_tabs_init() {
 
-	( function( $ ) {
+	( function ( $ ) {
 
 		// Safely call this function by destroying any previously initialized instances.
 		wp_zinc_tabs_destroy();
 
 		// Iterate through all JS tab instances, initializing each one.
 		$( '.wpzinc-js-tabs' ).each(
-			function() {
+			function () {
 
 				var nav_tab_container    = $( this ),
 				nav_tab_panels_container = $( nav_tab_container ).data( 'panels-container' ),
@@ -39,7 +39,7 @@ function wp_zinc_tabs_init() {
 				$( nav_tab_container ).on(
 					'click.wpzinc_tabs',
 					'a',
-					function( e ) {
+					function ( e ) {
 
 						// Don't do anything if this is an external URL.
 						if ( location.hostname === this.hostname || ! this.hostname.length ) {
@@ -62,7 +62,7 @@ function wp_zinc_tabs_init() {
 		// Register a listener when a form element has the data-tab attribute, to toggle a tab's enabled/disabled icon.
 		$( '.wpzinc-tab-indicator' ).on(
 			'change.wpzinc_tab_indicator',
-			function( e ) {
+			function ( e ) {
 
 				var tab_href = $( this ).data( 'tab' );
 
@@ -101,7 +101,7 @@ function wp_zinc_tabs_init() {
  */
 function wp_zinc_tabs_update( nav_tab_container, nav_tab_panels_container, nav_tab_panel, nav_tab_active, active_tab ) {
 
-	( function( $ ) {
+	( function ( $ ) {
 
 		// If we don't have an active tab at this point, we don't have any tabs, so bail.
 		if ( typeof active_tab == 'undefined' ) {
@@ -133,7 +133,7 @@ function wp_zinc_tabs_update( nav_tab_container, nav_tab_panels_container, nav_t
 
 		// Fire a change event, with a slight delay.
 		setTimeout(
-			function() {
+			function () {
 				$( nav_tab_container ).trigger( 'change', link );
 			},
 			500
@@ -151,11 +151,11 @@ function wp_zinc_tabs_update( nav_tab_container, nav_tab_panels_container, nav_t
  */
 function wp_zinc_tabs_destroy() {
 
-	( function( $ ) {
+	( function ( $ ) {
 
 		// Iterate through all JS tab instances, destroying each one.
 		$( '.wpzinc-js-tabs' ).each(
-			function() {
+			function () {
 
 				$( this ).off( 'click.wpzinc_tabs', 'a' );
 				$( this ).off( 'change.wpzinc_tab_indicator' );
@@ -173,7 +173,7 @@ function wp_zinc_tabs_destroy() {
  * @since 	1.0.0
  */
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		/**
 		 * Tabbed UI

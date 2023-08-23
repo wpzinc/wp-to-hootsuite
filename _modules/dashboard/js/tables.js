@@ -16,7 +16,7 @@
  */
 function wpzinc_table_row_add( selector, table ) {
 
-	( function( $ ) {
+	( function ( $ ) {
 
 		// Get row.
 		var row = $( 'tbody tr.' + selector, $( table ) );
@@ -37,7 +37,7 @@ function wpzinc_table_row_add( selector, table ) {
  */
 function wpzinc_table_row_delete( button ) {
 
-	( function( $ ) {
+	( function ( $ ) {
 
 		// Remove row.
 		$( button ).closest( 'tr' ).remove();
@@ -52,7 +52,7 @@ function wpzinc_table_row_delete( button ) {
  * @since 	1.0.0
  */
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		/**
 		 * Add Table Row.
@@ -60,7 +60,7 @@ jQuery( document ).ready(
 		$( 'body' ).on(
 			'click',
 			'.wpzinc-add-table-row',
-			function( e ) {
+			function ( e ) {
 
 				e.preventDefault();
 
@@ -78,7 +78,7 @@ jQuery( document ).ready(
 		$( 'body' ).on(
 			'click',
 			'.wpzinc-delete-table-row',
-			function( e ) {
+			function ( e ) {
 
 				e.preventDefault();
 

@@ -23,7 +23,7 @@
  * @author WP Zinc
  */
 
-var WPZincAutocompleterControl = function( atts ) {
+var WPZincAutocompleterControl = function ( atts ) {
 
 	// Define some constants for the various items we'll use.
 	const el = window.wp.element.createElement;
@@ -78,10 +78,10 @@ var WPZincAutocompleterControl = function( atts ) {
 function wp_zinc_auto_complete_gutenberg_register( completers, blockName ) {
 
 	wpzinc_autocomplete_gutenberg.forEach(
-		function( autocompleter, i ) {
+		function ( autocompleter, i ) {
 
 			autocompleter.triggers.forEach(
-				function( trigger, j ) {
+				function ( trigger, j ) {
 
 					// Skip if this uses a remote data source.
 					if ( 'url' in trigger ) {
@@ -98,7 +98,7 @@ function wp_zinc_auto_complete_gutenberg_register( completers, blockName ) {
 							/**
 							 * How options should be matched
 							 */
-							getOptionKeywords: function( option ) {
+							getOptionKeywords: function ( option ) {
 
 								return option.value;
 
@@ -113,7 +113,7 @@ function wp_zinc_auto_complete_gutenberg_register( completers, blockName ) {
 							 * @param   object  option  Autocomplete Option.
 							 * @return  string          Label
 							 */
-							getOptionLabel: function( option ) {
+							getOptionLabel: function ( option ) {
 
 								return option.value;
 
@@ -129,7 +129,7 @@ function wp_zinc_auto_complete_gutenberg_register( completers, blockName ) {
 							 * @param   object  option  Chosen Autocomplete Option.
 							 * @return  string          Value
 							 */
-							getOptionCompletion: function( option ) {
+							getOptionCompletion: function ( option ) {
 
 								return option.key;
 
@@ -157,10 +157,10 @@ function wp_zinc_auto_complete_gutenberg_register( completers, blockName ) {
 if ( typeof wp !== 'undefined' && typeof wp.hooks !== 'undefined' && typeof wpzinc_autocomplete_gutenberg !== 'undefined' ) {
 
 	wpzinc_autocomplete_gutenberg.forEach(
-		function( autocompleter, i ) {
+		function ( autocompleter, i ) {
 
 			autocompleter.triggers.forEach(
-				function( trigger, j ) {
+				function ( trigger, j ) {
 
 					wp.hooks.addFilter(
 						'editor.Autocomplete.completers',

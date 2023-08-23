@@ -17,14 +17,14 @@
  * @author WP Zinc
  */
 
-( function( $ ) {
+( function ( $ ) {
 
 	/**
 	 * Init Synchronous Request
 	 *
 	 * @param object options Override Default Settings
 	 */
-	$.fn.synchronous_request = function( options ) {
+	$.fn.synchronous_request = function ( options ) {
 
 		// Default Settings.
 		let settings = $.extend(
@@ -57,7 +57,7 @@
 				 * @param   object  response        Response
 				 * @param   int     currentIndex    Current Index
 				 */
-				onRequestSuccess: function( response, currentIndex ) {
+				onRequestSuccess: function ( response, currentIndex ) {
 
 					// Maybe reset log if it's more than 100 lines, for UI performance.
 					this.maybeResetLog();
@@ -104,7 +104,7 @@
 				 *
 				 * @since   1.0.0
 				 */
-				onRequestError: function( xhr, textStatus, e, currentIndex ) {
+				onRequestError: function ( xhr, textStatus, e, currentIndex ) {
 
 					// Maybe reset log if it's more than 100 lines, for UI performance.
 					this.maybeResetLog();
@@ -133,7 +133,7 @@
 				 * @param   object  settings    Settings.
 				 * @return  object              Settings
 				 */
-				updateSettings: function( settings ) {
+				updateSettings: function ( settings ) {
 
 					return settings;
 
@@ -144,7 +144,7 @@
 				 *
 				 * @since   1.0.0
 				 */
-				onFinished: function() {
+				onFinished: function () {
 
 					if ( this.cancelled ) {
 						$( 'ul', $( this.log ) ).append( '<li class="success">Process cancelled by user.</li>' );
@@ -166,7 +166,7 @@
 				 *
 				 * @since 	1.0.0
 				 */
-				maybeResetLog: function() {
+				maybeResetLog: function () {
 
 					// If the spinner exists in the log, remove it.
 					if ( $( 'li.spinner', $( this.log ) ).length > 0 ) {
@@ -195,7 +195,7 @@
 
 			$( settings.cancel_button ).on(
 				'click',
-				function( e ) {
+				function ( e ) {
 
 					e.preventDefault();
 					settings.cancelled = true;
@@ -255,7 +255,7 @@
 				cache:    	settings.cache,
 				dataType: 	settings.dataType,
 				data: 		mergedData,
-				success: function( response ) {
+				success: function ( response ) {
 
 					// Call onRequestSuccess closure.
 					let cancelled = settings.onRequestSuccess( response, currentIndex );
@@ -301,7 +301,7 @@
 					// next request.
 					if ( ! response.success && settings.stop_on_error !== -1 ) {
 						setTimeout(
-							function() {
+							function () {
 								// Start next request.
 								synchronousAjaxRequest( settings, currentIndex, progressbar, progressCounter );
 								return;
@@ -318,7 +318,7 @@
 					}
 
 				},
-				error: function(xhr, textStatus, e) {
+				error: function (xhr, textStatus, e) {
 
 					// Call closure.
 					let cancelled = settings.onRequestError( xhr, textStatus, e, currentIndex );
@@ -343,7 +343,7 @@
 
 					// Wait the required period of time before sending the next request.
 					setTimeout(
-						function() {
+						function () {
 							// Start next request.
 							synchronousAjaxRequest( settings, currentIndex, progressbar, progressCounter );
 							return;

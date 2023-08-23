@@ -5,7 +5,7 @@
  * @author WP Zinc
  */
 
-( function() {
+( function () {
 
 	// Define key binds.
 	const DOWN_ARROW_KEY = 40;
@@ -32,9 +32,9 @@
 	if ( typeof wpzinc_autocomplete !== 'undefined' ) {
 
 		wpzinc_autocomplete.forEach(
-			function( autocompleter, i ) {
+			function ( autocompleter, i ) {
 				autocompleter.triggers.forEach(
-					function( trigger, j ) {
+					function ( trigger, j ) {
 
 						// Skip remote autocompleters.
 						if ( 'url' in trigger ) {
@@ -46,7 +46,7 @@
 							'tinymce.plugins.' + trigger.tinyMCEName,
 							{
 
-								init: function( editor ) {
+								init: function ( editor ) {
 
 									var autoCompleteDisplayed = false,
 									autoCompleteContainer     = createAutoComplete();
@@ -65,7 +65,7 @@
 
 										// Define <li>'s, appending to <ul>.
 										trigger.values.forEach(
-											function( value, key ) {
+											function ( value, key ) {
 												var li = document.createElement( 'li' );
 												li.classList.add( 'displayed' );
 												ul.appendChild( li );

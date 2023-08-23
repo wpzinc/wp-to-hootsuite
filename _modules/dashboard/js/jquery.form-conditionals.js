@@ -5,7 +5,7 @@
  * @author WP Zinc
  */
 
-(function( $ ) {
+(function ( $ ) {
 
 	"use strict";
 
@@ -14,7 +14,7 @@
 	 *
 	 * @param object options Override Default Settings
 	 */
-	$.fn.conditional = function(options) {
+	$.fn.conditional = function (options) {
 		// Default Settings.
 		var settings = $.extend(
 			{
@@ -27,7 +27,7 @@
 
 		// Setup conditionals on each DOM element.
 		this.each(
-			function() {
+			function () {
 				// Check for conditional elements.
 				if ( typeof $( this ).data( settings.data ) === 'undefined' ) {
 					return true;
@@ -42,7 +42,7 @@
 				// Toggle + toggle on change.
 				$( this ).on(
 					'change',
-					function() {
+					function () {
 						// List the DOM elements to toggle.
 						conditionalElements = $( this ).data( settings.data ).split( ',' );
 
@@ -125,7 +125,7 @@
  * Initialize.
  */
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		$( 'input,select' ).conditional();
 

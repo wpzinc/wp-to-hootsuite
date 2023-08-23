@@ -59,10 +59,10 @@ function wpzinc_notification_show( message, type ) {
 	jQuery( '.wpzinc-notification' ).fadeIn( 'fast' );
 
 	setTimeout(
-		function() {
+		function () {
 			jQuery( '.wpzinc-notification' ).fadeOut(
 				'fast',
-				function() {
+				function () {
 					jQuery( '.wpzinc-notification' ).removeClass( 'wpzinc-notification-' + type );
 					jQuery( '.wpzinc-notification' ).hide();
 				}

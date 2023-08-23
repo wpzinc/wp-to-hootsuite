@@ -6,14 +6,14 @@
  */
 
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
-		var wpzinc_tags = function() {
+		var wpzinc_tags = function () {
 
 			$( 'body' ).unbind( 'change.wpzinc-tags' ).on(
 				'change.wpzinc-tags',
 				'select.wpzinc-tags',
-				function( e ) {
+				function ( e ) {
 
 					// Insert tag into required input or textarea.
 					var tag      = $( this ).val(),

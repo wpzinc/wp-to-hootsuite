@@ -10,14 +10,14 @@
 var wpzinc_deactivation_url;
 
 jQuery( document ).ready(
-	function( $ ) {
+	function ( $ ) {
 
 		/**
 		 * Show deactivation modal if the user is deactivating our plugin.
 		 */
 		$( 'span.deactivate a' ).on(
 			'click',
-			function( e ) {
+			function ( e ) {
 
 				// If the link slug doesn't exist, let the request through.
 				var plugin_name = $( this ).closest( 'tr' ).data( 'slug' );
@@ -55,7 +55,7 @@ jQuery( document ).ready(
 		 */
 		$( 'input[name="wpzinc-deactivation-reason"]' ).on(
 			'change',
-			function( e ) {
+			function ( e ) {
 
 				$( 'input[name="wpzinc-deactivation-reason-text"]' ).attr(
 					'placeholder',
@@ -72,7 +72,7 @@ jQuery( document ).ready(
 		 */
 		$( 'form#wpzinc-deactivation-modal-form' ).on(
 			'submit',
-			function( e ) {
+			function ( e ) {
 
 				e.preventDefault();
 
@@ -95,9 +95,9 @@ jQuery( document ).ready(
 								reason_text: 	wpzinc_dashboard_deactivation_reason_text,
 								reason_email: 	wpzinc_dashboard_deactivation_reason_email
 							},
-							error: function( a, b, c ) {
+							error: function ( a, b, c ) {
 							},
-							success: function( result ) {
+							success: function ( result ) {
 							}
 						}
 					);
@@ -117,7 +117,7 @@ jQuery( document ).ready(
 		 */
 		$( '#wpzinc-deactivation-modal-overlay' ).on(
 			'click',
-			function( e ) {
+			function ( e ) {
 
 				$( '#wpzinc-deactivation-modal, #wpzinc-deactivation-modal-overlay' ).hide();
 
