@@ -82,6 +82,9 @@ class WP_To_Hootsuite {
 			$this->plugin->displayName
 		);
 
+		// ConvertKit Form UID.
+		$this->plugin->convertkit_form_uid = '6c1d63c124';
+
 		// Default Settings.
 		$this->plugin->default_schedule = 'now';
 

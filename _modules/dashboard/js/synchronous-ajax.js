@@ -286,7 +286,7 @@
 
 						// If Stop on Error is zero, decrement the currentIndex so the same request is attempted again.
 						if ( settings.stop_on_error == 0 ) {
-							currentIndex--;
+							currentIndex = currentIndex - Number( settings.index_increment );
 						}
 					}
 

@@ -1,16 +1,12 @@
 <?php
 /**
- * Outputs settings screen sidebar for free plugins with a pro version.
- * Display the reasons to upgrade and the mailing list.
+ * Outputs settings screen sidebar for free plugins with
+ * an email newsletter form.
  *
  * @package WPZincDashboardWidget
  * @author WP Zinc
  */
 
-/**
- * Settings screen sidebar for free plugins with a pro version. Display the reasons to upgrade
- * and the mailing list.
- */
 ?>
 <!-- Keep Updated -->
 <div class="postbox">
@@ -24,16 +20,5 @@
 		</p>
 	</div>
 
-	<form action="https://n7studios.createsend.com/t/r/s/jdutdyj/" method="post">
-		<div class="wpzinc-option">
-			<div class="full">                        
-				<input id="fieldEmail" name="cm-jdutdyj-jdutdyj" type="email" class="widefat" placeholder="<?php esc_attr_e( 'Your Email Address', $this->base->plugin->name ); // phpcs:ignore WordPress.WP.I18n ?>" class="widefat" required />
-			</div>
-		</div>
-		<div class="wpzinc-option">
-			<div class="full"> 
-				<input type="submit" name="submit" value="<?php esc_attr_e( 'Subscribe', $this->base->plugin->name ); // phpcs:ignore WordPress.WP.I18n ?>" class="button button-primary" />
-			</div>
-		</div>
-	</form> 
+	<script async data-uid="<?php echo esc_attr( $this->base->plugin->convertkit_form_uid ); ?>" src="https://dedicated-crafter-4782.ck.page/<?php echo esc_attr( $this->base->plugin->convertkit_form_uid ); ?>/index.js"></script>
 </div>
