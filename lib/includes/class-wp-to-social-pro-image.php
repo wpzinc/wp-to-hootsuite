@@ -188,10 +188,10 @@ class WP_To_Social_Pro_Image {
 	 *
 	 * @since   4.6.6
 	 *
-	 * @param   int    $image_id   Image ID.
-	 * @param   string $source     Source Image ID was derived from (plugin, featured_image, post_content, text_to_image).
-	 * @param   string $service    Social Media Service the image is for. If not defined, just return the large version.
-	 * @return  array|WP_Error     Image ID, Image URLs, Source
+	 * @param   int         $image_id   Image ID.
+	 * @param   string      $source     Source Image ID was derived from (plugin, featured_image, post_content, text_to_image).
+	 * @param   bool|string $service    Social Media Service the image is for. If not defined, just return the large version.
+	 * @return  array|WP_Error              Image ID, Image URLs, Source
 	 */
 	public function get_image_sources( $image_id, $source, $service = false ) {
 
@@ -205,8 +205,23 @@ class WP_To_Social_Pro_Image {
 			 * Webp
 			 */
 			case 'image/webp':
+				// Don't do anything if the service supports webp and the image isn't for Instagram.
+				// If it is for Instagram, we want to convert to a JPEG as we might need to resize/crop
+				// later in this function.
+				if ( $this->base->supports( 'webp' ) && $service !== 'instagram' ) {
+					break;
+				}
+
+				// Get image.
+				$image_path_and_file = get_attached_file( $image_id );
+
+				// Just return the original image ID if we couldn't get the image path and file.
+				if ( empty( $image_path_and_file ) || ! file_exists( $image_path_and_file ) ) {
+					return $image_id;
+				}
+
 				// Load webp image.
-				$image = wp_get_image_editor( get_attached_file( $image_id ) );
+				$image = wp_get_image_editor( $image_path_and_file );
 
 				// Bail if an error occured.
 				if ( is_wp_error( $image ) ) {
@@ -258,7 +273,7 @@ class WP_To_Social_Pro_Image {
 	}
 
 	/**
-	 * Returns an array comprising of the image ID, image URL for the requested size, thumbnail size
+	 * Returns an array comprising of the image ID, image URL and alt text for the requested size, thumbnail size
 	 * and the source of the image.
 	 *
 	 * @since   4.6.6

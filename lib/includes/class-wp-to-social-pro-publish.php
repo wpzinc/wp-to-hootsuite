@@ -139,9 +139,9 @@ class WP_To_Social_Pro_Publish {
 		}
 
 		// Flag to determine if the current Post is a Gutenberg Post or Rest API Request.
-		$is_gutenberg_post   = $this->is_gutenberg_post( $post );
-		$is_rest_api_request = $this->is_rest_api_request();
-		$this->base->get_class( 'log' )->add_to_debug_log( 'Gutenberg Post: ' . ( $is_gutenberg_post ? 'Yes' : 'No' ) );
+		$is_gutenberg_request = $this->is_gutenberg_request();
+		$is_rest_api_request  = $this->is_rest_api_request();
+		$this->base->get_class( 'log' )->add_to_debug_log( 'Gutenberg Post: ' . ( $is_gutenberg_request ? 'Yes' : 'No' ) );
 		$this->base->get_class( 'log' )->add_to_debug_log( 'REST API Request: ' . ( $is_rest_api_request ? 'Yes' : 'No' ) );
 
 		// If a previous request flagged that an 'update' request should be treated as a publish request (i.e.
@@ -175,23 +175,11 @@ class WP_To_Social_Pro_Publish {
 		// Publish.
 		if ( $new_status === 'publish' && $new_status !== $old_status ) {
 			/**
-			 * Classic Editor
-			 */
-			if ( ! $is_rest_api_request ) {
-				$this->base->get_class( 'log' )->add_to_debug_log( 'Classic Editor: Publish' );
-
-				add_action( 'wp_insert_post', array( $this, 'wp_insert_post_publish' ), 999 );
-
-				// Don't need to do anything else, so exit.
-				return;
-			}
-
-			/**
-			 * Gutenberg Editor
+			 * Gutenberg Editor REST API Request
 			 * - Non-Gutenberg metaboxes are POSTed via a second, separate request to post.php, which appears
 			 * as an 'update'.  Define a meta key that we'll check on the separate request later.
 			 */
-			if ( $is_gutenberg_post ) {
+			if ( $is_gutenberg_request ) {
 				$this->base->get_class( 'log' )->add_to_debug_log( 'Gutenberg: Defer Publish' );
 
 				update_post_meta( $post->ID, $this->base->plugin->filter_name . '_needs_publishing', 1 );
@@ -203,8 +191,19 @@ class WP_To_Social_Pro_Publish {
 			/**
 			 * REST API
 			 */
-			$this->base->get_class( 'log' )->add_to_debug_log( 'REST API: Publish' );
-			add_action( 'rest_after_insert_' . $post->post_type, array( $this, 'rest_api_post_publish' ), 10, 1 );
+			if ( $is_rest_api_request ) {
+				$this->base->get_class( 'log' )->add_to_debug_log( 'REST API: Publish' );
+				add_action( 'rest_after_insert_' . $post->post_type, array( $this, 'rest_api_post_publish' ), 10, 1 );
+
+				// Don't need to do anything else, so exit.
+				return;
+			}
+
+			/**
+			 * Classic Editor
+			 */
+			$this->base->get_class( 'log' )->add_to_debug_log( 'Classic Editor: Publish' );
+			add_action( 'wp_insert_post', array( $this, 'wp_insert_post_publish' ), 999 );
 
 			// Don't need to do anything else, so exit.
 			return;
@@ -213,23 +212,11 @@ class WP_To_Social_Pro_Publish {
 		// Update.
 		if ( $new_status === 'publish' && $old_status === 'publish' ) {
 			/**
-			 * Classic Editor
-			 */
-			if ( ! $is_rest_api_request ) {
-				$this->base->get_class( 'log' )->add_to_debug_log( 'Classic Editor: Update' );
-
-				add_action( 'wp_insert_post', array( $this, 'wp_insert_post_update' ), 999 );
-
-				// Don't need to do anything else, so exit.
-				return;
-			}
-
-			/**
-			 * Gutenberg Editor
+			 * Gutenberg Editor REST API Request
 			 * - Non-Gutenberg metaboxes are POSTed via a second, separate request to post.php, which appears
 			 * as an 'update'.  Define a meta key that we'll check on the separate request later.
 			 */
-			if ( $is_gutenberg_post ) {
+			if ( $is_gutenberg_request ) {
 				$this->base->get_class( 'log' )->add_to_debug_log( 'Gutenberg: Defer Update' );
 
 				update_post_meta( $post->ID, $this->base->plugin->filter_name . '_needs_updating', 1 );
@@ -241,12 +228,50 @@ class WP_To_Social_Pro_Publish {
 			/**
 			 * REST API
 			 */
-			$this->base->get_class( 'log' )->add_to_debug_log( 'REST API: Update' );
-			add_action( 'rest_after_insert_' . $post->post_type, array( $this, 'rest_api_post_update' ), 10, 1 );
+			if ( $is_rest_api_request ) {
+				$this->base->get_class( 'log' )->add_to_debug_log( 'REST API: Update' );
+				add_action( 'rest_after_insert_' . $post->post_type, array( $this, 'rest_api_post_update' ), 10, 1 );
+
+				// Don't need to do anything else, so exit.
+				return;
+			}
+
+			/**
+			 * Classic Editor
+			 */
+			$this->base->get_class( 'log' )->add_to_debug_log( 'Classic Editor: Update' );
+			add_action( 'wp_insert_post', array( $this, 'wp_insert_post_update' ), 999 );
 
 			// Don't need to do anything else, so exit.
 			return;
 		}
+
+	}
+
+	/**
+	 * Helper function to determine if the request is a Gutenberg REST API request.
+	 *
+	 * @since   @TODO
+	 *
+	 * @return  bool    Is Gutenberg REST API Request
+	 */
+	private function is_gutenberg_request() {
+
+		if ( ! defined( 'REST_REQUEST' ) ) {
+			return false;
+		}
+
+		if ( ! REST_REQUEST ) {
+			return false;
+		}
+
+		// Gutenberg requests are REST API requests, but include a _locale key.
+		// 'True' REST API requests do not include this key.
+		if ( ! array_key_exists( '_locale', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return false;
+		}
+
+		return true;
 
 	}
 
@@ -267,34 +292,13 @@ class WP_To_Social_Pro_Publish {
 			return false;
 		}
 
-		return true;
-
-	}
-
-	/**
-	 * Helper function to determine if the Post can use, or has used, the Gutenberg Editor.
-	 *
-	 * Should be used in conjunction with REST_REQUEST checks; if both are true, we're using Gutenberg.
-	 *
-	 * @since   3.6.8
-	 *
-	 * @param   WP_Post $post   Post.
-	 * @return  bool                Post uses Gutenberg Editor
-	 */
-	private function is_gutenberg_post( $post ) {
-
-		// Load post.php so that functions required for checking the Post are loaded.
-		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/post.php';
-		}
-
-		// If the function still doesn't exist, assume the Post isn't a Gutenberg Post.
-		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+		// Gutenberg requests are REST API requests, but include a _locale key.
+		// 'True' REST API requests do not include this key.
+		if ( array_key_exists( '_locale', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return false;
 		}
 
-		// Return whether Post is Gutenberg Post.
-		return use_block_editor_for_post( $post );
+		return true;
 
 	}
 
@@ -1003,16 +1007,6 @@ class WP_To_Social_Pro_Publish {
 				} else {
 					$tag_params['transformations'] = array( $transformation );
 				}
-			}
-
-			// If this Tag is a Custom Field, register it now.
-			if ( preg_match( '/^custom_field_(.*)$/', $tag_params['tag'], $custom_field_matches ) ) {
-				$this->register_post_meta_search_replacement( $tag_params['tag'], $custom_field_matches[1], $post );
-			}
-
-			// If this Tag is an Author Field, register it now.
-			if ( preg_match( '/^author_field_(.*)$/', $tag_params['tag'], $custom_field_matches ) ) {
-				$this->register_author_meta_search_replacement( $tag_params['tag'], $custom_field_matches[1], $author );
 			}
 
 			// If this Tag is a Taxonomy Tag, fetch some parameters that may be included in the tag.
@@ -1985,8 +1979,8 @@ class WP_To_Social_Pro_Publish {
 	 */
 	private function clear_search_replacements() {
 
-		$this->all_possible_searches_replacements = false;
-		$this->searches_replacements              = false;
+		$this->all_possible_searches_replacements = array();
+		$this->searches_replacements              = array();
 
 	}
 

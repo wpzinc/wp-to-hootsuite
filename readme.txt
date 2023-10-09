@@ -5,7 +5,7 @@ Tags: auto publish, auto post, social media automation, social media scheduling,
 Requires at least: 5.0
 Tested up to: 6.3.1
 Requires PHP: 7.4
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 1.5.3 (2023-10-09) =
+* Fix: Correctly detect and differentiate REST API requests from Gutenberg REST API requests, ensuring REST API requests trigger status(es)
 
 = 1.5.2 (2023-09-07) =
 * Fix: Updated dashboard submodule
