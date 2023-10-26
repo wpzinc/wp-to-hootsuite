@@ -65,7 +65,7 @@ jobs:
 
       # Checkout (copy) this repository's Plugin to this VM.
       - name: Checkout Plugin
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ${{ env.PLUGIN_DIR }}
 
@@ -92,7 +92,7 @@ jobs:
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for PHP 8.1, 8.2, otherwise E_DEPRECATED is output due to https://core.trac.wordpress.org/ticket/54504
       - name: Enable WP_DEBUG
-        if: ${{ matrix.php-versions != '8.1' && matrix.php-versions != '8.2' }}
+        if: ${{ matrix.php-versions != '8.2' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set WP_DEBUG true --raw
