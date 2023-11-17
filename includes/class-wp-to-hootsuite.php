@@ -191,6 +191,7 @@ class WP_To_Hootsuite {
 		$this->classes->install       = new WP_To_Social_Pro_Install( self::$instance );
 		$this->classes->log           = new WP_To_Social_Pro_Log( self::$instance );
 		$this->classes->media_library = new WP_To_Social_Pro_Media_Library( self::$instance );
+		$this->classes->owly_api      = new WP_To_Social_Pro_Owly_API( self::$instance );
 		$this->classes->notices       = new WP_To_Social_Pro_Notices( self::$instance );
 		$this->classes->post          = new WP_To_Social_Pro_Post( self::$instance );
 		$this->classes->publish       = new WP_To_Social_Pro_Publish( self::$instance );
