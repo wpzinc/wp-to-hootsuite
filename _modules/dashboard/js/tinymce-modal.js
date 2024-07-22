@@ -127,7 +127,8 @@ jQuery( document ).ready(
 				}
 
 				// Depending on the editor type, insert the shortcode.
-				switch ( $( 'input[name="editor_type"]', $( form ) ).val() ) {
+				let editor_type = $( 'input[name="editor_type"]', $( form ) ).val();
+				switch ( editor_type ) {
 					case 'tinymce':
 						// Sanity check that a Visual editor exists and is active.
 						if ( typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() ) {
@@ -142,6 +143,21 @@ jQuery( document ).ready(
 					case 'quicktags':
 						// Insert into editor.
 						QTags.insertContent( shortcode );
+
+						// Close modal.
+						wpZincModal.close();
+
+						// Reset the modal content.
+						// If we don't do this, switching from Text to Visual Editor for the same shortcode results
+						// code picking up data from the QuickTags modal, not the TinyMCE one.
+						if ( typeof wpZincModal !== 'undefined' ) {
+							wpZincModal.content( new wpZincModalContent() );
+						}
+						break;
+
+					default:
+						// Insert into selector.
+						$( editor_type ).val( shortcode );
 
 						// Close modal.
 						wpZincModal.close();

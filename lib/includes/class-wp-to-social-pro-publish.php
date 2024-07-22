@@ -1390,7 +1390,7 @@ class WP_To_Social_Pro_Publish {
 	private function get_title( $post ) {
 
 		// Define title.
-		$title = $this->convert_to_plain_text( get_the_title( $post ) );
+		$title = $this->convert_to_plain_text( get_the_title( $post ), false );
 
 		/**
 		 * Filters the dynamic {title} replacement, when a Post's status is being built.
@@ -1435,7 +1435,7 @@ class WP_To_Social_Pro_Publish {
 		}
 
 		// Convert to plain text.
-		$excerpt = $this->convert_to_plain_text( $excerpt );
+		$excerpt = $this->convert_to_plain_text( $excerpt, false );
 
 		/**
 		 * Filters the dynamic {excerpt} replacement, when a Post's status is being built.
@@ -1631,7 +1631,8 @@ class WP_To_Social_Pro_Publish {
 	 * Converts the given string (which is typically HTML from a WordPress Post or Post Meta Field)
 	 * to plain text, by performing several functions:
 	 * - stripping shortcodes (if shortcodes need processing, do so before calling this function)
-	 * - stripping HTML tags, excluding <br> and <br />
+	 * - removing all inline <style> elements and their contents,
+	 * - stripping HTML tags, excluding <br>, <br />, <a>, <li>
 	 * - decoding HTML entities to avoid encoding issues on status output
 	 * - converting <br> and <br /> to newlines
 	 * - removing double spaces
@@ -1639,14 +1640,39 @@ class WP_To_Social_Pro_Publish {
 	 *
 	 * @since   4.6.9
 	 *
-	 * @param   string $text   Text.
-	 * @return  string          Text
+	 * @param   string $text                           Text.
+	 * @param   bool   $convert_links_to_inline        true: Convert e.g. `<a href="http://foo.com">text</a>` to `text (http://foo.com)`.
+	 *                                                 false: Convert e.g. `<a href="http://foo.com">text</a>` to `text`.
+	 * @return  string                                      Text
 	 */
-	private function convert_to_plain_text( $text ) {
+	private function convert_to_plain_text( $text, $convert_links_to_inline = true ) {
 
 		// Strip any shortcodes still remaining.
 		// If shortcodes need to be processed, they should be processed before calling this function.
 		$text = strip_shortcodes( $text );
+
+		// Wrap content in <html>, <head> and <body> tags with an UTF-8 Content-Type meta tag.
+		// Forcibly tell DOMDocument that this HTML uses the UTF-8 charset.
+		// <meta charset="utf-8"> isn't enough, as DOMDocument still interprets the HTML as ISO-8859, which breaks character encoding
+		// Use of mb_convert_encoding() with HTML-ENTITIES is deprecated in PHP 8.2, so we have to use this method.
+		// If we don't, special characters render incorrectly.
+		$text = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>' . $text . '</body></html>';
+
+		// Load the HTML into a DOMDocument.
+		libxml_use_internal_errors( true );
+		$html = new DOMDocument();
+		$html->loadHTML( $text );
+
+		// Load DOMDocument into XPath.
+		$xpath = new DOMXPath( $html );
+
+		// Remove inline <style> tags and their contents.
+		foreach ( $xpath->query( '//style' ) as $node ) {
+			$node->parentNode->removeChild( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		// Fetch revised HTML.
+		$text = $html->saveHTML();
 
 		// Remove HTML, except breaklines, links and unordered list items.
 		$text = strip_tags( $text, '<br><a><li>' );
@@ -1658,7 +1684,13 @@ class WP_To_Social_Pro_Publish {
 		$text = preg_replace( '/<br(\s+)?\/?>/i', "\n", $text );
 
 		// Convert <a> to text and inline link.
-		$text = preg_replace( '/<a[^>]+href=\"(.*?)\"[^>]*>(.*?)<\/a>/i', '$2 ($1)', $text );
+		if ( $convert_links_to_inline ) {
+			// Extract the text from the link, and add the link in brackets after the text.
+			$text = preg_replace( '/<a[^>]+href=\"(.*?)\"[^>]*>(.*?)<\/a>/i', '$2 ($1)', $text );
+		} else {
+			// Just extract the text from the link and output it.
+			$text = preg_replace( '/<a[^>]+href=\"(.*?)\"[^>]*>(.*?)<\/a>/i', '$2', $text );
+		}
 
 		// Convert <li> to hyphenated.
 		$text = preg_replace( '/<li[^>]*>(.*?)<\/li>/i', '- $1', $text );

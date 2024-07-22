@@ -1,17 +1,17 @@
-# Copyright (C) 2023 WP Zinc
+# Copyright (C) 2024 WP Zinc
 # This file is distributed under the same license as the WP to Hootsuite plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP to Hootsuite 1.5.2\n"
+"Project-Id-Version: WP to Hootsuite 1.5.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-to-hootsuite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-09-06T13:22:51+00:00\n"
+"POT-Creation-Date: 2024-07-22T10:07:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-to-hootsuite\n"
 
 #. Plugin Name of the plugin
@@ -168,12 +168,12 @@ msgid "Optionally enable WP-Cron to send status updates via Cron, speeding up UI
 msgstr ""
 
 #. translators: %1$s: Plugin Name, %2$s: PHP class name
-#: includes/class-wp-to-hootsuite.php:249
+#: includes/class-wp-to-hootsuite.php:250
 msgid "%1$s: Error: Could not load Plugin class %2$s"
 msgstr ""
 
 #. translators: Plugin Name
-#: includes/class-wp-to-hootsuite.php:262
+#: includes/class-wp-to-hootsuite.php:263
 msgid "%s: Error"
 msgstr ""
 
@@ -223,27 +223,27 @@ msgid "Pinterest"
 msgstr ""
 
 #. translators: %1$s: Attachment ID, %2$s: Attachment URL
-#: includes/class-wp-to-social-pro-hootsuite-api.php:738
+#: includes/class-wp-to-social-pro-hootsuite-api.php:696
 msgid "Attachment ID %1$s (%2$s) could not be found in the Media Library."
 msgstr ""
 
-#: includes/class-wp-to-social-pro-hootsuite-api.php:836
+#: includes/class-wp-to-social-pro-hootsuite-api.php:794
 msgid "No access token was specified"
 msgstr ""
 
 #. translators: Plugin Name
-#: includes/class-wp-to-social-pro-hootsuite-api.php:984
+#: includes/class-wp-to-social-pro-hootsuite-api.php:942
 #: lib/includes/class-wp-to-social-pro-admin.php:208
 msgid "%s requires the PHP cURL extension to be installed and enabled by your web host."
 msgstr ""
 
 #. translators: HTTP Error Code
-#: includes/class-wp-to-social-pro-hootsuite-api.php:1108
+#: includes/class-wp-to-social-pro-hootsuite-api.php:1066
 msgid "Hootsuite API Error: %1$s returned a %2$s %3$s error. Please try again."
 msgstr ""
 
 #. translators: %1$s: HTTP Error Code, %2$s: Error Message
-#: includes/class-wp-to-social-pro-hootsuite-api.php:1133
+#: includes/class-wp-to-social-pro-hootsuite-api.php:1091
 #: includes/class-wp-to-social-pro-owly-api.php:259
 msgid "Hootsuite API Error: #%1$s: %2$s"
 msgstr ""
@@ -683,31 +683,31 @@ msgid "%1$s: Some status(es) could not be sent to %2$s"
 msgstr ""
 
 #. translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Plugin Name
-#: lib/includes/class-wp-to-social-pro-publish.php:492
+#: lib/includes/class-wp-to-social-pro-publish.php:496
 msgid "The Plugin has not been authorized with %1$s! Go to %2$s > Settings to setup the plugin."
 msgstr ""
 
 #. translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish)
-#: lib/includes/class-wp-to-social-pro-publish.php:601
+#: lib/includes/class-wp-to-social-pro-publish.php:605
 msgid "Status(es) exist for sending this %1$s to %2$s when you %3$s a %4$s, but no status was sent because the %5$s did not meet the status conditions. If you want this %6$s to be sent to %7$s, navigate to <a href=\"%8$s\" target=\"_blank\">%9$s > Settings > %10$s Tab > %11$s Action Tab</a>, ensuring that no Conditions are set on the defined statuses."
 msgstr ""
 
 #. translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish)
-#: lib/includes/class-wp-to-social-pro-publish.php:624
+#: lib/includes/class-wp-to-social-pro-publish.php:628
 msgid "No Plugin Settings are defined for sending %1$s to %2$s when you %3$s a %4$s. To send statuses to %5$s on %6$s, navigate to <a href=\"%7$s\" target=\"_blank\">%8$s > Settings > %9$s Tab > %10$s Action Tab</a>, tick \"Enabled\", and also enable at least one social media profile."
 msgstr ""
 
 #. translators: Action
-#: lib/includes/class-wp-to-social-pro-publish.php:693
+#: lib/includes/class-wp-to-social-pro-publish.php:697
 msgid "The %s action is not supported."
 msgstr ""
 
 #. translators: Post ID
-#: lib/includes/class-wp-to-social-pro-publish.php:706
+#: lib/includes/class-wp-to-social-pro-publish.php:710
 msgid "No WordPress Post could be found for Post ID %s"
 msgstr ""
 
-#: lib/includes/class-wp-to-social-pro-publish.php:1881
+#: lib/includes/class-wp-to-social-pro-publish.php:1907
 msgid "Plugin Error"
 msgstr ""
 
