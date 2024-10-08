@@ -402,6 +402,13 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 			// Check data is valid.
 			foreach ( $results as $result ) {
+				// We don't support Instagram or Pinterest in the Free version.
+				if ( $this->base->plugin->name === 'wp-to-hootsuite' ) {
+					if ( $result->type === 'INSTAGRAM' || $result->type === 'PINTEREST' ) {
+						continue;
+					}
+				}
+
 				// Hootsuite doesn't support Instagram Business profiles for statuses via the API.
 				if ( $result->type === 'INSTAGRAMBUSINESS' ) {
 					continue;
@@ -583,7 +590,29 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 		// Media.
 		if ( isset( $params['media'] ) ) {
-			if ( isset( $params['media']['picture'] ) ) {
+			// Use Amazon S3 method if we have an image ID, or fallback to the ow.ly if we don't.
+			if ( isset( $params['media']['id'] ) ) {
+				// Upload the media to Hootsuite, if we haven't already for this Attachment ID.
+				if ( ! array_key_exists( $params['media']['id'], $this->media_ids ) ) {
+					$result = $this->media_upload( $params['media']['id'], $params['media']['picture'] );
+
+					// Bail if the upload failed.
+					if ( is_wp_error( $result ) ) {
+						return $result;
+					}
+
+					// Store the Amazon S3 ID.
+					$this->media_ids[ $params['media']['id'] ] = $result;
+				}
+
+				// Define the Amazon S3 ID which Hootsuite provided, so the media
+				// is included in the status.
+				$status['media'] = array(
+					array(
+						'id' => $this->media_ids[ $params['media']['id'] ],
+					),
+				);
+			} elseif ( isset( $params['media']['picture'] ) ) {
 				// Upload the media to ow.ly.
 				$result = $this->base->get_class( 'owly_api' )->photo_upload( $params['media']['picture'] );
 
@@ -604,7 +633,26 @@ class WP_To_Social_Pro_Hootsuite_API {
 		// Additional Media.
 		if ( isset( $params['extra_media'] ) ) {
 			foreach ( $params['extra_media'] as $extra_media ) {
-				if ( isset( $extra_media['photo'] ) ) {
+				// Use Amazon S3 method if we have an image ID, or fallback to the ow.ly if we don't.
+				if ( isset( $extra_media['id'] ) ) {
+					// Upload the media to Hootsuite, if we haven't already for this Attachment ID.
+					if ( ! array_key_exists( $extra_media['id'], $this->media_ids ) ) {
+						$result = $this->media_upload( $extra_media['id'], $extra_media['photo'] );
+
+						// Bail if the upload failed.
+						if ( is_wp_error( $result ) ) {
+							return $result;
+						}
+
+						// Store the Amazon S3 ID.
+						$this->media_ids[ $extra_media['id'] ] = $result;
+					}
+					// Define the Amazon S3 ID which Hootsuite provided, so the media
+					// is included in the status.
+					$status['media'][] = array(
+						'id' => $this->media_ids[ $extra_media['id'] ],
+					);
+				} elseif ( isset( $extra_media['photo'] ) ) {
 					// Upload the media to ow.ly.
 					$result = $this->base->get_class( 'owly_api' )->photo_upload( $extra_media['photo'] );
 
@@ -946,7 +994,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 		}
 
 		// Init.
-        // phpcs:disable WordPress.WP.AlternativeFunctions
+		// phpcs:disable WordPress.WP.AlternativeFunctions
 		$ch = curl_init();
 
 		// If proxy is enabled, send the request to our proxy with the URL, method and parameters.
@@ -1028,7 +1076,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 		$error     = curl_error( $ch );
 		curl_close( $ch );
 
-        // phpcs:enable
+		// phpcs:enable
 
 		// Parse the response, to return the JSON data or an WP_Error object.
 		return $this->parse_response( $response, $http_code, $params, $url );

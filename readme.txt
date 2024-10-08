@@ -1,11 +1,11 @@
 === Post to Social Media - WordPress to Hootsuite ===
 Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
-Tags: auto publish, auto post, social media automation, social media scheduling, hootsuite, promote old posts, promote posts, promote custom posts, promote selected posts, share posts, bulk share posts, share old posts, social, media, sharing, social media, social sharing, schedule, auto post, auto publish, publish, facebook, facebook post, facebook selected posts, facebook plugin, auto facebook post, post facebook, post to facebook, twitter, twitter post, tweet post twitter selected posts, tweet selected posts twitter plugin, auto twitter post, auto tweet post post twitter, post to twitter, linkedin, linkedin post, linkedin selected posts, linkedin plugin, auto linkedin post, post linkedin, post to linkedin, google, google post, google selected posts, google plugin, auto google post, post google, post to google, pinterest, pinterest post, pinterest selected posts, pinterest plugin, auto pinterest post, post pinterest, post to pinterest, best wordpress social plugin, best wordpress social sharing plugin, best social plugin, best social sharing plugin, best facebook social plugin, best twitter social plugin, best linkedin social plugin, best pinterest social plugin, best google+ social plugin, instagram, pinterest
+Tags: auto post, auto publish, social media scheduling, social media automation, buffer
 Requires at least: 5.0
-Tested up to: 6.6
+Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 1.5.6 (2024-10-08) =
+* Fix: Hootsuite API Error: #400: 5000: Unknown error occurred when attempting to publish a status with an image
 
 = 1.5.5 (2024-07-22) =
 * Added: Status: Text: Convert HTML links to plain text without link in brackets when using {excerpt}.

@@ -858,7 +858,7 @@ class WP_To_Social_Pro_Publish {
 							// Using the smallest possible image to avoid cURL timeouts.
 							'thumbnail'   => $image['thumbnail'],
 
-							// Hootsuite for Amazon S3 upload for quality tests.
+							// Hootsuite for Amazon S3 upload.
 							'id'          => $image['id'],
 						);
 						break;
