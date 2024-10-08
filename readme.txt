@@ -1,7 +1,7 @@
 === Post to Social Media - WordPress to Hootsuite ===
 Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
-Tags: auto post, auto publish, social media scheduling, social media automation, buffer
+Tags: auto post, auto publish, social media scheduling, social media automation, hootsuite
 Requires at least: 5.0
 Tested up to: 6.6.2
 Requires PHP: 7.4
