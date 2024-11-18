@@ -96,17 +96,25 @@ function wp_zinc_autocomplete_setup() {
 }
 
 /**
- * Attaches all tribute.js autocompleters
+ * Attaches all registered tribute.js autocompleters.
  *
  * @since 	1.0.0
+ *
+ * @param 	string  container   Only attach within the given container element.
  */
-function wp_zinc_autocomplete_initialize() {
+function wp_zinc_autocomplete_initialize( container ) {
 
 	wpzinc_autocompleters.forEach(
 		function ( autocompleter, i ) {
 
 			autocompleter.fields.forEach(
 				function ( field, j ) {
+
+					// If a container is supplied, only attach the autocompleter to the field within
+					// the container.
+					if ( typeof container !== 'undefined' ) {
+						field = container + ' ' + field;
+					}
 
 					autocompleter.instance.attach( document.querySelectorAll( field ) );
 

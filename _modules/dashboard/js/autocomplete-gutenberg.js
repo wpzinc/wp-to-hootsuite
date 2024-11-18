@@ -38,7 +38,8 @@ var WPZincAutocompleterControl = function ( atts ) {
 			el(
 				'option',
 				{
-					value: atts.options[ i ]
+					value: atts.options[ i ],
+					key: atts.id + '_' + i
 				},
 				atts.options[ i ]
 			)
@@ -58,7 +59,7 @@ var WPZincAutocompleterControl = function ( atts ) {
 		el(
 			'datalist',
 			{
-				id: atts.list,
+				id: atts.list
 			},
 			options
 		)

@@ -167,7 +167,6 @@
 							case 'image':
 								// If the image size we're requesting exists, use that instead.
 								if ( typeof attachment.attributes.sizes[ output_size ] !== 'undefined' ) {
-									console.log( attachment.attributes.sizes[ output_size ] );
 									attachment_url = attachment.attributes.sizes[ output_size ].url;
 								}
 
