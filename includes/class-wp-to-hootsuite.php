@@ -167,7 +167,7 @@ class WP_To_Hootsuite {
 		add_action( 'init', array( $this, 'upgrade' ), 2 );
 
 		// Localization.
-		add_action( 'plugins_loaded', array( $this, 'load_language_files' ) );
+		add_action( 'init', array( $this, 'load_language_files' ) );
 
 	}
 

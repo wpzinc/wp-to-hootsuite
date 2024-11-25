@@ -3,7 +3,7 @@ Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
 Tags: auto post, auto publish, social media scheduling, social media automation, hootsuite
 Requires at least: 5.0
-Tested up to: 6.6.2
+Tested up to: 6.7.1
 Requires PHP: 7.4
 Stable tag: 1.5.6
 License: GPLv2 or later
@@ -87,6 +87,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 1.5.7 (2024-11-25) =
+* Fix: Notice: Function _load_textdomain_just_in_time was called incorrectly in WordPress 6.7 and higher
 
 = 1.5.6 (2024-10-08) =
 * Fix: Hootsuite API Error: #400: 5000: Unknown error occurred when attempting to publish a status with an image
