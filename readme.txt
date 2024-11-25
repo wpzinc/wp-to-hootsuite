@@ -5,7 +5,7 @@ Tags: auto post, auto publish, social media scheduling, social media automation,
 Requires at least: 5.0
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.5.7
+Stable tag: 1.5.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,7 +88,7 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
-= 1.5.7 (2024-11-25) =
+= 1.5.7.1 (2024-11-25) =
 * Fix: Notice: Function _load_textdomain_just_in_time was called incorrectly in WordPress 6.7 and higher
 
 = 1.5.6 (2024-10-08) =
