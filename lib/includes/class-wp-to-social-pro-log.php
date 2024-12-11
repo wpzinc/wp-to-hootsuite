@@ -995,7 +995,7 @@ class WP_To_Social_Pro_Log {
 					break;
 
 				default:
-					$html .= '  <td class="result_message column-result_message' . ( in_array( 'result_message', $hidden, true ) ? ' hidden' : '' ) . '">' . $result['result_message'] . '</td>
+					$html .= '  <td class="result_message column-result_message' . ( in_array( 'result_message', $hidden, true ) ? ' hidden' : '' ) . '">' . nl2br( $result['result_message'] ) . '</td>
                                 <td class="status_created_at column-status_created_at' . ( in_array( 'status_created_at', $hidden, true ) ? ' hidden' : '' ) . '">&nbsp;</td>
                                 <td class="status_due_at column-status_due_at' . ( in_array( 'status_due_at', $hidden, true ) ? ' hidden' : '' ) . '">&nbsp;</td>';
 					break;

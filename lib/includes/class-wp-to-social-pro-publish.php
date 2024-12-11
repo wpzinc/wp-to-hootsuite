@@ -852,13 +852,15 @@ class WP_To_Social_Pro_Publish {
 							'title'       => $this->get_title( $post ),
 							'picture'     => $image['image'],
 							'alt_text'    => $image['alt_text'],
+							'width'       => $image['width'],
+							'height'      => $image['height'],
 
 							// Dashboard Thumbnail.
 							// Supplied, as required when specifying media with no link.
 							// Using the smallest possible image to avoid cURL timeouts.
 							'thumbnail'   => $image['thumbnail'],
 
-							// Hootsuite for Amazon S3 upload.
+							// Hootsuite for Amazon S3 upload for quality tests.
 							'id'          => $image['id'],
 						);
 						break;
