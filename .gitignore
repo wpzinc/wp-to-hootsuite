@@ -1,6 +1,7 @@
 .DS_Store
 .env
 .env.testing
+config.codekit3
 codeception.yml
 composer.lock
 phpstan.neon
