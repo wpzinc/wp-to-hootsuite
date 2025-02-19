@@ -4761,6 +4761,14 @@
       "oAP" : "\/tests\/nginx\/php-8.2.conf",
       "oF" : 0
     },
+    "\/tests\/nginx\/php-8.3.conf" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/tests\/nginx\/php-8.3.conf",
+      "oF" : 0
+    },
     "\/tests\/unit.suite.yml" : {
       "cB" : 0,
       "ft" : 8192,
