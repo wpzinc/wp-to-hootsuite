@@ -68,13 +68,12 @@ class WP_To_Hootsuite {
 		$this->plugin->account           = 'Hootsuite';
 		$this->plugin->version           = WP_TO_HOOTSUITE_PLUGIN_VERSION;
 		$this->plugin->buildDate         = WP_TO_HOOTSUITE_PLUGIN_BUILD_DATE;
-		$this->plugin->requires          = '5.0';
-		$this->plugin->tested            = '6.1.1';
 		$this->plugin->folder            = WP_TO_HOOTSUITE_PLUGIN_PATH;
 		$this->plugin->url               = WP_TO_HOOTSUITE_PLUGIN_URL;
 		$this->plugin->documentation_url = 'https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro';
 		$this->plugin->support_url       = 'https://www.wpzinc.com/support';
 		$this->plugin->upgrade_url       = 'https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro';
+		$this->plugin->logo              = WP_TO_HOOTSUITE_PLUGIN_URL . 'lib/assets/images/icons/hootsuite-dark.svg';
 		$this->plugin->review_name       = 'wp-to-hootsuite';
 		$this->plugin->review_notice     = sprintf(
 			/* translators: Plugin Name */
@@ -166,8 +165,36 @@ class WP_To_Hootsuite {
 		add_action( 'init', array( $this, 'initialize' ), 1 );
 		add_action( 'init', array( $this, 'upgrade' ), 2 );
 
+		// Admin Menus.
+		add_action( $this->plugin->filter_name . '_admin_admin_menu', array( $this, 'admin_menus' ) );
+
 		// Localization.
 		add_action( 'init', array( $this, 'load_language_files' ) );
+
+	}
+
+	/**
+	 * Register menus and submenus.
+	 *
+	 * @since   1.5.8
+	 *
+	 * @param   string $minimum_capability     Minimum required capability.
+	 */
+	public function admin_menus( $minimum_capability ) {
+
+		// Menus.
+		add_menu_page( $this->plugin->displayName, $this->plugin->displayName, $minimum_capability, $this->plugin->name . '-settings', array( $this->get_class( 'admin' ), 'settings_screen' ), $this->plugin->url . 'lib/assets/images/icons/' . strtolower( $this->plugin->account ) . '-light.svg' );
+
+		// Register Submenu Pages.
+		$settings_page = add_submenu_page( $this->plugin->name . '-settings', __( 'Settings', 'wp-to-hootsuite' ), __( 'Settings', 'wp-to-hootsuite' ), $minimum_capability, $this->plugin->name . '-settings', array( $this->get_class( 'admin' ), 'settings_screen' ) );
+
+		// Logs.
+		if ( $this->get_class( 'log' )->is_enabled() ) {
+			$log_page = add_submenu_page( $this->plugin->name . '-settings', __( 'Logs', 'wp-to-hootsuite' ), __( 'Logs', 'wp-to-hootsuite' ), $minimum_capability, $this->plugin->name . '-log', array( $this->get_class( 'admin' ), 'log_screen' ) );
+			add_action( "load-$log_page", array( $this->get_class( 'log' ), 'add_screen_options' ) );
+		}
+
+		$upgrade_page = add_submenu_page( $this->plugin->name . '-settings', __( 'Upgrade', 'wp-to-hootsuite' ), __( 'Upgrade', 'wp-to-hootsuite' ), $minimum_capability, $this->plugin->name . '-upgrade', array( $this->get_class( 'admin' ), 'upgrade_screen' ) );
 
 	}
 

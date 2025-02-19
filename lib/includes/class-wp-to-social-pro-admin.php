@@ -474,19 +474,28 @@ class WP_To_Social_Pro_Admin {
 	 */
 	public function admin_menu() {
 
-		// Menus.
-		add_menu_page( $this->base->plugin->displayName, $this->base->plugin->displayName, 'manage_options', $this->base->plugin->name . '-settings', array( $this, 'settings_screen' ), $this->base->plugin->url . 'lib/assets/images/icons/' . strtolower( $this->base->plugin->account ) . '-light.svg' );
+		// Define the minimum capability required to access settings.
+		$minimum_capability = 'manage_options';
 
-		// Register Submenu Pages.
-		$settings_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Settings', 'wp-to-hootsuite' ), __( 'Settings', 'wp-to-hootsuite' ), 'manage_options', $this->base->plugin->name . '-settings', array( $this, 'settings_screen' ) );
+		/**
+		 * Defines the minimum capability required to access the Plugin's
+		 * Menu and Sub Menus
+		 *
+		 * @since   4.3.6
+		 *
+		 * @param   string  $capability     Minimum Required Capability.
+		 * @return  string                  Minimum Required Capability
+		 */
+		$minimum_capability = apply_filters( $this->base->plugin->filter_name . '_admin_admin_menu_minimum_capability', $minimum_capability );
 
-		// Logs.
-		if ( $this->base->get_class( 'log' )->is_enabled() ) {
-			$log_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Logs', 'wp-to-hootsuite' ), __( 'Logs', 'wp-to-hootsuite' ), 'manage_options', $this->base->plugin->name . '-log', array( $this, 'log_screen' ) );
-			add_action( "load-$log_page", array( $this->base->get_class( 'log' ), 'add_screen_options' ) );
-		}
-
-		$upgrade_page = add_submenu_page( $this->base->plugin->name . '-settings', __( 'Upgrade', 'wp-to-hootsuite' ), __( 'Upgrade', 'wp-to-hootsuite' ), 'manage_options', $this->base->plugin->name . '-upgrade', array( $this, 'upgrade_screen' ) );
+		/**
+		 * Add settings menus and sub menus for the Plugin's settings.
+		 *
+		 * @since   5.2.4
+		 *
+		 * @param   string  $minimum_capability     Minimum capability required.
+		 */
+		do_action( $this->base->plugin->filter_name . '_admin_admin_menu', $minimum_capability );
 
 	}
 

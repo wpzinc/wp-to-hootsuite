@@ -1825,7 +1825,7 @@ class WP_To_Social_Pro_Publish {
 	/**
 	 * Applies the given character limit to the given text
 	 *
-	 * @sine    3.7.3
+	 * @since   3.7.3
 	 *
 	 * @param   string $text               Text.
 	 * @param   int    $character_limit    Character Limit.
@@ -1844,7 +1844,9 @@ class WP_To_Social_Pro_Publish {
 		}
 
 		// Limit text.
-		$text = substr( $text, 0, $character_limit );
+		// Use mb_substr so that emojis don't break, which would result in text not being saved
+		// by the social network when the status is sent.
+		$text = mb_substr( $text, 0, $character_limit );
 
 		/**
 		 * Filters the character limited text.

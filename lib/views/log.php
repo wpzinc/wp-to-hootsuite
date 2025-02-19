@@ -7,15 +7,19 @@
  */
 
 ?>
-<div class="wrap">
-	<h1 class="wp-heading-inline">
+<header style="--wpzinc-logo: url('<?php echo esc_attr( $this->base->plugin->logo ); ?>')">
+	<h1>
 		<?php echo esc_html( $this->base->plugin->displayName ); ?>
 
 		<span>
 			<?php esc_html_e( 'Logs', 'wp-to-hootsuite' ); ?>
 		</span>
 	</h1>
+</header>
 
+<hr class="wp-header-end" />
+
+<div class="wrap">
 	<?php
 	// Search Subtitle.
 	if ( $table->is_search() ) {

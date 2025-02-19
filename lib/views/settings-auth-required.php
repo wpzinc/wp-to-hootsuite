@@ -8,12 +8,21 @@
  */
 
 ?>
-<div class="wrap">
-	<h1 class="wp-heading-inline">
+<header style="--wpzinc-logo: url('<?php echo esc_attr( $this->base->plugin->logo ); ?>')">
+	<h1>
 		<?php echo esc_html( $this->base->plugin->displayName ); ?>
-	</h1>
 
+		<span>
+			<?php esc_html_e( 'Settings', 'wp-to-hootsuite' ); ?>
+		</span>
+	</h1>
+</header>
+
+<div class="wrap">
 	<div class="wrap-inner">
+		<!-- Notices -->
+		<hr class="wp-header-end" />
+
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-1">
 				<div id="post-body-content">

@@ -7,32 +7,34 @@
  */
 
 ?>
-<div class="wrap">
-	<h1 class="wp-heading-inline">
+<header style="--wpzinc-logo: url('<?php echo esc_attr( $this->plugin->logo ); ?>')">
+	<h1>
 		<?php echo esc_html( $this->plugin->displayName ); ?>
 
 		<span>
 			<?php esc_html_e( 'Import &amp; Export', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n ?>
 		</span>
 	</h1>
+</header>
 
-	<hr class="wp-header-end" />
+<hr class="wp-header-end" />
 
-	<?php
-	// Notices.
-	if ( isset( $this->message ) && ! empty( $this->message ) ) {
-		?>
-		<div class="updated notice"><p><?php echo esc_html( $this->message ); ?></p></div>  
-		<?php
-	}
-	if ( isset( $this->error_message ) && ! empty( $this->error_message ) ) {
-		?>
-		<div class="error notice"><p><?php echo esc_html( $this->error_message ); ?></p></div>  
-		<?php
-	}
-	?>
-
+<div class="wrap">
 	<div class="wrap-inner">
+		<?php
+		// Notices.
+		if ( isset( $this->message ) && ! empty( $this->message ) ) {
+			?>
+			<div class="updated notice"><p><?php echo esc_html( $this->message ); ?></p></div>  
+			<?php
+		}
+		if ( isset( $this->error_message ) && ! empty( $this->error_message ) ) {
+			?>
+			<div class="error notice"><p><?php echo esc_html( $this->error_message ); ?></p></div>  
+			<?php
+		}
+		?>
+
 		<!-- Tabs -->
 		<h2 class="nav-tab-wrapper wpzinc-horizontal-tabbed-ui">
 			<a href="<?php echo esc_url( $this->plugin->documentation_url ); ?>" class="nav-tab last documentation" rel="noopener" target="_blank">
@@ -76,7 +78,7 @@
 								</ul>
 
 								<!-- Content -->
-								<div id="import-export-container" class="wpzinc-nav-tabs-content no-padding">
+								<div id="import-export-container" class="wpzinc-nav-tabs-content">
 									<!-- Import -->
 									<div id="import" class="panel">
 										<div class="postbox">
@@ -164,5 +166,5 @@
 			</div> 
 			<!-- /poststuff -->
 		</form>
-	</div><!-- /.wrap-inner -->
+	</div>
 </div>

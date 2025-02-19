@@ -37,290 +37,165 @@ body#wpzinc-error-page {
 }
 
 /**
- * About Screen UI
+ * New Settings UI: Settings Screens
+ * - Excludes Post and Taxonomy Types.
  */
-.about-wrap {
-	.about-text {
-		min-height: auto;
-	}
+body.wpzinc {
+	background: #f0f0f1;
 
-	form {
-		label {
-			display: block;
-			margin: 0 200px 20px 0;
-			
-			.description {
-				margin: 5px 0 0 25px;
+	/**
+ 	 * Screen Options
+ 	 * - Add left margin so it's not tight to the admin menu
+ 	 */
+ 	#screen-meta {
+ 		margin-left: 22px;
+ 	}
+
+	#wpcontent {
+ 		padding-left: 0;
+ 	
+		#wpbody-content {
+			padding-left: 0;
+
+			/**
+			 * Header
+			 * - Used in settings screens and WP_List_Tables, excluding CPT's and
+			 * excluding Custom Taxonomies.
+			 */
+			> header {
+				height: 98px;
+				margin: 0 0 10px 0;
+				padding: 0 20px;
+				background-image: var(--wpzinc-logo);
+				background-size: 40px auto;
+				background-position: 30px 50%;
+				background-repeat: no-repeat;
+				background-color: #ffffff;
+
+				h1 {
+					float: left;
+					margin: 0;
+					padding: 0;
+					font-size: 24px;
+					font-weight: 600;
+					color: #3d3d3d;
+					line-height: 98px;
+					text-indent: 70px;
+
+					span {
+						color: #6e6e6e;
+					}
+				}
+
+				a.wpzinc-docs {
+					float: right;
+					line-height: 98px;
+					padding: 0 20px;
+					font-weight: 400;
+					color: #144264;
+					text-decoration: none;
+				}
 			}
 
-			input[type=text] {
-				width: 100%;
-				margin: 0 0 0 25px;
+			/**
+			 * Content Wrap
+			 */
+			.wrap {
+				margin: 0;
+
+				/**
+				 * Notices immediately inside the .wrap have incorrect margins
+				 * applied to them in WordPress.
+				 */
+				> .notice,
+				> .js-notices > .notice {
+					margin: 5px 15px 2px 15px;
+				}
+
+				@import "custom-post-tax-types";
+
+				/**
+				 * Search Results Sub Title
+				 */
+				span.subtitle {
+					position: absolute;
+					left: 0;
+						right: 0;
+						margin: 20px 0;
+					font-style: italic;
+					max-width: 50%;
+				}
+
+				/**
+				 * Settings screens
+				 */
+				.wrap-inner {
+					margin: 0 20px;
+
+					form#posts-filter {
+						margin: 0;
+					}
+				}
+
+				/**
+				 * Section
+				 */
+				.postbox {
+					background: #fff;
+					margin: 0 0 30px 0;
+					padding: 0;
+				}
+
+				/**
+				 * Modern Settings Sections
+				 */
+				form.wpzinc-settings-ui {
+					.postbox {
+						margin: 0 0 30px 0;
+						padding: 30px;
+						font-size: 14px;
+						border-radius: 8px;
+						border: none;
+
+						h2 {
+							margin: 0 0 30px 0;
+						    padding: 0 0 30px 0;
+						    font-size: 24px;
+						    font-weight: 600;
+						    border-bottom: 1px solid #e3e3e3;
+						    color: #3d3d3d;
+						}
+					}
+				}
+
+				/**
+				 * Buttons
+				 */
+				p.submit {
+					margin-bottom: 20px;
+					padding: 0;
+				}
+				
 			}
 		}
 	}
 }
 
 /**
- * Settings UI
- * - body.wpzinc is applied when we're viewing a Plugin Screen, allowing us
- * to define a full width <header>, and move the margin and padding from #wpcontent
- * and .wrap into a new div.wrap-inner which the Plugin outputs.
- */
+* Settings UI: Gutenberg
+*/
 body.wpzinc {
-	#wpcontent {
- 		padding-left: 0;
- 	}
-
- 	/**
- 	 * Screen Options
- 	 */
- 	#screen-meta {
- 		margin-left: 22px;
- 	}
-
- 	/**
- 	 * Notices
- 	 * - Hide until they are within the .wrap, to avoid a flash on load
- 	 */
- 	div.notice {
- 		display: none;
- 	}
-
-	.wrap {
-		margin: 0;
-
-		/**
-		 * Plugin Name
-		 */
-		h1,
-		.wp-heading-inline {
-			display: block;
-			width: 100%;
-			margin: 0 0 20px 0;
-			padding: 20px 50px 20px 70px;
-			background-color: #1c9bd7;
-			color: #fff;
-			box-sizing: border-box;
-
-			font-size: 23px;
-			font-weight: 300;
-			line-height: 29px;
-
-			/**
-			 * Screen / Panel / Tab Name
-			 */
-			span {
-				display: block;
-				line-height: 20px;
-				margin: 0;
-				font-size: 16px;
-				font-weight: 300;
-				color: #fff;
-			}
-
-			/**
-			* Dashicon
-			*/
-			&.dashicons-before {
-				&::before {
-					position: absolute;
-					left: 20px;
-					font-size: 40px;
-				}
-			}
-		}
-
-		/**
-		 * 'Add New' style buttons that act as a dropdown
-		 */
-		.wpzinc-dropdown {
-			position: relative;
-			display: inline-block;
-			width: 140px;
-			padding: 0;
-
-			a {
-				display: block;
-				padding: 0 8px;
-				top: 0;
-				line-height: 27px;
-				text-decoration: none;
-			}
-
-			.dashicons {
-				float: right;
-				line-height: 27px;
-			}
-
-			.wpzinc-dropdown-submenu {
-				left: -1px;
-				visibility: hidden;
-				position: absolute;
-				z-index: 99999;
-				width: 140px;
-				background-color: #f3f5f6;
-				border-left: 1px solid #0071a1;
-				border-right: 1px solid #0071a1;
-				border-bottom: 1px solid #0071a1;
-
-				a {
-					display: block;
-					font-weight: 400;
-					cursor: pointer;
-
-					&:hover {
-						background-color: #fff;
-					}
-				}
-			}
-
-			&:hover {
-				.wpzinc-dropdown-submenu {
-					visibility: visible;
-					display: block;
-				}
-			}
-		}
-
-		/**
-		 * Search Results Sub Title
-		 */
-		span.subtitle {
-			position: absolute;
-			right: 20px;
-			font-style: italic;
-			max-width: 50%;
-
-			/**
-			 * Left aligned
-			 */
-			&.left {
-				left: 0;
-				right: 0;
-				margin: 20px 0;
-			}
-		}
-
-		/**
-		 * Notices
-		 */
-		div.notice {
-			margin: 20px 20px 15px 22px;
-
-			&:not(.hidden) {
-				display: block;
-			}
-		}
-
-		/**
-		 * Inline Notices
-		 * - These are not shown / hidden / moved by WordPress JS
-		 */
-		div.notice-inline {
-			background: #fff;
-			border-left: 4px solid #fff;
-			box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-			margin: 20px 0 0 0;
-			padding: 1px 12px;
-
-			&.notice-success {
-				border-left-color: #46b450;
-			}
-			&.notice-warning {
-				border-left-color: #ffb900;
-			}
-			&.notice-error {
-				border-left-color: #dc3232;
-			}
-		}
-
-		/**
-		 * Taxonomy List
-		 */
-		form.search-form {
-			margin-left: 22px;
-			margin-right: 20px;
-		}
-		#col-container {
-			margin-left: 22px;
-			margin-right: 20px;
-
-			form#posts-filter {
-				margin-left: 0;
-				margin-right: 0;
-			}
-		}
-
-		/**
-		 * WP List Table: Buttons
-		 */
-		.page-title-action {
-			&:nth-child(2) {
-				margin-left: 22px;
-			}
-		}
-
-		/**
-		 * WP List Table: Buttons Dropdown (e.g. Gutenberg / Classic Editor Add New Button)
-		 */
-		#split-page-title-action {
-			margin-left: 22px;
-		}
-
-		/**
-		 * WP List Table: Filters
-		 */
-		ul.subsubsub {
-			margin-left: 22px;
-		}
-
-		/**
-		 * WP List Table: Table
-		 */
-		form#posts-filter {
-			margin: 15px 20px 20px 22px;
-
-			div.tablenav.top {
-				padding: 6px 0 10px 0;
-			}
-			div.tablenav.bottom {
-				padding: 6px 0 0 0;
-			}
-		}
-
-		/**
-		 * Add / Edit: Form
-		 */
-		form#post,
-		form#edittag {
-			margin: 20px 20px 0 22px;
-		}
-
-		/**
-		 * Inner Wrapper
-		 * - Uses the margin / padding that WordPress would apply to #wpcontent and .wrap
-		 */
-		.wrap-inner {
-			margin: 10px 20px 0 2px;
-			padding-left: 20px;
-		}
-
-		/**
-		 * Postboxes
-		 */
-		.postbox {
-			box-shadow: none;
-		}
-	}
-
 	/**
-	 * TinyMCE Editor
-	 * - Adds spacing between button groups, where the separator (pipe) symbol is used
+	 * Force selectize elements to be 100% width
 	 */
-	.mce-btn-group:not(:first-child) {
-		margin-left: 10px !important;
-		padding-left: 5px !important;
+	.components-base-control {
+		&.wpzinc-selectize-freeform,
+		&.wpzinc-selectize-drag-drop,
+		&.wpzinc-selectize-search,
+		&.wpzinc-selectize-api,
+		&.wpzinc-selectize {
+			width: 100%;
+		}
 	}
 }
 
@@ -537,14 +412,36 @@ ul.wpzinc-tinymce-autocomplete {
  * - Extends WordPress' .nav-tab-wrapper class
  */
 h2.wpzinc-horizontal-tabbed-ui.nav-tab-wrapper {
+	margin: 0 0 20px 0;
+	padding: 0;
+	border-bottom: 1px solid #d0d0cf;
+
 	&.needs-js {
 		display: none;
 	}
 
 	a.nav-tab {
 		position: relative;
-		margin-right: 5px;
+		display: inline-block;
+		margin: 0 5px 0 0;
+		padding: 0 20px;
+		height: 64px;
+		line-height: 64px;
+		text-decoration: none;
+		font-size: 14px;
+		font-weight: 600;
+		color: #565656;
+		border: none;
+		background: none;
 
+		&:hover {
+			color: #144264;
+			background: #e7e7e7
+		}
+		&.nav-tab-active {
+			color: #144264;
+			border-bottom: 1px solid #4c596d;
+		}
 		&.enabled {
 			color: green;
 		}
@@ -553,6 +450,7 @@ h2.wpzinc-horizontal-tabbed-ui.nav-tab-wrapper {
 		}
 		&.last {
 			float: right;
+			margin: 0;
 		}
 
 		/**
@@ -565,6 +463,13 @@ h2.wpzinc-horizontal-tabbed-ui.nav-tab-wrapper {
 
 		span.text-mobile {
 			display: none;
+		}
+
+		/**
+		 * Dashicons
+		 */
+		span.dashicons {
+			vertical-align: middle;
 		}
 
 		/**
@@ -615,7 +520,7 @@ div.wpzinc-vertical-tabbed-ui {
 	 * We force styles here as Gutenberg meta boxes might not have borders etc
 	 */
     border: 1px solid $wpzinc-border-color !important;
-	background: #f7f7f7;
+	background: #f7f7f7 !important;
 
 	&.no-border {
 		border: none !important;
@@ -744,7 +649,7 @@ div.wpzinc-vertical-tabbed-ui {
 				    color: #444;
 				    border-top: 1px solid $wpzinc-border-color;
 				    border-bottom: 1px solid $wpzinc-border-color;
-				    border-right: 1px solid #fff;
+				    border-right: 1px solid #f9f7f4;
 				    background-color: #fff;
 				    background-position: 20px 50%;
 					background-repeat: no-repeat;
@@ -764,7 +669,7 @@ div.wpzinc-vertical-tabbed-ui {
 			    }
 
 			    &:hover {
-			    	background-color: #fefefe;
+			    	background-color: #f9f7f4;
 			    }
 
 			    &:focus {
@@ -786,7 +691,6 @@ div.wpzinc-vertical-tabbed-ui {
 	div.wpzinc-nav-tabs-content {
 		grid-area: content;
 		margin: 0;
-		padding: 20px;
 		background: #fff;
 	    border-left: 1px solid $wpzinc-border-color;
 
@@ -794,10 +698,6 @@ div.wpzinc-vertical-tabbed-ui {
 	    	content: "";
     		display: table;
     		clear: both;
-	    }
-
-	    &.no-padding {
-	    	padding: 0;
 	    }
 
 	    div.postbox {

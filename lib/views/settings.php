@@ -7,15 +7,17 @@
  */
 
 ?>
-<div class="wrap">
-	<h1 class="wp-heading-inline">
+<header style="--wpzinc-logo: url('<?php echo esc_attr( $this->base->plugin->logo ); ?>')">
+	<h1>
 		<?php echo esc_html( $this->base->plugin->displayName ); ?>
 
 		<span>
 			<?php esc_html_e( 'Settings', 'wp-to-hootsuite' ); ?>
 		</span>
 	</h1>
+</header>
 
+<div class="wrap">
 	<?php
 	// Output notices.
 	$this->base->get_class( 'notices' )->set_key_prefix( $this->base->plugin->filter_name . '_' . wp_get_current_user()->ID );
@@ -29,6 +31,9 @@
 	<div class="js-notices"></div>
 
 	<div class="wrap-inner">
+		<!-- Notices -->
+		<hr class="wp-header-end" />
+
 		<!-- Tabs -->
 		<h2 class="nav-tab-wrapper wpzinc-horizontal-tabbed-ui">
 			<!-- Settings -->
