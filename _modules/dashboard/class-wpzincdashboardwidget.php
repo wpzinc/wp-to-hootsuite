@@ -656,11 +656,11 @@ class WPZincDashboardWidget {
 		// Build args.
 		// phpcs:disable WordPress.Security.NonceVerification
 		$args = array(
-			'product'      => sanitize_text_field( $_REQUEST['product'] ),
-			'version'      => sanitize_text_field( $_REQUEST['version'] ),
-			'reason'       => sanitize_text_field( $_REQUEST['reason'] ),
-			'reason_text'  => sanitize_text_field( $_REQUEST['reason_text'] ),
-			'reason_email' => sanitize_text_field( $_REQUEST['reason_email'] ),
+			'product'      => ( isset( $_REQUEST['product'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['product'] ) ) : '' ),
+			'version'      => ( isset( $_REQUEST['version'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['version'] ) ) : '' ),
+			'reason'       => ( isset( $_REQUEST['reason'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['reason'] ) ) : '' ),
+			'reason_text'  => ( isset( $_REQUEST['reason_text'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['reason_text'] ) ) : '' ),
+			'reason_email' => ( isset( $_REQUEST['reason_email'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['reason_email'] ) ) : '' ),
 			'site_url'     => str_replace( wp_parse_url( get_bloginfo( 'url' ), PHP_URL_SCHEME ) . '://', '', get_bloginfo( 'url' ) ),
 		);
 		// phpcs:enable
@@ -732,7 +732,7 @@ class WPZincDashboardWidget {
 		if ( ! isset( $_REQUEST['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return $text;
 		}
-		$page = sanitize_text_field( $_REQUEST['page'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		$page = sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		if ( strpos( $page, $this->plugin->name ) === false ) {
 			return $text;
 		}
@@ -923,7 +923,7 @@ class WPZincDashboardWidget {
 			return new WP_Error( 'import_export_nonce_missing', __( 'nonce field is missing. Settings NOT saved.', $this->plugin->name ) ); // phpcs:ignore WordPress.WP.I18n
 		}
 
-		if ( ! wp_verify_nonce( $_POST[ $this->plugin->name . '_nonce' ], $this->plugin->name ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( $_POST[ $this->plugin->name . '_nonce' ] ), $this->plugin->name ) ) {
 			// Invalid nonce.
 			return new WP_Error( 'import_export_nonce_invalid', __( 'Invalid nonce specified. Settings NOT saved.', $this->plugin->name ) ); // phpcs:ignore WordPress.WP.I18n
 		}
@@ -943,8 +943,12 @@ class WPZincDashboardWidget {
 			$this->error_message = __( 'No file was uploaded', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
 			return;
 		}
+		if ( ! isset( $_FILES['import']['type'] ) || ! isset( $_FILES['import']['tmp_name'] ) || ! isset( $_FILES['import']['size'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$this->error_message = __( 'Could not determine file type', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
+			return;
+		}
 
-		if ( $_FILES['import']['error'] !== 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( isset( $_FILES['import']['error'] ) && $_FILES['import']['error'] !== 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->error_message = __( 'Error when uploading file.', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
 			return;
 		}
@@ -957,7 +961,7 @@ class WPZincDashboardWidget {
 			case 'application/zip':
 				// Open ZIP file.
 				$zip = new ZipArchive();
-				if ( $zip->open( $_FILES['import']['tmp_name'] ) !== true ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				if ( $zip->open( $_FILES['import']['tmp_name'] ) !== true ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					$this->error_message = __( 'Could not extract the supplied ZIP file.', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
 					return;
 				}
@@ -977,8 +981,8 @@ class WPZincDashboardWidget {
 			default:
 				// Read file.
 				// phpcs:disable WordPress.WP.AlternativeFunctions
-				$handle = fopen( $_FILES['import']['tmp_name'], 'r' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-				$json   = fread( $handle, $_FILES['import']['size'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$handle = fopen( $_FILES['import']['tmp_name'], 'r' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$json   = fread( $handle, sanitize_text_field( $_FILES['import']['size'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				fclose( $handle );
 				// phpcs:enable
 
@@ -1046,6 +1050,11 @@ class WPZincDashboardWidget {
 			return;
 		}
 
+		// Bail if no format specified.
+		if ( ! isset( $_POST['format'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return;
+		}
+
 		// Bail if nonce check fails.
 		$result = $this->import_export_security_check();
 		if ( is_wp_error( $result ) ) {
@@ -1068,7 +1077,7 @@ class WPZincDashboardWidget {
 		$data = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_export', $data, $_POST ); // phpcs:ignore WordPress.NamingConventions.ValidHookName,WordPress.Security.NonceVerification
 
 		// Force a file download, depending on the export format.
-		switch ( sanitize_text_field( $_POST['format'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		switch ( sanitize_text_field( wp_unslash( $_POST['format'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			/**
 			 * JSON, Zipped.
 			 */
@@ -1186,7 +1195,7 @@ class WPZincDashboardWidget {
 		}
 
 		// Sanitize page.
-		$page = sanitize_text_field( $_GET['page'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 
 		// Redirect to Support.
 		if ( $page === $this->plugin->name . '-support' ) {
