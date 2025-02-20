@@ -18,7 +18,9 @@
 	height: 98px;
 	margin: 0 0 10px 0;
 	padding: 0 20px;
-	background: var(--wpzinc-logo) 30px 50% no-repeat;
+	background-image: var(--wpzinc-logo, url('../images/icons/logo.svg'));
+	background-position: 30px 50%;
+	background-repeat: no-repeat;
 	background-size: 40px auto;
 	background-color: #ffffff;
 	font-size: 24px;
