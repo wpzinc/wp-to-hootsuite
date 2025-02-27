@@ -22,12 +22,17 @@
 	background-position: 30px 50%;
 	background-repeat: no-repeat;
 	background-size: 40px auto;
-	background-color: #ffffff;
+	background-color: var(--wpzinc-header-background-color, #ffffff);
 	font-size: 24px;
 	font-weight: 600;
-	color: #3d3d3d;
+	color: var(--wpzinc-header-secondary-text-color, #6e6e6e);
 	line-height: 98px;
 	text-indent: 70px;
+
+	&::before {
+		content: var(--wpzinc-plugin-display-name, 'WP Zinc');
+		color: var(--wpzinc-header-primary-text-color, #3d3d3d);
+	}
 
 	+.page-title-action {
 		margin-left: 20px;

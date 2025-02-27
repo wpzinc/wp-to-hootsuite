@@ -17,18 +17,6 @@
       "oAP" : "\/_modules\/dashboard\/class-wpzincdashboardwidget.php",
       "oF" : 0
     },
-    "\/_modules\/dashboard\/css\/_custom-post-tax-types.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 1,
-      "oAP" : "\/_modules\/dashboard\/css\/_custom-post-tax-types-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
     "\/_modules\/dashboard\/css\/admin.css" : {
       "aP" : 1,
       "bl" : 0,

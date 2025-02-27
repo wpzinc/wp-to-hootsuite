@@ -5,7 +5,7 @@ Tags: auto post, auto publish, social media scheduling, social media automation,
 Requires at least: 5.0
 Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 1.5.8
+Stable tag: 1.5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 1.5.9 (2025-02-27) =
+* Added: Optimized admin CSS for better performance
 
 = 1.5.8 (2025-02-19) =
 * Added: Updated UI

@@ -70,7 +70,7 @@ body.wpzinc {
 				background-size: 40px auto;
 				background-position: 30px 50%;
 				background-repeat: no-repeat;
-				background-color: #ffffff;
+				background-color: var(--wpzinc-header-background-color, #ffffff);
 
 				h1 {
 					float: left;
@@ -78,12 +78,12 @@ body.wpzinc {
 					padding: 0;
 					font-size: 24px;
 					font-weight: 600;
-					color: #3d3d3d;
+					color: var(--wpzinc-header-primary-text-color, #3d3d3d);
 					line-height: 98px;
 					text-indent: 70px;
 
 					span {
-						color: #6e6e6e;
+						color: var(--wpzinc-header-secondary-text-color, #6e6e6e);
 					}
 				}
 

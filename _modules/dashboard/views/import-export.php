@@ -7,7 +7,7 @@
  */
 
 ?>
-<header style="--wpzinc-logo: url('<?php echo esc_attr( $this->plugin->logo ); ?>')">
+<header>
 	<h1>
 		<?php echo esc_html( $this->plugin->displayName ); ?>
 
