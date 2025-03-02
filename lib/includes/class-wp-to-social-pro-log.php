@@ -184,6 +184,11 @@ class WP_To_Social_Pro_Log {
 			return;
 		}
 
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return;
+		}
+
 		// Get bulk action from the fields that might contain it.
 		$bulk_action = array_values(
 			array_filter(
@@ -270,16 +275,21 @@ class WP_To_Social_Pro_Log {
 			return;
 		}
 
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return;
+		}
+
 		$params = array();
 		foreach ( $this->base->get_class( 'common' )->get_log_filters() as $filter ) {
-			if ( ! isset( $_POST[ $filter ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( ! isset( $_POST[ $filter ] ) ) {
 				continue;
 			}
-			if ( empty( $_POST[ $filter ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( empty( $_POST[ $filter ] ) ) {
 				continue;
 			}
 
-			$params[ $filter ] = esc_html( $_POST[ $filter ] ); // phpcs:ignore WordPress.Security.NonceVerification
+			$params[ $filter ] = esc_html( $_POST[ $filter ] );
 		}
 
 		// If params don't exist, exit.

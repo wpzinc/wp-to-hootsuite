@@ -123,9 +123,18 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 		}
 
 		submit_button( __( 'Apply', 'wp-to-hootsuite' ), 'action', '', false, array( 'id' => 'doaction' ) );
+
+		$clear_logs_url = add_query_arg(
+			array(
+				'page'         => $this->base->plugin->name . '-log',
+				'bulk_action3' => 'delete_all',
+				'_wpnonce'     => wp_create_nonce( 'bulk-wp-to-social-log' ),
+			),
+			admin_url( 'admin.php' )
+		);
 		?>
 
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . $this->base->plugin->name . '-log&bulk_action3=delete_all' ) ); ?>" class="<?php echo esc_attr( $this->base->plugin->name ); ?>-clear-log button wpzinc-button-red" data-message="<?php esc_html_e( 'Are you sure you want to clear ALL logs?', 'wp-to-hootsuite' ); ?>">
+		<a href="<?php echo esc_url( $clear_logs_url ); ?>" class="<?php echo esc_attr( $this->base->plugin->name ); ?>-clear-log button wpzinc-button-red" data-message="<?php esc_html_e( 'Are you sure you want to clear ALL logs?', 'wp-to-hootsuite' ); ?>">
 			<?php esc_html_e( 'Clear Log', 'wp-to-hootsuite' ); ?>
 		</a>
 		<?php
