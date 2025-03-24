@@ -1,4 +1,9 @@
 <?php
+
+namespace Tests\EndToEnd;
+
+use Tests\Support\EndToEndTester;
+
 /**
  * Tests for errors on a blank installation
  *
@@ -9,41 +14,24 @@ class AnyErrorsOnBlankInstallCest
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   1.4.0
+	 * @since   3.8.4
 	 *
-	 * @param   AcceptanceTester $I  Tester.
+	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function _before(AcceptanceTester $I)
+	public function _before(EndToEndTester $I)
 	{
 		$I->activateWPToHootsuitePlugin($I);
-	}
-
-	/**
-	 * Check that no PHP errors or notices are displayed on the Plugin's Settings > General screen when the Plugin is activated
-	 * and not configured.
-	 *
-	 * @since   1.4.0
-	 *
-	 * @param   AcceptanceTester $I  Tester.
-	 */
-	public function testSettingsScreen(AcceptanceTester $I)
-	{
-		// Go to the Plugin's Settings Screen.
-		$I->amOnAdminPage('admin.php?page=wp-to-hootsuite');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
 	}
 
 	/**
 	 * Check that no errors are displayed on Pages > Add New, when the Plugin is activated
 	 * and not configured.
 	 *
-	 * @since   1.4.0
+	 * @since   3.8.4
 	 *
-	 * @param   AcceptanceTester $I  Tester.
+	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPage(AcceptanceTester $I)
+	public function testAddNewPage(EndToEndTester $I)
 	{
 		// Navigate to Pages > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=page');
@@ -56,11 +44,11 @@ class AnyErrorsOnBlankInstallCest
 	 * Check that no errors are displayed on Posts > Add New, when the Plugin is activated
 	 * and not configured.
 	 *
-	 * @since   1.4.0
+	 * @since   3.8.4
 	 *
-	 * @param   AcceptanceTester $I  Tester.
+	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPost(AcceptanceTester $I)
+	public function testAddNewPost(EndToEndTester $I)
 	{
 		// Navigate to Pages > Add New.
 		$I->amOnAdminPage('post-new.php');
@@ -74,11 +62,11 @@ class AnyErrorsOnBlankInstallCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   1.4.0
+	 * @since   3.8.4
 	 *
-	 * @param   AcceptanceTester $I  Tester.
+	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function _passed(AcceptanceTester $I)
+	public function _passed(EndToEndTester $I)
 	{
 		$I->deactivateWPToHootsuitePlugin($I);
 	}

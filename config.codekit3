@@ -3869,6 +3869,14 @@
       "oAP" : "\/codeception.dist.yml",
       "oF" : 0
     },
+    "\/codeception.yml" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/codeception.yml",
+      "oF" : 0
+    },
     "\/composer.json" : {
       "ft" : 524288,
       "oA" : 1,
@@ -4363,6 +4371,14 @@
       "oAP" : "\/phpcs.xml",
       "oF" : 0
     },
+    "\/phpstan.neon" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/phpstan.neon",
+      "oF" : 0
+    },
     "\/README.md" : {
       "cB" : 0,
       "cS" : 0,
@@ -4428,35 +4444,19 @@
       "rFN" : 0,
       "uCM" : 0
     },
-    "\/tests\/_data\/.gitkeep" : {
+    "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginActivation.fail.html" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_data\/.gitkeep",
+      "oAP" : "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginActivation.fail.html",
       "oF" : 0
     },
-    "\/tests\/_data\/dump.sql" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_data\/dump.sql",
-      "oF" : 0
-    },
-    "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginActivation.fail.html" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginActivation.fail.html",
-      "oF" : 0
-    },
-    "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginActivation.fail.png" : {
+    "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginActivation.fail.png" : {
       "ft" : 32768,
-      "iS" : 653680,
+      "iS" : 204336,
       "oA" : 0,
-      "oAP" : "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginActivation.fail.png",
+      "oAP" : "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginActivation.fail.png",
       "oF" : 0,
       "oIPL" : 0,
       "opt" : 0,
@@ -4465,19 +4465,19 @@
       "q" : 90,
       "rq" : 75
     },
-    "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginDeactivation.fail.html" : {
+    "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginDeactivation.fail.html" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginDeactivation.fail.html",
+      "oAP" : "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginDeactivation.fail.html",
       "oF" : 0
     },
-    "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginDeactivation.fail.png" : {
+    "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginDeactivation.fail.png" : {
       "ft" : 32768,
-      "iS" : 37845,
+      "iS" : 239837,
       "oA" : 0,
-      "oAP" : "\/tests\/_output\/ActivateDeactivatePluginCest.testPluginDeactivation.fail.png",
+      "oAP" : "\/tests\/_output\/Tests.EndToEnd.ActivateDeactivatePluginCest.testPluginDeactivation.fail.png",
       "oF" : 0,
       "oIPL" : 0,
       "opt" : 0,
@@ -4486,19 +4486,19 @@
       "q" : 90,
       "rq" : 75
     },
-    "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPage.fail.html" : {
+    "\/tests\/_output\/Tests.EndToEnd.AnyErrorsOnBlankInstallCest.testAddNewPage.fail.html" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPage.fail.html",
+      "oAP" : "\/tests\/_output\/Tests.EndToEnd.AnyErrorsOnBlankInstallCest.testAddNewPage.fail.html",
       "oF" : 0
     },
-    "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPage.fail.png" : {
+    "\/tests\/_output\/Tests.EndToEnd.AnyErrorsOnBlankInstallCest.testAddNewPage.fail.png" : {
       "ft" : 32768,
-      "iS" : 653680,
+      "iS" : 246401,
       "oA" : 0,
-      "oAP" : "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPage.fail.png",
+      "oAP" : "\/tests\/_output\/Tests.EndToEnd.AnyErrorsOnBlankInstallCest.testAddNewPage.fail.png",
       "oF" : 0,
       "oIPL" : 0,
       "opt" : 0,
@@ -4507,270 +4507,92 @@
       "q" : 90,
       "rq" : 75
     },
-    "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPost.fail.html" : {
+    "\/tests\/EndToEnd.suite.yml" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPost.fail.html",
+      "oAP" : "\/tests\/EndToEnd.suite.yml",
       "oF" : 0
     },
-    "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPost.fail.png" : {
-      "ft" : 32768,
-      "iS" : 653680,
-      "oA" : 0,
-      "oAP" : "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testAddNewPost.fail.png",
-      "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
-      "oT" : 1,
-      "ou" : "lpckwebp-none",
-      "q" : 90,
-      "rq" : 75
-    },
-    "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testSettingsScreen.fail.html" : {
+    "\/tests\/EndToEnd\/_bootstrap.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testSettingsScreen.fail.html",
+      "oA" : 1,
+      "oAP" : "\/tests\/EndToEnd\/_bootstrap.php",
       "oF" : 0
     },
-    "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testSettingsScreen.fail.png" : {
-      "ft" : 32768,
-      "iS" : 653680,
-      "oA" : 0,
-      "oAP" : "\/tests\/_output\/AnyErrorsOnBlankInstallCest.testSettingsScreen.fail.png",
-      "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
-      "oT" : 1,
-      "ou" : "lpckwebp-none",
-      "q" : 90,
-      "rq" : 75
-    },
-    "\/tests\/_support\/_generated\/.gitignore" : {
+    "\/tests\/EndToEnd\/ActivateDeactivatePluginCest.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/_generated\/.gitignore",
+      "oAP" : "\/tests\/EndToEnd\/ActivateDeactivatePluginCest.php",
       "oF" : 0
     },
-    "\/tests\/_support\/_generated\/AcceptanceTesterActions.php" : {
+    "\/tests\/EndToEnd\/AnyErrorsOnBlankInstallCest.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/_generated\/AcceptanceTesterActions.php",
+      "oAP" : "\/tests\/EndToEnd\/AnyErrorsOnBlankInstallCest.php",
       "oF" : 0
     },
-    "\/tests\/_support\/_generated\/FunctionalTesterActions.php" : {
+    "\/tests\/Support\/_generated\/EndToEndTesterActions.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/_generated\/FunctionalTesterActions.php",
+      "oAP" : "\/tests\/Support\/_generated\/EndToEndTesterActions.php",
       "oF" : 0
     },
-    "\/tests\/_support\/_generated\/UnitTesterActions.php" : {
+    "\/tests\/Support\/Data\/.gitkeep" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/_generated\/UnitTesterActions.php",
+      "oAP" : "\/tests\/Support\/Data\/.gitkeep",
       "oF" : 0
     },
-    "\/tests\/_support\/_generated\/WpunitTesterActions.php" : {
+    "\/tests\/Support\/Data\/dump.sql" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/_generated\/WpunitTesterActions.php",
+      "oAP" : "\/tests\/Support\/Data\/dump.sql",
       "oF" : 0
     },
-    "\/tests\/_support\/AcceptanceTester.php" : {
+    "\/tests\/Support\/EndToEndTester.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/AcceptanceTester.php",
+      "oAP" : "\/tests\/Support\/EndToEndTester.php",
       "oF" : 0
     },
-    "\/tests\/_support\/FunctionalTester.php" : {
+    "\/tests\/Support\/Helper\/Plugin.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/FunctionalTester.php",
+      "oAP" : "\/tests\/Support\/Helper\/Plugin.php",
       "oF" : 0
     },
-    "\/tests\/_support\/Helper\/Acceptance.php" : {
+    "\/tests\/Support\/Helper\/Xdebug.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/Helper\/Acceptance.php",
+      "oAP" : "\/tests\/Support\/Helper\/Xdebug.php",
       "oF" : 0
     },
-    "\/tests\/_support\/Helper\/Acceptance\/Plugin.php" : {
+    "\/tests\/Support\/IntegrationTester.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/tests\/_support\/Helper\/Acceptance\/Plugin.php",
-      "oF" : 0
-    },
-    "\/tests\/_support\/Helper\/Acceptance\/Xdebug.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_support\/Helper\/Acceptance\/Xdebug.php",
-      "oF" : 0
-    },
-    "\/tests\/_support\/Helper\/Functional.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_support\/Helper\/Functional.php",
-      "oF" : 0
-    },
-    "\/tests\/_support\/Helper\/Unit.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_support\/Helper\/Unit.php",
-      "oF" : 0
-    },
-    "\/tests\/_support\/Helper\/Wpunit.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_support\/Helper\/Wpunit.php",
-      "oF" : 0
-    },
-    "\/tests\/_support\/UnitTester.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_support\/UnitTester.php",
-      "oF" : 0
-    },
-    "\/tests\/_support\/WpunitTester.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/_support\/WpunitTester.php",
-      "oF" : 0
-    },
-    "\/tests\/acceptance.suite.yml" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/acceptance.suite.yml",
-      "oF" : 0
-    },
-    "\/tests\/acceptance\/ActivateDeactivatePluginCest.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/acceptance\/ActivateDeactivatePluginCest.php",
-      "oF" : 0
-    },
-    "\/tests\/acceptance\/AnyErrorsOnBlankInstallCest.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/acceptance\/AnyErrorsOnBlankInstallCest.php",
-      "oF" : 0
-    },
-    "\/tests\/functional.suite.yml" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/functional.suite.yml",
-      "oF" : 0
-    },
-    "\/tests\/nginx\/php-7.2.conf" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/nginx\/php-7.2.conf",
-      "oF" : 0
-    },
-    "\/tests\/nginx\/php-7.3.conf" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/nginx\/php-7.3.conf",
-      "oF" : 0
-    },
-    "\/tests\/nginx\/php-7.4.conf" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/nginx\/php-7.4.conf",
-      "oF" : 0
-    },
-    "\/tests\/nginx\/php-8.0.conf" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/nginx\/php-8.0.conf",
-      "oF" : 0
-    },
-    "\/tests\/nginx\/php-8.1.conf" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/nginx\/php-8.1.conf",
-      "oF" : 0
-    },
-    "\/tests\/nginx\/php-8.2.conf" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/nginx\/php-8.2.conf",
-      "oF" : 0
-    },
-    "\/tests\/nginx\/php-8.3.conf" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/nginx\/php-8.3.conf",
-      "oF" : 0
-    },
-    "\/tests\/unit.suite.yml" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/unit.suite.yml",
-      "oF" : 0
-    },
-    "\/tests\/wpunit.suite.yml" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/tests\/wpunit.suite.yml",
+      "oAP" : "\/tests\/Support\/IntegrationTester.php",
       "oF" : 0
     },
     "\/vendor\/antecedent\/patchwork\/box.json" : {

@@ -79,9 +79,9 @@ CREATE TABLE `wp_options` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES
-(1, 'siteurl',  'http://wpzinc-plugins.local', 'yes'),
-(2, 'home', 'http://wpzinc-plugins.local', 'yes'),
-(3, 'blogname', 'wpzinc-plugins', 'yes'),
+(1, 'siteurl',  'http://wordpress-org.local', 'yes'),
+(2, 'home', 'http://wordpress-org.local', 'yes'),
+(3, 'blogname', 'wordpress-org', 'yes'),
 (4, 'blogdescription',  'Just another WordPress site',  'yes'),
 (5, 'users_can_register', '0',  'yes'),
 (6, 'admin_email',  'dev-email@flywheel.local', 'yes'),
@@ -359,6 +359,6 @@ CREATE TABLE `wp_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 INSERT INTO `wp_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`) VALUES
-(1, 'admin',  '$P$BPKHO1xSCwu6j57sJB/p7JndeBdRVd.', 'admin',  'dev-email@flywheel.local', 'http://wpzinc-plugins.local',  '2023-07-03 13:38:12',  '', 0,  'admin');
+(1, 'admin',  '$P$BPKHO1xSCwu6j57sJB/p7JndeBdRVd.', 'admin',  'dev-email@flywheel.local', 'http://wordpress-org.local',  '2023-07-03 13:38:12',  '', 0,  'admin');
 
 -- 2023-02-17 12:37:57

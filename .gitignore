@@ -6,5 +6,6 @@ codeception.yml
 composer.lock
 phpstan.neon
 tests/_output
+tests/Support/_generated
 vendor
 *.zip

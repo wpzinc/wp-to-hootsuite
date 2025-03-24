@@ -28,6 +28,7 @@
 	color: var(--wpzinc-header-secondary-text-color, #6e6e6e);
 	line-height: 98px;
 	text-indent: 70px;
+	box-sizing: border-box;
 
 	&::before {
 		content: var(--wpzinc-plugin-display-name, 'WP Zinc');
