@@ -78,7 +78,7 @@ class WP_To_Social_Pro_Admin {
 
 		// If we've returned from the oAuth process and an error occured, add it to the notices.
 		if ( isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification
-			$oauth_error = sanitize_text_field( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] );  // phpcs:ignore WordPress.Security.NonceVerification
+			$oauth_error = sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] ) );  // phpcs:ignore WordPress.Security.NonceVerification
 			switch ( $oauth_error ) {
 				/**
 				 * Access Denied
@@ -135,7 +135,7 @@ class WP_To_Social_Pro_Admin {
 				 */
 				default:
 					$this->base->get_class( 'notices' )->add_error_notice(
-						esc_html( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] )  // phpcs:ignore WordPress.Security.NonceVerification
+						esc_html( sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] ) ) )  // phpcs:ignore WordPress.Security.NonceVerification
 					);
 					break;
 			}
@@ -143,18 +143,16 @@ class WP_To_Social_Pro_Admin {
 
 		// If an Access Token is included in the request, store it and show a success message.
 		if ( isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification
-			// Define expiry.
-			$expiry = sanitize_text_field( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-expires' ] );  // phpcs:ignore WordPress.Security.NonceVerification
+			// Define tokens and expiry.
+			$access_token  = isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification
+			$refresh_token = isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-refresh-token' ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-refresh-token' ] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification
+			$expiry        = isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-expires' ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-expires' ] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification
 			if ( $expiry > 0 ) {
-				$expiry = strtotime( '+' . sanitize_text_field( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-expires' ] ) . ' seconds' );  // phpcs:ignore WordPress.Security.NonceVerification
+				$expiry = strtotime( '+' . $expiry . ' seconds' );  // phpcs:ignore WordPress.Security.NonceVerification
 			}
 
 			// Setup API.
-			$this->base->get_class( 'api' )->set_tokens(
-				sanitize_text_field( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ), // phpcs:ignore WordPress.Security.NonceVerification
-				sanitize_text_field( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-refresh-token' ] ), // phpcs:ignore WordPress.Security.NonceVerification
-				$expiry
-			);
+			$this->base->get_class( 'api' )->set_tokens( $access_token, $refresh_token, $expiry );
 
 			// Fetch Profiles.
 			$profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time() );
@@ -166,11 +164,7 @@ class WP_To_Social_Pro_Admin {
 			}
 
 			// Test worked! Save Tokens and Expiry.
-			$this->base->get_class( 'settings' )->update_tokens(
-				sanitize_text_field( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ), // phpcs:ignore WordPress.Security.NonceVerification
-				sanitize_text_field( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-refresh-token' ] ), // phpcs:ignore WordPress.Security.NonceVerification
-				$expiry
-			);
+			$this->base->get_class( 'settings' )->update_tokens( $access_token, $refresh_token, $expiry );
 
 			// Store success message.
 			$this->base->get_class( 'notices' )->enable_store();
@@ -823,7 +817,7 @@ class WP_To_Social_Pro_Admin {
 		}
 
 		// Invalid nonce.
-		if ( ! wp_verify_nonce( $_POST[ $this->base->plugin->name . '_nonce' ], $this->base->plugin->name ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( $_POST[ $this->base->plugin->name . '_nonce' ] ), $this->base->plugin->name ) ) {
 			return new WP_Error(
 				'wp_to_social_pro_admin_save_settings_error',
 				__( 'Invalid nonce specified. Settings NOT saved.', 'wp-to-hootsuite' )
@@ -849,7 +843,7 @@ class WP_To_Social_Pro_Admin {
 
 				// Log Settings.
 				// Always force errors.
-				$log = $_POST['log'];
+				$log = isset( $_POST['log'] ) ? wp_unslash( $_POST['log'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				if ( ! isset( $log['log_level'] ) ) {
 					$log['log_level'] = array(
 						'error',
@@ -868,8 +862,15 @@ class WP_To_Social_Pro_Admin {
 			 * Post Type
 			 */
 			default:
+				if ( ! isset( $_POST[ $this->base->plugin->name ]['statuses'] ) ) {
+					return new WP_Error(
+						'wp_to_social_pro_admin_save_settings_error',
+						__( 'Statuses field is missing. Settings NOT saved.', 'wp-to-hootsuite' )
+					);
+				}
+
 				// Unslash and decode JSON field.
-				$settings = json_decode( wp_unslash( $_POST[ $this->base->plugin->name ]['statuses'] ), true );
+				$settings = json_decode( wp_unslash( $_POST[ $this->base->plugin->name ]['statuses'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 				// Save Settings for this Post Type.
 				return $this->base->get_class( 'settings' )->update_settings( $post_type, $settings );
@@ -887,7 +888,7 @@ class WP_To_Social_Pro_Admin {
 	 */
 	private function get_tab( $profiles = false ) {
 
-		$tab = ( isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'auth' ); // phpcs:ignore WordPress.Security.NonceVerification
+		$tab = ( isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'auth' ); // phpcs:ignore WordPress.Security.NonceVerification
 
 		// If we're on the Settings tab, return.
 		if ( $tab === 'auth' ) {
@@ -918,7 +919,7 @@ class WP_To_Social_Pro_Admin {
 	 */
 	private function get_post_type_tab() {
 
-		return ( isset( $_GET['type'] ) ? sanitize_text_field( $_GET['type'] ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification
+		return ( isset( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification
 
 	}
 

@@ -9,6 +9,11 @@
  * @author WP Zinc
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Provides common functionality, styling and views for Plugins.
  *
@@ -43,15 +48,6 @@ class WPZincDashboardWidget {
 	 * @var     string
 	 */
 	public $dashboard_url;
-
-	/**
-	 * Holds the deactivation endpoint URL.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @var     string
-	 */
-	private $endpoint;
 
 	/**
 	 * Flag to show the Import and Export Sub Menu
@@ -113,13 +109,11 @@ class WPZincDashboardWidget {
 	 * @since   1.0.0
 	 *
 	 * @param   object $plugin    WordPress Plugin.
-	 * @param   string $endpoint  LUM Deactivation Endpoint.
 	 */
-	public function __construct( $plugin, $endpoint = false ) {
+	public function __construct( $plugin ) {
 
 		// Plugin Details.
-		$this->plugin   = $plugin;
-		$this->endpoint = $endpoint;
+		$this->plugin = $plugin;
 
 		// Set class vars.
 		$this->dashboard_folder = plugin_dir_path( __FILE__ );
@@ -134,7 +128,7 @@ class WPZincDashboardWidget {
 
 		// Plugin Actions.
 		if ( ! isset( $this->plugin->hide_upgrade_menu ) || ! $this->plugin->hide_upgrade_menu ) {
-			add_filter( 'plugin_action_links_' . $this->plugin->name . '/' . $this->plugin->name . '.php', array( $this, 'add_action_link' ), 10, 2 );
+			add_filter( 'plugin_action_links_' . $this->plugin->name . '/' . $this->plugin->name . '.php', array( $this, 'add_action_link' ), 10, 1 );
 		}
 
 		// Reviews.
@@ -148,8 +142,8 @@ class WPZincDashboardWidget {
 		add_action( 'init', array( $this, 'export' ) );
 		add_action( 'plugins_loaded', array( $this, 'maybe_redirect' ) );
 
-		// Deactivation.
-		add_action( 'wp_ajax_wpzinc_dashboard_deactivation_modal_submit', array( $this, 'deactivation_modal_submit' ) );
+		// Permit wpzinc.com to be redirected to when using wp_safe_redirect().
+		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
 
 	}
 
@@ -396,6 +390,7 @@ class WPZincDashboardWidget {
 		wp_register_script( 'wpzinc-admin-media-library', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'media-library' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery', 'jquery-ui-sortable' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-modal', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'modal' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-notification', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'notification' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
+		wp_register_script( 'wpzinc-admin-review-notice', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'review-notice' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-selectize', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'selectize' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-synchronous-ajax', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'synchronous-ajax' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-tables', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'tables' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
@@ -425,7 +420,7 @@ class WPZincDashboardWidget {
 
 			/**
 			 * Import / Export
-			 * - Must use displayName because of whitelabelling and WordPress stupidity?
+			 * - Use of displayName is deliberate.
 			 */
 			case sanitize_title( $this->plugin->displayName ) . '_page_' . $this->plugin->name . '-import-export':
 				wp_enqueue_script( 'wpzinc-admin-tabs' );
@@ -454,7 +449,13 @@ class WPZincDashboardWidget {
 		// Otherwise use the plugin's name.
 		$slug = ( ! empty( $parent_slug ) ? $parent_slug : $this->plugin->name );
 
-		// Define minimum capability for accessing Import and Export Sub Menu.
+		/**
+		 * Filter the minimum capability for accessing Import and Export Sub Menu.
+		 *
+		 * @since   1.0.0
+		 *
+		 * @param   string  $minimum_capability   Minimum Capability.
+		 */
 		$minimum_capability = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_admin_admin_menu_minimum_capability', 'manage_options' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName
 
 		add_submenu_page( $slug, __( 'Import & Export', $this->plugin->name ), __( 'Import & Export', $this->plugin->name ), $minimum_capability, $this->plugin->name . '-import-export', array( $this, 'import_export_screen' ) ); // phpcs:ignore WordPress.WP.I18n
@@ -479,7 +480,13 @@ class WPZincDashboardWidget {
 		// Otherwise use the plugin's name.
 		$slug = ( ! empty( $parent_slug ) ? $parent_slug : $this->plugin->name );
 
-		// Define minimum capability for accessing Support Menu.
+		/**
+		 * Filter the minimum capability for accessing Support Sub Menu.
+		 *
+		 * @since   1.0.0
+		 *
+		 * @param   string  $minimum_capability   Minimum Capability.
+		 */
 		$minimum_capability = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_admin_admin_menu_minimum_capability', 'manage_options' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName
 
 		add_submenu_page( $slug, __( 'Support', $this->plugin->name ), __( 'Support', $this->plugin->name ), $minimum_capability, $this->plugin->name . '-support', array( $this, 'support_screen' ) ); // phpcs:ignore WordPress.WP.I18n
@@ -504,7 +511,13 @@ class WPZincDashboardWidget {
 		// Otherwise use the plugin's name.
 		$slug = ( ! empty( $parent_slug ) ? $parent_slug : $this->plugin->name );
 
-		// Define minimum capability for accessing Upgrade Menu.
+		/**
+		 * Filter the minimum capability for accessing Upgrade Sub Menu.
+		 *
+		 * @since   1.0.0
+		 *
+		 * @param   string  $minimum_capability   Minimum Capability.
+		 */
 		$minimum_capability = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_admin_admin_menu_minimum_capability', 'manage_options' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName
 
 		add_submenu_page( $slug, __( 'Upgrade', $this->plugin->name ), __( 'Upgrade', $this->plugin->name ), $minimum_capability, $this->plugin->name . '-upgrade', array( $this, 'upgrade_screen' ) ); // phpcs:ignore WordPress.WP.I18n
@@ -544,11 +557,10 @@ class WPZincDashboardWidget {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @param   array  $links  Action Links.
-	 * @param   string $file   Plugin File.
+	 * @param   array $links  Action Links.
 	 * @return  array           Action Links
 	 */
-	public function add_action_link( $links, $file ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	public function add_action_link( $links ) {
 
 		// Bail if the licensing class exists,as this means we're on a Pro version.
 		if ( class_exists( 'LicensingUpdateManager' ) ) {
@@ -568,11 +580,6 @@ class WPZincDashboardWidget {
 			)
 		);
 
-		// Late bind loading the deactivation modal HTML.
-		if ( $this->endpoint ) {
-			add_action( 'admin_footer', array( $this, 'output_deactivation_modal' ) );
-		}
-
 		// Add Links.
 		if ( $this->get_upgrade_url( 'plugins' ) ) {
 			$links[] = '<a href="' . esc_attr( $this->get_upgrade_url( 'plugins' ) ) . '" rel="noopener" target="_blank">' . __( 'Upgrade', $this->plugin->name ) . '</a>'; //phpcs:ignore WordPress.WP.I18n
@@ -591,89 +598,6 @@ class WPZincDashboardWidget {
 
 		// Return.
 		return $links;
-
-	}
-
-	/**
-	 * Outputs the Deactivation Modal HTML, which is displayed by Javascript.
-	 *
-	 * @since   1.0.0
-	 */
-	public function output_deactivation_modal() {
-
-		// Define the deactivation reasons.
-		$reasons = array(
-			'temporary'          => array(
-				'label'       => __( 'This is temporary / debugging an issue.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-				'placeholder' => __( 'Optional: What problem are you experiencing?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-			),
-			'not_working'        => array(
-				'label'       => __( 'Could not get the plugin to work.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-				'placeholder' => __( 'Optional: What problem are you experiencing?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-			),
-			'better_alternative' => array(
-				'label'       => __( 'Found a better plugin.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-				'placeholder' => __( 'Optional: What\'s the plugin\'s name?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-			),
-			'not_required'       => array(
-				'label'       => __( 'Don\'t need this plugin.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-				'placeholder' => __( 'Optional: What\'s one thing we could improve?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-			),
-			'other'              => array(
-				'label'       => __( 'Other.', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-				'placeholder' => __( 'Optional: What can we do better?', $this->plugin->name ), // phpcs:ignore WordPress.WP.I18n
-			),
-		);
-
-		/**
-		 * Filter the deactivation reasons.
-		 *
-		 * @since   1.0.0
-		 *
-		 * @param   array   $reasons        Reasons.
-		 * @param   string  $plugin_name    Plugin Name.
-		 * @param   object  $plugin         Plugin.
-		 */
-		$reasons = apply_filters( 'wpzinc_dashboard_output_deactivation_modal_reasons', $reasons, $this->plugin->name, $this->plugin );
-
-		// Bail if no reasons are given.
-		if ( empty( $reasons ) || count( $reasons ) === 0 ) {
-			return;
-		}
-
-		// Output modal, which will be displayed when the user clicks deactivate on this plugin.
-		require_once $this->plugin->folder . '/_modules/dashboard/views/deactivation-modal.php';
-
-	}
-
-	/**
-	 * Sends the deactivation reason.
-	 *
-	 * @since   1.0.0
-	 */
-	public function deactivation_modal_submit() {
-
-		// Build args.
-		// phpcs:disable WordPress.Security.NonceVerification
-		$args = array(
-			'product'      => ( isset( $_REQUEST['product'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['product'] ) ) : '' ),
-			'version'      => ( isset( $_REQUEST['version'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['version'] ) ) : '' ),
-			'reason'       => ( isset( $_REQUEST['reason'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['reason'] ) ) : '' ),
-			'reason_text'  => ( isset( $_REQUEST['reason_text'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['reason_text'] ) ) : '' ),
-			'reason_email' => ( isset( $_REQUEST['reason_email'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['reason_email'] ) ) : '' ),
-			'site_url'     => str_replace( wp_parse_url( get_bloginfo( 'url' ), PHP_URL_SCHEME ) . '://', '', get_bloginfo( 'url' ) ),
-		);
-		// phpcs:enable
-
-		// Send deactivation reason.
-		$response = wp_remote_get( $this->endpoint . '/index.php?' . http_build_query( $args ) );
-
-		// Return error or success, depending on the result.
-		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( $response->get_error_message(), wp_remote_retrieve_response_code( $response ) );
-		}
-
-		wp_send_json_success( wp_remote_retrieve_body( $response ) );
 
 	}
 
@@ -707,6 +631,18 @@ class WPZincDashboardWidget {
 		if ( ! $this->requested_review() ) {
 			return;
 		}
+
+		// Enqueue JS.
+		wp_enqueue_script( 'wpzinc-admin-review-notice' );
+		wp_localize_script(
+			'wpzinc-admin-review-notice',
+			'wpzinc_admin_review_notice',
+			array(
+				'plugin_name' => $this->plugin->name,
+				'action'      => esc_attr( str_replace( '-', '_', $this->plugin->name ) ) . '_dismiss_review',
+				'nonce'       => wp_create_nonce( 'wpzinc_admin_review_notice_dismiss_review' ),
+			)
+		);
 
 		// If here, display the request for a review.
 		include_once $this->dashboard_folder . '/views/review-notice.php';
@@ -822,12 +758,14 @@ class WPZincDashboardWidget {
 	 */
 	public function dismiss_review() {
 
+		// Check nonce.
+		check_ajax_referer( 'wpzinc_admin_review_notice_dismiss_review', 'nonce' );
+
+		// Mark review as dismissed.
 		update_option( $this->plugin->review_name . '-review-dismissed', 1 );
 
-		// Send success response if called via AJAX.
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-			wp_send_json_success( 1 );
-		}
+		// Send success response.
+		wp_send_json_success( 1 );
 
 	}
 
@@ -878,57 +816,26 @@ class WPZincDashboardWidget {
 	 */
 	public function import_export_screen() {
 
-		if ( ! empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// Check nonce.
-			$result = $this->import_export_security_check();
-
-			if ( is_wp_error( $result ) ) {
-				$this->error_message = $result->get_error_message();
-			} elseif ( isset( $_POST['import'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		// Check nonce.
+		if ( isset( $_POST[ $this->plugin->name . '_nonce' ] ) && wp_verify_nonce( sanitize_key( $_POST[ $this->plugin->name . '_nonce' ] ), $this->plugin->name ) ) {
+			// Import if requested.
+			if ( isset( $_POST['import'] ) ) {
 				// Import JSON.
 				$this->import();
-			} else {
-				// Import from Third Party.
-				$result = true;
-				$result = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_import_third_party', $result, $_POST ); // phpcs:ignore WordPress.NamingConventions.ValidHookName,WordPress.Security.NonceVerification
-
-				if ( is_wp_error( $result ) ) {
-					$this->error_message = $result->get_error_message();
-				} else {
-					$this->message = __( 'Settings imported.', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
-				}
 			}
 		}
 
-		// Allow Plugin to define additional import routines.
+		/**
+		 * Filter the import sources.
+		 *
+		 * @since   1.0.0
+		 *
+		 * @param   array   $import_sources   Import Sources.
+		 */
 		$import_sources = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_import_sources', array() ); // phpcs:ignore WordPress.NamingConventions.ValidHookName
 
 		// Output view.
 		include_once $this->dashboard_folder . '/views/import-export.php';
-
-	}
-
-	/**
-	 * Check the nonce before importing or exporting.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  mixed   WP_Error | bool
-	 */
-	private function import_export_security_check() {
-
-		// Check nonce.
-		if ( ! isset( $_POST[ $this->plugin->name . '_nonce' ] ) ) {
-			// Missing nonce.
-			return new WP_Error( 'import_export_nonce_missing', __( 'nonce field is missing. Settings NOT saved.', $this->plugin->name ) ); // phpcs:ignore WordPress.WP.I18n
-		}
-
-		if ( ! wp_verify_nonce( sanitize_key( $_POST[ $this->plugin->name . '_nonce' ] ), $this->plugin->name ) ) {
-			// Invalid nonce.
-			return new WP_Error( 'import_export_nonce_invalid', __( 'Invalid nonce specified. Settings NOT saved.', $this->plugin->name ) ); // phpcs:ignore WordPress.WP.I18n
-		}
-
-		return true;
 
 	}
 
@@ -939,29 +846,40 @@ class WPZincDashboardWidget {
 	 */
 	private function import() {
 
-		if ( ! is_array( $_FILES ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		// Check nonce.
+		if ( ! isset( $_POST[ $this->plugin->name . '_nonce' ] ) ) {
+			// Missing nonce.
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_POST[ $this->plugin->name . '_nonce' ] ), $this->plugin->name ) ) {
+			// Invalid nonce.
+			return;
+		}
+
+		if ( ! is_array( $_FILES ) ) {
 			$this->error_message = __( 'No file was uploaded', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
 			return;
 		}
-		if ( ! isset( $_FILES['import']['type'] ) || ! isset( $_FILES['import']['tmp_name'] ) || ! isset( $_FILES['import']['size'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! isset( $_FILES['import']['type'] ) || ! isset( $_FILES['import']['tmp_name'] ) || ! isset( $_FILES['import']['size'] ) ) {
 			$this->error_message = __( 'Could not determine file type', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
 			return;
 		}
 
-		if ( isset( $_FILES['import']['error'] ) && $_FILES['import']['error'] !== 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( isset( $_FILES['import']['error'] ) && $_FILES['import']['error'] !== 0 ) {
 			$this->error_message = __( 'Error when uploading file.', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
 			return;
 		}
 
 		// Determine if the file is JSON or ZIP.
-		switch ( $_FILES['import']['type'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		switch ( $_FILES['import']['type'] ) {
 			/**
 			 * ZIP File
 			 */
 			case 'application/zip':
 				// Open ZIP file.
 				$zip = new ZipArchive();
-				if ( $zip->open( $_FILES['import']['tmp_name'] ) !== true ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				if ( $zip->open( sanitize_text_field( wp_unslash( $_FILES['import']['tmp_name'] ) ) ) !== true ) {
 					$this->error_message = __( 'Could not extract the supplied ZIP file.', $this->plugin->name ); // phpcs:ignore WordPress.WP.I18n
 					return;
 				}
@@ -981,8 +899,8 @@ class WPZincDashboardWidget {
 			default:
 				// Read file.
 				// phpcs:disable WordPress.WP.AlternativeFunctions
-				$handle = fopen( $_FILES['import']['tmp_name'], 'r' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$json   = fread( $handle, sanitize_text_field( $_FILES['import']['size'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$handle = fopen( sanitize_text_field( wp_unslash( $_FILES['import']['tmp_name'] ) ), 'r' );
+				$json   = fread( $handle, sanitize_text_field( wp_unslash( $_FILES['import']['size'] ) ) );
 				fclose( $handle );
 				// phpcs:enable
 
@@ -1040,25 +958,29 @@ class WPZincDashboardWidget {
 	 */
 	public function export() {
 
+		// Check nonce.
+		if ( ! isset( $_POST[ $this->plugin->name . '_nonce' ] ) ) {
+			// Missing nonce.
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_POST[ $this->plugin->name . '_nonce' ] ), $this->plugin->name ) ) {
+			// Invalid nonce.
+			return;
+		}
+
 		// Bail if no POST data.
-		if ( empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( empty( $_POST ) ) {
 			return;
 		}
 
 		// Bail if not exporting.
-		if ( ! isset( $_POST['export'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! isset( $_POST['export'] ) ) {
 			return;
 		}
 
 		// Bail if no format specified.
-		if ( ! isset( $_POST['format'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			return;
-		}
-
-		// Bail if nonce check fails.
-		$result = $this->import_export_security_check();
-		if ( is_wp_error( $result ) ) {
-			$this->error_message = $result->get_error_message();
+		if ( ! isset( $_POST['format'] ) ) {
 			return;
 		}
 
@@ -1074,10 +996,10 @@ class WPZincDashboardWidget {
 		 * @param   array   $data   Data.
 		 * @param   array   $_POST  POST Data.
 		 */
-		$data = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_export', $data, $_POST ); // phpcs:ignore WordPress.NamingConventions.ValidHookName,WordPress.Security.NonceVerification
+		$data = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_export', $data, $_POST );
 
 		// Force a file download, depending on the export format.
-		switch ( sanitize_text_field( wp_unslash( $_POST['format'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		switch ( sanitize_text_field( wp_unslash( $_POST['format'] ) ) ) {
 			/**
 			 * JSON, Zipped.
 			 */
@@ -1131,13 +1053,25 @@ class WPZincDashboardWidget {
 		$zip->addFromString( $filename . '.json', $json );
 		$zip->close();
 
+		// Initialize WP_Filesystem.
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		// Read file contents.
+		$zip_contents = $wp_filesystem->get_contents( $filename );
+
 		// Output ZIP data, prompting the browser to auto download as a ZIP file now.
 		header( 'Content-type: application/zip' );
 		header( 'Content-Disposition: attachment; filename=' . $filename . '.zip' );
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
-		readfile( $filename ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-		wp_delete_file( $filename );
+		echo $zip_contents; // phpcs:ignore WordPress.Security.EscapeOutput
+
+		// Delete the temporary file.
+		$wp_filesystem->delete( $filename );
 		exit();
 
 	}
@@ -1199,15 +1133,30 @@ class WPZincDashboardWidget {
 
 		// Redirect to Support.
 		if ( $page === $this->plugin->name . '-support' ) {
-			wp_redirect( $this->plugin->support_url ); // phpcs:ignore WordPress.Security.SafeRedirect
+			wp_safe_redirect( $this->plugin->support_url );
 			die();
 		}
 
 		// Redirect to Upgrade.
 		if ( $page === $this->plugin->name . '-upgrade' ) {
-			wp_redirect( $this->get_upgrade_url( 'menu' ) ); // phpcs:ignore WordPress.Security.SafeRedirect
+			wp_safe_redirect( $this->get_upgrade_url( 'menu' ) );
 			die();
 		}
+
+	}
+
+	/**
+	 * Permit wpzinc.com to be redirected to when using wp_safe_redirect().
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param   array $hosts   Hosts.
+	 * @return  array            Hosts.
+	 */
+	public function allowed_redirect_hosts( $hosts ) {
+
+		$hosts[] = 'www.wpzinc.com';
+		return $hosts;
 
 	}
 

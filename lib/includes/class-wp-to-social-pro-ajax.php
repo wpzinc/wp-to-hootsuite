@@ -55,9 +55,17 @@ class WP_To_Social_Pro_Ajax {
 		// Run a security check first.
 		check_ajax_referer( $this->base->plugin->name . '-save-statuses', 'nonce' );
 
+		// Bail if no post type was provided.
+		if ( ! isset( $_REQUEST['post_type'] ) ) {
+			wp_send_json_error( __( 'No post type was provided.', 'wp-to-hootsuite' ) );
+		}
+		if ( ! isset( $_REQUEST['statuses'] ) ) {
+			wp_send_json_error( __( 'No statuses were provided.', 'wp-to-hootsuite' ) );
+		}
+
 		// Parse request.
-		$post_type = sanitize_text_field( $_REQUEST['post_type'] );
-		$statuses  = json_decode( wp_unslash( $_REQUEST['statuses'] ), true );
+		$post_type = sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ) );
+		$statuses  = json_decode( wp_unslash( $_REQUEST['statuses'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		// Get some other information.
 		$post_type_object  = get_post_type_object( $post_type );
@@ -90,10 +98,21 @@ class WP_To_Social_Pro_Ajax {
 		// Run a security check first.
 		check_ajax_referer( $this->base->plugin->name . '-get-status-row', 'nonce' );
 
+		// Bail if expect parameters were not was provided.
+		if ( ! isset( $_REQUEST['status'] ) ) {
+			wp_send_json_error( __( 'No status was provided.', 'wp-to-hootsuite' ) );
+		}
+		if ( ! isset( $_REQUEST['post_type'] ) ) {
+			wp_send_json_error( __( 'No post type was provided.', 'wp-to-hootsuite' ) );
+		}
+		if ( ! isset( $_REQUEST['post_action'] ) ) {
+			wp_send_json_error( __( 'No post action was provided.', 'wp-to-hootsuite' ) );
+		}
+
 		// Parse request.
-		$status    = json_decode( wp_unslash( $_REQUEST['status'] ), true );
-		$post_type = sanitize_text_field( $_REQUEST['post_type'] );
-		$action    = sanitize_text_field( $_REQUEST['post_action'] );
+		$status    = json_decode( wp_unslash( $_REQUEST['status'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$post_type = sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ) );
+		$action    = sanitize_text_field( wp_unslash( $_REQUEST['post_action'] ) );
 
 		// Return array of row data (message, image, schedule).
 		wp_send_json_success( $this->base->get_class( 'settings' )->get_status_row( $status, $post_type, $action ) );
@@ -110,6 +129,11 @@ class WP_To_Social_Pro_Ajax {
 
 		// Run a security check first.
 		check_ajax_referer( $this->base->plugin->name . '-get-log', 'nonce' );
+
+		// Bail if no post ID was provided.
+		if ( ! isset( $_REQUEST['post'] ) ) {
+			wp_send_json_error( __( 'No post ID was provided.', 'wp-to-hootsuite' ) );
+		}
 
 		// Get Post ID.
 		$post_id = absint( $_REQUEST['post'] );
@@ -128,6 +152,11 @@ class WP_To_Social_Pro_Ajax {
 
 		// Run a security check first.
 		check_ajax_referer( $this->base->plugin->name . '-clear-log', 'nonce' );
+
+		// Bail if no post ID was provided.
+		if ( ! isset( $_REQUEST['post'] ) ) {
+			wp_send_json_error( __( 'No post ID was provided.', 'wp-to-hootsuite' ) );
+		}
 
 		// Get Post ID.
 		$post_id = absint( $_REQUEST['post'] );

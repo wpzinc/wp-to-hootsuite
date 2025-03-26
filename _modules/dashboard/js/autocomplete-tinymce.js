@@ -499,8 +499,6 @@
 									return {
 										longname: 	'Autocomplete',
 										author: 	'WP Zinc',
-										authorurl: 	'https://www.wpzinc.com/',
-										infourl: 	'https://www.wpzinc.com/',
 										version: 	tinymce.majorVersion + '.' + tinymce.minorVersion
 									};
 								}

@@ -193,9 +193,9 @@ class WP_To_Social_Pro_Log {
 		$bulk_action = array_values(
 			array_filter(
 				array(
-					( isset( $_REQUEST['bulk_action'] ) && $_REQUEST['bulk_action'] != -1 ? sanitize_text_field( $_REQUEST['bulk_action'] ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
-					( isset( $_REQUEST['bulk_action2'] ) && $_REQUEST['bulk_action2'] != -1 ? sanitize_text_field( $_REQUEST['bulk_action2'] ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
-					( isset( $_REQUEST['bulk_action3'] ) && ! empty( $_REQUEST['bulk_action3'] ) ? sanitize_text_field( $_REQUEST['bulk_action3'] ) : '' ), // phpcs:ignore WordPress.Security.NonceVerification
+					( isset( $_REQUEST['bulk_action'] ) && $_REQUEST['bulk_action'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
+					( isset( $_REQUEST['bulk_action2'] ) && $_REQUEST['bulk_action2'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action2'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
+					( isset( $_REQUEST['bulk_action3'] ) && ! empty( $_REQUEST['bulk_action3'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action3'] ) ) : '' ), // phpcs:ignore WordPress.Security.NonceVerification
 				)
 			)
 		);
@@ -227,7 +227,7 @@ class WP_To_Social_Pro_Log {
 				}
 
 				// Delete Logs by IDs.
-				$this->delete_by_ids( array_values( $_REQUEST['ids'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+				$this->delete_by_ids( array_values( wp_unslash( $_REQUEST['ids'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 				// Add success notice.
 				$this->base->get_class( 'notices' )->add_success_notice(
@@ -289,7 +289,7 @@ class WP_To_Social_Pro_Log {
 				continue;
 			}
 
-			$params[ $filter ] = esc_html( $_POST[ $filter ] );
+			$params[ $filter ] = sanitize_text_field( wp_unslash( $_POST[ $filter ] ) );
 		}
 
 		// If params don't exist, exit.
@@ -376,6 +376,11 @@ class WP_To_Social_Pro_Log {
 
 		// Check the user requested a log.
 		if ( ! isset( $_GET[ $this->base->plugin->name . '-export-log' ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return;
+		}
+
+		// Bail if no post specified.
+		if ( ! isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
 
@@ -793,6 +798,30 @@ class WP_To_Social_Pro_Log {
 			array(
 				'post_id' => absint( $post_id ),
 				'result'  => 'pending',
+			)
+		);
+	}
+
+	/**
+	 * Deletes Log entries for the given Post ID and Action that have
+	 * a pending Status
+	 *
+	 * @since   3.7.9
+	 *
+	 * @param   int    $post_id    Post ID.
+	 * @param   string $action     Action.
+	 * @return  bool                Success
+	 */
+	public function delete_pending_by_post_id_and_action( $post_id, $action = 'publish' ) {
+
+		global $wpdb;
+
+		return $wpdb->delete(
+			$wpdb->prefix . $this->table,
+			array(
+				'post_id' => absint( $post_id ),
+				'result'  => 'pending',
+				'action'  => $action,
 			)
 		);
 	}

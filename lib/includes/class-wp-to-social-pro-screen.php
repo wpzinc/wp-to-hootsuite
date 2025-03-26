@@ -63,10 +63,10 @@ class WP_To_Social_Pro_Screen {
 
 		// Early detection of settings page so that early hooks e.g. init can detect if we're on the settings screen.
 		if ( isset( $_REQUEST['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			if ( sanitize_text_field( $_REQUEST['page'] ) === $this->base->plugin->name . '-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) === $this->base->plugin->name . '-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification
 				return array(
 					'screen'  => 'settings',
-					'section' => ( isset( $_REQUEST['tab'] ) ? sanitize_text_field( $_REQUEST['tab'] ) : 'auth' ), // phpcs:ignore WordPress.Security.NonceVerification
+					'section' => ( isset( $_REQUEST['tab'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['tab'] ) ) : 'auth' ), // phpcs:ignore WordPress.Security.NonceVerification
 				);
 			}
 		}
@@ -115,7 +115,7 @@ class WP_To_Social_Pro_Screen {
 			case $this->base->plugin->name . '-settings':
 				return array(
 					'screen'  => 'settings',
-					'section' => ( isset( $_REQUEST['tab'] ) ? sanitize_text_field( $_REQUEST['tab'] ) : 'auth' ), // phpcs:ignore WordPress.Security.NonceVerification
+					'section' => ( isset( $_REQUEST['tab'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['tab'] ) ) : 'auth' ), // phpcs:ignore WordPress.Security.NonceVerification
 				);
 
 			/**

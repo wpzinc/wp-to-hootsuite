@@ -577,6 +577,9 @@ class WP_To_Social_Pro_Settings {
 			// Profiles: Pinterest.
 			'sub_profile'                    => 0,
 
+			// Update Type: Instagram.
+			'update_type'                    => '',
+
 			// Profiles: Google Business.
 			'googlebusiness'                 => array(
 				'post_type'         => 'whats_new', // whats_new, offer, event.

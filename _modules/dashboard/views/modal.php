@@ -6,6 +6,11 @@
  * @author WP Zinc
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 <!-- JS Overlay -->
 <div id="<?php echo esc_attr( $this->base->plugin->name ); ?>-modal-overlay" class="wpzinc-modal-overlay"></div>

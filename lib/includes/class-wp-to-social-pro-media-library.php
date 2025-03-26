@@ -128,7 +128,7 @@ class WP_To_Social_Pro_Media_Library {
 	 */
 	public function cleanup() {
 
-		// Build query.
+		// Build query to fetch images created by the plugin.
 		$args = array(
 			'post_type'      => 'attachment',
 			'post_status'    => 'any',

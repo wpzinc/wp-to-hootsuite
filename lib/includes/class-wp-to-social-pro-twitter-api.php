@@ -7,7 +7,8 @@
  */
 
 /**
- * Calls WP Zinc's API to perform ID to username lookups.
+ * API class to handle returning a Twitter username for a given Twitter User ID,
+ * checking the site's transient first before falling back to the WP Zinc API.
  *
  * @package WP_To_Social_Pro
  * @author  WP Zinc
@@ -54,22 +55,17 @@ class WP_To_Social_Pro_Twitter_API extends WP_To_Social_Pro_API {
 	 *
 	 * @param   int $user_id                    User ID.
 	 * @param   int $transient_expiration_time  Transient Expiration Time.
-	 * @return  mixed                               WP_Error | string
+	 * @return  WP_Error|string
 	 */
 	public function get_username_by_id( $user_id, $transient_expiration_time ) {
 
-		// Get transient data.
-		$twitter_ids_usernames = get_transient( $this->base->plugin->name . '_twitter_api_usernames' );
-		if ( ! is_array( $twitter_ids_usernames ) ) {
-			$twitter_ids_usernames = array();
+		// Return Twitter username from cache, if it exists.
+		$twitter_username = $this->get_cached_username( $user_id );
+		if ( $twitter_username ) {
+			return $twitter_username;
 		}
 
-		// If we have a username for this user ID, return the ID now.
-		if ( array_key_exists( $user_id, $twitter_ids_usernames ) ) {
-			return $twitter_ids_usernames[ $user_id ];
-		}
-
-		// Fetch Twitter Username.
+		// Fetch Twitter Username from API.
 		$twitter_username = $this->post(
 			'users_lookup',
 			array(
@@ -82,9 +78,8 @@ class WP_To_Social_Pro_Twitter_API extends WP_To_Social_Pro_API {
 			return $twitter_username;
 		}
 
-		// Store the Twitter ID and Username in the transient.
-		$twitter_ids_usernames[ $user_id ] = $twitter_username;
-		set_transient( $this->base->plugin->name . '_twitter_api_usernames', $twitter_ids_usernames, $transient_expiration_time );
+		// Cache the Twitter Username.
+		$this->add_cached_username( $user_id, $twitter_username, $transient_expiration_time );
 
 		// Finally, return the Twitter Username.
 		return $twitter_username;
@@ -92,21 +87,91 @@ class WP_To_Social_Pro_Twitter_API extends WP_To_Social_Pro_API {
 	}
 
 	/**
-	 * Returns usernames for the given search term.
+	 * Sends the given User ID and Username mapping to the WP Zinc API, so it can be stored
+	 * in the WP Zinc API for future lookups.
 	 *
-	 * @since   4.5.6
+	 * As this is called via AJAX when using WebSockets to fetch a Twitter username
+	 * by ID, we don't care about the WP Zinc API's response, because the user cannot
+	 * do anything with it.
 	 *
-	 * @param   string $search     Search Term.
-	 * @return  mixed               WP_Error | array
+	 * @since   5.0.2
+	 *
+	 * @param   int    $user_id    User ID.
+	 * @param   string $username   Username.
+	 * @return  WP_Error|array
 	 */
-	public function usernames_search( $search ) {
+	public function username_save( $user_id, $username ) {
 
 		return $this->post(
-			'users_search',
+			'username_save',
 			array(
-				'input' => $search,
+				'user_id'  => $user_id,
+				'username' => $username,
 			)
 		);
+
+	}
+
+	/**
+	 * Returns all Twitter User ID to Username mappings stored in the transient.
+	 *
+	 * @since   5.0.2
+	 *
+	 * @return  array
+	 */
+	private function get_cached_usernames() {
+
+		// Get transient data.
+		$twitter_ids_usernames = get_transient( $this->base->plugin->name . '_twitter_api_usernames' );
+		if ( ! is_array( $twitter_ids_usernames ) ) {
+			return array();
+		}
+
+		return $twitter_ids_usernames;
+
+	}
+
+	/**
+	 * Returns the cached Twitter Username stored in the transient for the given Twitter User ID.
+	 *
+	 * @since   5.0.2
+	 *
+	 * @param   int $user_id    User ID.
+	 * @return  bool|string
+	 */
+	private function get_cached_username( $user_id ) {
+
+		// Get transient data.
+		$twitter_ids_usernames = $this->get_cached_usernames();
+
+		// If we have a username for this user ID, return the ID now.
+		if ( array_key_exists( $user_id, $twitter_ids_usernames ) ) {
+			return $twitter_ids_usernames[ $user_id ];
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * Adds the given Twitter User ID and Username mapping to the transient.
+	 *
+	 * @since   5.0.2
+	 *
+	 * @param   int    $user_id                    User ID.
+	 * @param   string $username                   Username.
+	 * @param   int    $transient_expiration_time  Transient Expiration Time.
+	 */
+	private function add_cached_username( $user_id, $username, $transient_expiration_time ) {
+
+		// Get transient.
+		$twitter_ids_usernames = $this->get_cached_usernames();
+
+		// Store the Twitter ID and Username in the transient.
+		$twitter_ids_usernames[ $user_id ] = $username;
+
+		// Update transient.
+		set_transient( $this->base->plugin->name . '_twitter_api_usernames', $twitter_ids_usernames, $transient_expiration_time );
 
 	}
 

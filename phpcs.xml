@@ -28,8 +28,12 @@
 	<exclude-pattern>*.css</exclude-pattern>
 	<exclude-pattern>*.min.js</exclude-pattern>
 
-	<!-- Check that code meets WordPress-Extra standards. -->
-	<rule ref="WordPress-Extra">
+	<!-- Exclude some Plugin-specific files for now. -->
+	<exclude-pattern>assets/js/frontend.js</exclude-pattern>
+	<exclude-pattern>includes/admin/integrations/divi/scripts/builder-bundle.js</exclude-pattern>
+
+	<!-- Check that code meets WordPress standards - this includes core, docs and extra. -->
+	<rule ref="WordPress">
 		<!--
 		We may want a middle ground though. The best way to do this is add the
 		entire ruleset, then rule by rule, remove ones that don't suit a project.
@@ -47,21 +51,21 @@
 		<exclude name="WordPress.Security.EscapeOutput"/>
 		-->
 		<exclude name="WordPress.PHP.YodaConditions" />
-		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_query" />
 		<exclude name="PSR2.Methods.FunctionClosingBrace.SpacingBeforeClose" />
 		<exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.DB.DirectDatabaseQuery" />
 	</rule>
-
-	<!-- Check that code is documented to WordPress Standards. -->
-	<rule ref="WordPress-Docs"/>
 
 	<!-- Add in some extra rules from other standards. -->
 	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
-
+	<rule ref="Generic.Commenting.Todo"/>
+	
 	<!-- Define minimum supported WordPress version for sniffs. -->
 	<config name="minimum_supported_wp_version" value="5.0"/>
 
-	<!-- Text domain should always be 'wp-to-hootsuite'. -->
+	<!-- Text domain should always be 'wp-to-hootsuite. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">

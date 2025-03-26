@@ -188,7 +188,7 @@ class WP_To_Social_Pro_Install {
 					'posts_per_page'         => -1,
 
 					// Where the log meta value exists.
-					'meta_key'               => $meta_key,
+					'meta_key'               => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 					'meta_compare'           => 'EXISTS',
 
 					// Performance.

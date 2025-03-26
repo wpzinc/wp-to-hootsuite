@@ -6,6 +6,10 @@
  * @author WP Zinc
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="notice notice-info is-dismissible wpzinc-review-<?php echo esc_attr( $this->plugin->name ); ?>">
 	<?php
@@ -40,27 +44,5 @@
 			?>
 		</a>
 	</p>
-
-	<script type="text/javascript">
-		jQuery( document ).ready( function( $ ) {
-			// Dismiss Review Notification.
-			$( 'div.wpzinc-review-<?php echo esc_attr( $this->plugin->name ); ?>' ).on( 'click', 'a, button.notice-dismiss', function( e ) {
-
-				// Do request
-				$.post( 
-					ajaxurl, 
-					{
-						action: '<?php echo esc_attr( str_replace( '-', '_', $this->plugin->name ) ); ?>_dismiss_review',
-					},
-					function( response ) {
-					}
-				);
-
-				// Hide notice.
-				$( 'div.wpzinc-review-<?php echo esc_attr( $this->plugin->name ); ?>' ).hide();
-
-			} );
-		} );
-	</script>
 </div>
 

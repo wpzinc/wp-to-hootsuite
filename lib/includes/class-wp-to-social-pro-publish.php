@@ -251,7 +251,7 @@ class WP_To_Social_Pro_Publish {
 	/**
 	 * Helper function to determine if the request is a Gutenberg REST API request.
 	 *
-	 * @since   @TODO
+	 * @since   3.9.1
 	 *
 	 * @return  bool    Is Gutenberg REST API Request
 	 */
