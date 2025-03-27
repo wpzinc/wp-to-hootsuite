@@ -385,7 +385,6 @@ class WPZincDashboardWidget {
 		wp_register_script( 'wpzinc-admin-autocomplete', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'autocomplete' . ( $minified ? '-min' : '' ) . '.js', array( 'wpzinc-admin-tribute' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-autosize', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'autosize' . ( $minified ? '-min' : '' ) . '.js', false, $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-conditional', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'jquery.form-conditionals' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
-		wp_register_script( 'wpzinc-admin-deactivation', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'deactivation' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-inline-search', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'inline-search' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-media-library', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'media-library' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery', 'jquery-ui-sortable' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-modal', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'modal' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
@@ -551,9 +550,7 @@ class WPZincDashboardWidget {
 	}
 
 	/**
-	 * Adds Plugin Action Links to the Plugin when activated in the Plugins Screen,
-	 * as well as loading the deactivation Javascript and action for the modal view
-	 * if we're on a Free Plugin.
+	 * Adds Plugin Action Links to the Plugin when activated in the Plugins Screen.
 	 *
 	 * @since   1.0.0
 	 *
@@ -566,19 +563,6 @@ class WPZincDashboardWidget {
 		if ( class_exists( 'LicensingUpdateManager' ) ) {
 			return $links;
 		}
-
-		// Late enqueue deactivation script.
-		wp_enqueue_script( 'wpzinc-admin-deactivation' );
-		wp_localize_script(
-			'wpzinc-admin-deactivation',
-			'wpzinc_dashboard',
-			array(
-				'plugin' => array(
-					'name'    => $this->plugin->name,
-					'version' => $this->plugin->version,
-				),
-			)
-		);
 
 		// Add Links.
 		if ( $this->get_upgrade_url( 'plugins' ) ) {

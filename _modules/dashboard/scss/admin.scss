@@ -1194,63 +1194,6 @@ body.wpzinc.block-editor-page {
 }
 
 /**
- * Inline Modal
- * - Used for plugin deactivation modal reason 
- */
-.wpzinc-inline-modal {
-	display: none;
-	position: absolute;
-	white-space: normal;
-	width: 400px;
-
-	z-index: 100000000;
-	box-sizing: border-box;
-	background-color: #f7f7f7;
-	box-shadow: 0 0 15px -5px rgba(0, 0, 0, .5);
-	transition: all .3s ease-out;
-}
-.wpzinc-inline-modal header {
-	position: relative;
-	height: 40px;
-	background-color: #212f4f;
-}
-.wpzinc-inline-modal header::before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	left: -10px;
-	border-top: 20px solid transparent;
-	border-right: 20px solid #212f4f;
-	border-bottom: 20px solid transparent;
-}
-.wpzinc-inline-modal header h2 {
-	font-size: 16px;
-	line-height: 40px;
-	font-weight: 400;
-	margin: 0;
-	padding: 0 20px;
-	color: #fff;
-}
-.wpzinc-inline-modal form {
-	padding: 20px;
-}
-.wpzinc-inline-modal form ul {
-	margin: 0 0 20px 0;
-	padding: 0;
-}
-.wpzinc-inline-modal form input[type="text"],
-.wpzinc-inline-modal form input[type="email"] {
-	display: none;
-	margin: 0 0 10px 0;
-}
-.wpzinc-inline-modal form small.wpzinc-deactivation-reason-email {
-	display: none;
-	margin: 0 0 20px 0;
-}
-
-/**
 * QuickTags Backbone Modal
 * - used by tinymce-modal.js
 * - override styles set by WordPress
