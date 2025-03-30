@@ -21,7 +21,6 @@ jobs:
 
       # Deploy to wordpress.org, if expected files exist.
       - name: WordPress Plugin Deploy
-        if: steps.check_files.outputs.files_exists == 'true'
         id: deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
