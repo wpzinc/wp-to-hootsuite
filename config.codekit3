@@ -17008,6 +17008,14 @@
       "oAP" : "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Docs\/PHP\/LowercasePHPTagStandard.xml",
       "oF" : 0
     },
+    "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Docs\/PHP\/NoFQNTrueFalseNullStandard.xml" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Docs\/PHP\/NoFQNTrueFalseNullStandard.xml",
+      "oF" : 0
+    },
     "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Docs\/PHP\/OneStatementInShortEchoTagStandard.xml" : {
       "cB" : 0,
       "ft" : 8192,
@@ -17430,6 +17438,14 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Sniffs\/PHP\/LowercasePHPTagSniff.php",
+      "oF" : 0
+    },
+    "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Sniffs\/PHP\/NoFQNTrueFalseNullSniff.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Sniffs\/PHP\/NoFQNTrueFalseNullSniff.php",
       "oF" : 0
     },
     "\/vendor\/phpcsstandards\/phpcsextra\/Universal\/Sniffs\/PHP\/OneStatementInShortEchoTagSniff.php" : {
@@ -39519,6 +39535,14 @@
       "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/PSR12\/Tests\/Files\/FileHeaderUnitTest.18.inc",
       "oF" : 0
     },
+    "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/PSR12\/Tests\/Files\/FileHeaderUnitTest.19.inc" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/PSR12\/Tests\/Files\/FileHeaderUnitTest.19.inc",
+      "oF" : 0
+    },
     "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/PSR12\/Tests\/Files\/FileHeaderUnitTest.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -39821,6 +39845,14 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/Squiz\/Docs\/Classes\/ValidClassNameStandard.xml",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/Squiz\/Docs\/Commenting\/BlockCommentStandard.xml" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/Squiz\/Docs\/Commenting\/BlockCommentStandard.xml",
       "oF" : 0
     },
     "\/vendor\/squizlabs\/php_codesniffer\/src\/Standards\/Squiz\/Docs\/Commenting\/DocCommentAlignmentStandard.xml" : {
@@ -44636,6 +44668,14 @@
       "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Autoloader\/TestFiles\/Sub\/C.inc",
       "oF" : 0
     },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Config\/AbstractRealConfigTestCase.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Config\/AbstractRealConfigTestCase.php",
+      "oF" : 0
+    },
     "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Config\/ExtensionsArgTest.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -48091,6 +48131,22 @@
       "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Runner\/AbstractRunnerTestCase.php",
       "oF" : 0
     },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Runner\/PrintProgressDotsTest.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Runner\/PrintProgressDotsTest.php",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Runner\/PrintProgressTest.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Runner\/PrintProgressTest.php",
+      "oF" : 0
+    },
     "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Runner\/RunPHPCSExplainTest.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -48667,6 +48723,22 @@
       "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/NamedFunctionCallArgumentsTest.php",
       "oF" : 0
     },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/NullableVsInlineThenTest.inc" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/NullableVsInlineThenTest.inc",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/NullableVsInlineThenTest.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/NullableVsInlineThenTest.php",
+      "oF" : 0
+    },
     "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/NullsafeObjectOperatorTest.inc" : {
       "cB" : 0,
       "ft" : 8192,
@@ -48697,6 +48769,54 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/OtherContextSensitiveKeywordsTest.php",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF1Test.inc" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF1Test.inc",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF1Test.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF1Test.php",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF2Test.inc" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF2Test.inc",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF2Test.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF2Test.php",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF3Test.inc" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF3Test.inc",
+      "oF" : 0
+    },
+    "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF3Test.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/PHPOpenTagEOF3Test.php",
       "oF" : 0
     },
     "\/vendor\/squizlabs\/php_codesniffer\/tests\/Core\/Tokenizers\/PHP\/ResolveSimpleTokenTest.inc" : {

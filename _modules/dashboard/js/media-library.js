@@ -41,12 +41,16 @@
 			// Get container and attributes.
 			var container = $( this ).closest( '.wpzinc-media-library-selector' ),
 			input_name    = $( container ).data( 'input-name' ),
+			input_url     = $( container ).data( 'input-url' ),
 			output_size   = $( container ).data( 'output-size' ), // The size of the image to output.
 			file_type     = $( container ).data( 'file-type' ),		// The file types that can be selected.
 			multiple      = $( container ).data( 'multiple' ),		// If multiple attachments can be selected.
 			limit         = $( container ).data( 'limit' );				// The number of attachments that can be selected.
 
 			// Define some attributes if they're not defined in the data- attributes.
+			if ( typeof input_url == 'undefined' ) {
+				input_url = false;
+			}
 			if ( typeof output_size == 'undefined' ) {
 				output_size = 'thumbnail';
 			}
@@ -171,6 +175,11 @@
 								}
 
 								html += '<img src="' + attachment_url + '" />';
+
+								// Include URL as hidden field if required.
+								if ( input_url ) {
+									html += '<input type="hidden" name="' + input_url + '" value="' + attachment.attributes.url + '" />';
+								}
 								break;
 
 							default:
@@ -185,6 +194,9 @@
 
 						// Inject.
 						$( 'ul', $( container ) ).append( html );
+
+						// Trigger event so other JS can hook into when an attachment is added.
+						$( 'body' ).trigger( 'wpzinc-media-library-attachment-added' );
 
 					}
 

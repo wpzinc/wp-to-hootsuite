@@ -138,9 +138,9 @@ class WPZincDashboardWidget {
 			add_filter( 'admin_footer_text', array( $this, 'maybe_display_footer_review_request' ) );
 		}
 
-		// Export and Support.
-		add_action( 'init', array( $this, 'export' ) );
-		add_action( 'plugins_loaded', array( $this, 'maybe_redirect' ) );
+		// Export and Redirects.
+		add_action( 'init', array( $this, 'export' ), 9999 );
+		add_action( 'init', array( $this, 'maybe_redirect' ), 2 );
 
 		// Permit wpzinc.com to be redirected to when using wp_safe_redirect().
 		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
