@@ -1,26 +1,34 @@
-# Build ACTIONS-FILTERS.md
-php create-actions-filters-docs.php
+# Remove vendor directory
+cd ..
+rm -rf vendor
 
-# Generate .pot file
-php -n $(which wp) i18n make-pot ../ ../languages/wp-to-hootsuite.pot
+# Run composer to only install non-dev dependencies
+composer install --no-dev
 
 # Build ZIP file, excluding non-Plugin files
-cd ..
 rm wp-to-hootsuite.zip
 zip -r wp-to-hootsuite.zip . \
--x "*.scss" \
 -x "*.git*" \
+-x ".devcontainer/*" \
 -x ".scripts/*" \
+-x ".wordpress-org/*" \
 -x "tests/*" \
 -x "vendor/*" \
 -x "*.distignore" \
 -x "*.env.*" \
 -x ".gitignore" \
 -x "*.md" \
--x "*codeception.*" \
+-x "*.yml" \
 -x "composer.json" \
 -x "composer.lock" \
--x "config.codekit3" \
--x "phpcs.tests.xml" \
--x "phpcs.xml" \
+-x "*.xml" \
+-x "*.neon" \
+-x "*.dist" \
+-x "*.example" \
 -x "*.DS_Store" \
+-x "*.scss" \
+-x "*codeception.*" \
+-x "config.codekit3" \
+
+# Run composer to install dev dependencies, returning enviornment back to original state
+composer update
