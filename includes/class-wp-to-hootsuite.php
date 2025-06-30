@@ -226,11 +226,6 @@ class WP_To_Hootsuite {
 		$this->classes->twitter_api   = new WP_To_Social_Pro_Twitter_API( self::$instance );
 		$this->classes->validation    = new WP_To_Social_Pro_Validation( self::$instance );
 
-		// Run the migration routine from Free + Pro v2.x --> Pro v3.x.
-		if ( is_admin() ) {
-			$this->classes->settings->migrate_settings();
-		}
-
 	}
 
 	/**
