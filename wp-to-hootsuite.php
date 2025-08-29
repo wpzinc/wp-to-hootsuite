@@ -13,7 +13,13 @@
  * Author URI: http://www.wpzinc.com
  * Description: Send WordPress Pages, Posts or Custom Post Types to your Hootsuite (hootsuite.com) account for scheduled publishing to social networks.
  * Text Domain: wp-to-hootsuite
+ * License:     GPLv3 or later
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 // Bail if Plugin is alread loaded.
 if ( class_exists( 'WP_To_Hootsuite' ) ) {
