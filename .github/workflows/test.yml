@@ -184,6 +184,16 @@ jobs:
           chromedriver --port=9515 --url-base=/wd/hub &
           sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
 
+      # Write any secrets, such as API keys, to the .env.testing file now.
+      - name: Define GitHub Secrets in .env.testing
+        uses: DamianReeves/write-file-action@v1.3
+        with:
+          path: ${{ env.PLUGIN_DIR }}/.env.testing
+          contents: |
+            WP_TO_HOOTSUITE_PRO_LICENSE_KEY=12345
+            
+          write-mode: append
+
       # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
       - name: Run Composer
         working-directory: ${{ env.PLUGIN_DIR }}

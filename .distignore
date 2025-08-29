@@ -12,7 +12,6 @@
 .gitignore
 ACTIONS-FILTERS.md
 codeception.dist.yml
-codeception.yml
 composer.json
 composer.lock
 config.codekit3

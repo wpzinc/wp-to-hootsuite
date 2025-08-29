@@ -3871,14 +3871,6 @@
       "oAP" : "\/codeception.dist.yml",
       "oF" : 0
     },
-    "\/codeception.yml" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/codeception.yml",
-      "oF" : 0
-    },
     "\/composer.json" : {
       "ft" : 524288,
       "oA" : 1,
@@ -4070,6 +4062,17 @@
       "mi" : 1,
       "oA" : 0,
       "oAP" : "\/lib\/assets\/js\/min\/statuses-min-min.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 0
+    },
+    "\/lib\/assets\/js\/statuses-min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/lib\/assets\/js\/statuses-min-min.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 0
@@ -4371,14 +4374,6 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/phpcs.xml",
-      "oF" : 0
-    },
-    "\/phpstan.neon" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/phpstan.neon",
       "oF" : 0
     },
     "\/README.md" : {
