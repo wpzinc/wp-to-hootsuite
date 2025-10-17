@@ -1037,7 +1037,7 @@ class WP_To_Social_Pro_Publish {
 
 					// Remove anything that isn't alphanumeric or an underscore, to ensure the whole hashtag is linked
 					// when posted to social media and not broken by e.g. a full stop.
-					$term_name = '#' . preg_replace( '/[^[:alnum:]_]/u', '', $term_name );
+					$term_name = '#' . preg_replace( '/[^\p{L}\p{N}\p{M}_]+/u', '', $term_name );
 
 					/**
 					 * Defines the Taxonomy Term Hashtag to replace the status template tag.

@@ -649,10 +649,10 @@ class WPZincDashboardWidget {
 		}
 
 		// Bail if we're not on a Plugin screen.
-		if ( ! isset( $_REQUEST['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 'page' ) ) {
 			return $text;
 		}
-		$page = sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( strpos( $page, $this->plugin->name ) === false ) {
 			return $text;
 		}
@@ -1108,12 +1108,12 @@ class WPZincDashboardWidget {
 	public function maybe_redirect() {
 
 		// Check we requested the support page.
-		if ( ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 'page' ) ) {
 			return;
 		}
 
 		// Sanitize page.
-		$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		// Redirect to Support.
 		if ( $page === $this->plugin->name . '-support' ) {
@@ -1140,6 +1140,9 @@ class WPZincDashboardWidget {
 	public function allowed_redirect_hosts( $hosts ) {
 
 		$hosts[] = 'www.wpzinc.com';
+		$hosts[] = 'www.socialpostflow.com';
+		$hosts[] = 'app.socialpostflow.com';
+
 		return $hosts;
 
 	}
