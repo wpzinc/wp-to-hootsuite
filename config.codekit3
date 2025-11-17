@@ -9,6 +9,14 @@
   ],
   "creatorBuild" : "34564",
   "files" : {
+    "\/_modules\/dashboard\/class-wpzincdashboardwidget.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/_modules\/dashboard\/class-wpzincdashboardwidget.php",
+      "oF" : 0
+    },
     "\/_modules\/dashboard\/css\/admin.css" : {
       "aP" : 1,
       "bl" : 0,
@@ -4080,12 +4088,172 @@
       "sC" : 3,
       "tS" : 0
     },
+    "\/lib\/includes\/class-wp-to-social-pro-admin.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-admin.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-ajax.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-ajax.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-api.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-api.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-common.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-common.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-cron.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-cron.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-date.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-date.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-image.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-image.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-install.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-install.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-log-table.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-log-table.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-log.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-log.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-media-library.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-media-library.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-notices.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-notices.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-post.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-post.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-publish.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-publish.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-screen.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-screen.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-settings.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-settings.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-twitter-api.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-twitter-api.php",
+      "oF" : 0
+    },
+    "\/lib\/includes\/class-wp-to-social-pro-validation.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/includes\/class-wp-to-social-pro-validation.php",
+      "oF" : 0
+    },
     "\/lib\/views\/log.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/lib\/views\/log.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/post-log.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/post-log.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings-auth-required.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-auth-required.php",
       "oF" : 0
     },
     "\/lib\/views\/settings-auth.php" : {
@@ -4096,12 +4264,44 @@
       "oAP" : "\/lib\/views\/settings-auth.php",
       "oF" : 0
     },
+    "\/lib\/views\/settings-post-action-status-row.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-post-action-status-row.php",
+      "oF" : 0
+    },
     "\/lib\/views\/settings-post-action-status-tags.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/lib\/views\/settings-post-action-status-tags.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings-post-action-status-upgrade.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-post-action-status-upgrade.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings-post-action-status.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-post-action-status.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings-post-action.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-post-action.php",
       "oF" : 0
     },
     "\/lib\/views\/settings-post-actionheader-upgrade-profile.php" : {
@@ -4112,12 +4312,52 @@
       "oAP" : "\/lib\/views\/settings-post-actionheader-upgrade-profile.php",
       "oF" : 0
     },
+    "\/lib\/views\/settings-post-actionheader-upgrade.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-post-actionheader-upgrade.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings-post-actionheader.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-post-actionheader.php",
+      "oF" : 0
+    },
     "\/lib\/views\/settings-post.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/lib\/views\/settings-post.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings-profiles-error.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-profiles-error.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings-profiles-missing.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings-profiles-missing.php",
+      "oF" : 0
+    },
+    "\/lib\/views\/settings.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/lib\/views\/settings.php",
       "oF" : 0
     },
     "\/phpcs.tests.xml" : {

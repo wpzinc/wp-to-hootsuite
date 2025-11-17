@@ -322,11 +322,11 @@ class WP_To_Social_Pro_Log {
 		}
 
 		// Check if we need to hide the meta box by the logged in User's role.
-		$hide_meta_box = $this->base->get_class( 'settings' )->get_setting( 'hide_meta_box_by_roles', '[' . wp_get_current_user()->roles[0] . ']' );
-
-		// Bail if we're hiding the meta boxes for the logged in User's role.
-		if ( $hide_meta_box ) {
-			return;
+		if ( wp_get_current_user() && is_array( wp_get_current_user()->roles ) && ! empty( wp_get_current_user()->roles ) ) {
+			// Bail if we're hiding the meta boxes for the logged in User's role.
+			if ( $this->base->get_class( 'settings' )->get_setting( 'hide_meta_box_by_roles', '[' . wp_get_current_user()->roles[0] . ']' ) ) {
+				return;
+			}
 		}
 
 		// Get Post Types.
