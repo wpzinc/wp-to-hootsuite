@@ -44,9 +44,8 @@ class Plugin extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                       EndToEndTester.
 	 * @param   string         $name                    Plugin Slug.
-	 * @param   bool           $wizardExpectsToDisplay  Whether the Plugin Setup Wizard is expected to display.
 	 */
-	public function activateThirdPartyPlugin($I, $name, $wizardExpectsToDisplay = true)
+	public function activateThirdPartyPlugin($I, $name)
 	{
 		// Login as the Administrator, if we're not already logged in.
 		if ( ! $this->amLoggedInAsAdmin($I) ) {
@@ -60,10 +59,9 @@ class Plugin extends \Codeception\Module
 		$I->waitForElementVisible('body.plugins-php');
 
 		// Activate the Plugin.
-		$I->activatePlugin($name);
-
-		// Go to the Plugins screen again.
-		$I->amOnPluginsPage();
+		$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+		$I->selectOption('action', 'activate-selected');
+		$I->click('#doaction');
 
 		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
 		$I->waitForElementVisible('table.plugins tr[data-slug=' . $name . '].active');
@@ -95,7 +93,9 @@ class Plugin extends \Codeception\Module
 		$I->waitForElementVisible('body.plugins-php');
 
 		// Deactivate the Plugin.
-		$I->deactivatePlugin($name);
+		$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+		$I->selectOption('action', 'deactivate-selected');
+		$I->click('#doaction');
 	}
 
 	/**
