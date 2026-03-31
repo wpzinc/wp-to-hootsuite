@@ -3,9 +3,9 @@ Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
 Tags: auto post, auto publish, social media scheduling, social media automation, hootsuite
 Requires at least: 5.0
-Tested up to: 6.8.3
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.6.5
+Stable tag: 1.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,6 @@ Our [API](https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/data/)
 > #### WordPress to Hootsuite Pro
 > <a href="https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro/" rel="friend" title="WordPress to Hootsuite Pro - Publish to Facebook, Twitter, LinkedIn and Pinterest">WordPress to Hootsuite Pro</a> provides additional functionality:<br />
 >
-> - **Instagram and Pinterest Support**<br />Post to Instagram (Personal Profiles only, using Reminders) and Pinterest Boards<br />
 > - **Multiple, Customisable Status Messages**<br />Each Post Type and Social Network can have multiple, unique status message and settings<br />
 > - **Conditionally send Status Messages**<br />Only send status(es) to Hootsuite based on Post Author(s), Taxonomy Term(s) and/or Custom Field Values<br />
 > - **More Scheduling Options**<br />Each status update can be added to the start/end of your Hootsuite queue, posted immediately or scheduled at a specific time<br />
@@ -87,6 +86,10 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 1.6.6 (2026-03-31) =
+* Added: Status: Display notice if settings do not save and WordPress options table charset and default collation are invalid
+* Updated: Dashboard submodule
 
 = 1.6.5 (2025-11-17) =
 * Fix: Logs: PHP Warning: Undefined array key `0`

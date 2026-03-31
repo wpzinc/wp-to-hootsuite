@@ -127,6 +127,9 @@ class WP_To_Social_Pro_Settings {
 	 */
 	public function update_settings( $type, $settings ) {
 
+		// Get old settings.
+		$existing_settings = $this->get_settings( $type );
+
 		// Iterate through array of Post Type Settings to strip HTML tags.
 		$settings = $this->strip_tags_deep( $settings );
 
@@ -141,7 +144,32 @@ class WP_To_Social_Pro_Settings {
 		$settings = apply_filters( $this->base->plugin->filter_name . '_update_settings', $settings, $type );
 
 		// Save.
-		$this->update_option( $type, $settings );
+		$result = $this->update_option( $type, $settings );
+
+		// If update_option failed, either no settings were changed, or they were changeed but the DB collation is wrong.
+		if ( ! $result ) {
+			// Check if the existing and new settings differ i.e. the user actually made a change.
+			if ( md5( maybe_serialize( $existing_settings ) ) !== md5( maybe_serialize( $settings ) ) ) {
+				// Settings were changed, but could not be saved using update_option.
+				// Check the DB collation.
+				if ( ! $this->base->get_class( 'common' )->is_table_charset_and_collation_correct( 'options', 'utf8mb4' ) ) {
+					return new WP_Error(
+						$this->base->plugin->filter_name . '_settings_update_settings_db_collation_error',
+						sprintf(
+							/* translators: %1$s: Documentation URL */
+							__( 'Unable to save settings due to an invalid database collation and charset on the options table. Please refer to the <a href="%1$s" target="_blank">Documentation</a>.', 'wp-to-social-pro' ),
+							'https://www.wpzinc.com/documentation/wordpress-buffer-pro/debugging-issues/#unable-to-save-settings-due-to-an-invalid-database-collation-and-charset-on-the-options-table'
+						),
+					);
+				}
+
+				// No changes were made to the settings.
+				return new WP_Error(
+					$this->base->plugin->filter_name . '_settings_update_settings_no_changes',
+					__( 'Unable to save settings due to an error. Please try again.', 'wp-to-social-pro' )
+				);
+			}
+		}
 
 		// Check for duplicate statuses.
 		$duplicates = $this->base->get_class( 'validation' )->check_for_duplicates( $settings );
@@ -149,7 +177,7 @@ class WP_To_Social_Pro_Settings {
 			// Fetch Post Type Name, Profile Name and Action Name.
 			$post_type_object = get_post_type_object( $type );
 			if ( $duplicates['profile_id'] === 'default' ) {
-				$profile = __( 'Defaults', 'wp-to-hootsuite' );
+				$profile = __( 'Defaults', 'wp-to-buffer' );
 			} elseif ( isset( $profiles[ $profile_id ] ) ) {
 				$profile = $profiles[ $profile_id ]['formatted_service'] . ': ' . $profiles[ $profile_id ]['formatted_username'];
 			}
@@ -161,7 +189,7 @@ class WP_To_Social_Pro_Settings {
 				$this->base->plugin->filter_name . '_settings_update_settings_duplicates',
 				sprintf(
 					/* translators: %1$s: Post Type Name, Plural, %2$s: Social Media Profile Name, %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( 'Two or more statuses defined in %1$s > %2$s > %3$s are the same. Please correct this to ensure each status update is unique, otherwise your status updates will NOT publish to %4$s as they will be seen as duplicates, which violate Facebook and Twitter\'s Terms of Service.', 'wp-to-hootsuite' ),
+					__( 'Two or more statuses defined in %1$s > %2$s > %3$s are the same. Please correct this to ensure each status update is unique, otherwise your status updates will NOT publish to %4$s as they will be seen as duplicates, which violate Facebook and Twitter\'s Terms of Service.', 'wp-to-buffer' ),
 					$post_type_object->label,
 					$profile,
 					$action,
@@ -390,7 +418,6 @@ class WP_To_Social_Pro_Settings {
 			'schedule_relative_time'         => '00:00:00',
 			'schedule_custom_field_name'     => '',
 			'schedule_custom_field_relation' => 'after',
-			'schedule_tec_relation'          => 'after',
 			'schedule_specific'              => '',
 
 			// Profiles: Pinterest.
@@ -846,66 +873,6 @@ class WP_To_Social_Pro_Settings {
 		update_option( $this->base->plugin->settingsName . '-' . $key, $value );
 
 		return true;
-
-	}
-
-	/**
-	 * Helper method to return all key/value pairs stored in the options table
-	 *
-	 * @since   3.5.0
-	 *
-	 * @return  array   Data
-	 */
-	public function get_all() {
-
-		// Build array of option keys to export.
-		$keys = array(
-			$this->base->plugin->settingsName . '-access-token',
-			$this->base->plugin->settingsName . '-custom_tags',
-			$this->base->plugin->settingsName . '-cron',
-			$this->base->plugin->settingsName . '-disable_excerpt_fallback',
-			$this->base->plugin->settingsName . '-disable_url_shortening',
-			$this->base->plugin->settingsName . '-force_trailing_forwardslash',
-			$this->base->plugin->settingsName . '-hide_meta_box_by_roles',
-			$this->base->plugin->settingsName . '-image_custom',
-			$this->base->plugin->settingsName . '-image_dimensions',
-			$this->base->plugin->settingsName . '-log',
-			$this->base->plugin->settingsName . '-override',
-			$this->base->plugin->settingsName . '-proxy',
-			$this->base->plugin->settingsName . '-refresh-token',
-			$this->base->plugin->settingsName . '-repost',
-			$this->base->plugin->settingsName . '-repost_disable_cron',
-			$this->base->plugin->settingsName . '-repost_time',
-			$this->base->plugin->settingsName . '-restrict_post_types',
-			$this->base->plugin->settingsName . '-restrict_roles',
-			$this->base->plugin->settingsName . '-roles',
-			$this->base->plugin->settingsName . '-test_mode',
-			$this->base->plugin->settingsName . '-text_to_image',
-			$this->base->plugin->settingsName . '-token-expires',
-		);
-
-		// Add Post Type keys.
-		$post_types = $this->base->get_class( 'common' )->get_post_types();
-		foreach ( $post_types as $type => $post_type_obj ) {
-			$keys[] = $this->base->plugin->settingsName . '-' . $type;
-		}
-
-		/**
-		 * Filters the keys that are used to store Plugin data in the options table.
-		 *
-		 * @since   3.5.0
-		 *
-		 * @param   array   $keys           Option Keys.
-		 * @param   array   $post_types     Post Types.
-		 */
-		$keys = apply_filters( $this->base->plugin->filter_name . '_get_all', $keys, $post_types );
-
-		// Iterate through keys, fetching settings.
-		foreach ( $keys as $key ) {
-			$data[ $key ] = get_option( $key );
-		}
-
-		return $data;
 
 	}
 

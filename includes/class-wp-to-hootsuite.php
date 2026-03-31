@@ -75,6 +75,7 @@ class WP_To_Hootsuite {
 		$this->plugin->upgrade_url       = 'https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro';
 		$this->plugin->logo              = WP_TO_HOOTSUITE_PLUGIN_URL . 'lib/assets/images/icons/hootsuite-dark.svg';
 		$this->plugin->review_name       = 'wp-to-hootsuite';
+		$this->plugin->about_hook        = 'wpzinc_settings_footer_upgrade';
 
 		// Defer loading of Plugin Classes.
 		add_action( 'init', array( $this, 'initialize' ), 1 );
@@ -131,10 +132,6 @@ class WP_To_Hootsuite {
 
 		// Upgrade Reasons.
 		$this->plugin->upgrade_reasons = array(
-			array(
-				__( 'Post to Instagram and Pinterest', 'wp-to-hootsuite' ),
-				__( 'Post to Instagram (Personal Profiles only, using Reminders) and Pinterest Boards', 'wp-to-hootsuite' ),
-			),
 			array(
 				__( 'Multiple, Customisable Status Messages', 'wp-to-hootsuite' ),
 				__( 'Each Post Type and Social Network can have multiple, unique status message and settings', 'wp-to-hootsuite' ),
