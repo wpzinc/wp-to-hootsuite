@@ -141,7 +141,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Upgrade -->
 		<div class="metabox-holder columns-1">
 			<div id="post-body-content">
-				<?php require $this->base->plugin->folder . '/_modules/dashboard/views/footer-upgrade.php'; ?>
+				<?php
+				require $this->base->plugin->folder . '/_modules/dashboard/views/footer-upgrade.php';
+
+				do_action( 'wpzinc_settings_footer_upgrade' );
+				?>
 			</div>
 		</div>
 	</div><!-- ./wrap-inner -->         
