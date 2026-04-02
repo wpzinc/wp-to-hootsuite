@@ -87,7 +87,7 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
-= 1.6.6 (2026-03-31) =
+= 1.6.6 (2026-04-02) =
 * Added: Status: Display notice if settings do not save and WordPress options table charset and default collation are invalid
 * Updated: Dashboard submodule
 
