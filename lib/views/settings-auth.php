@@ -70,7 +70,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 						echo esc_html(
 							sprintf(
-							/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+							/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
 								__( 'Authentication allows %1$s to post to %2$s', 'wp-to-hootsuite' ),
 								$this->base->plugin->displayName,
 								$this->base->plugin->account
@@ -85,7 +85,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 						echo esc_html(
 							sprintf(
-							/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+							/* translators: Social Media Service Name (Buffer, Hootsuite) */
 								__( 'Thanks - you\'ve authorized the plugin to post updates to your %s account.', 'wp-to-hootsuite' ),
 								$this->base->plugin->account
 							)
@@ -95,7 +95,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 				<div class="wpzinc-option">
 					<div class="full">
-						<a href="admin.php?page=<?php echo esc_attr( $this->base->plugin->name ); ?>-settings&amp;<?php echo esc_attr( $this->base->plugin->name ); ?>-disconnect=1" class="button wpzinc-button-red">
+						<?php
+						$disconnect_url = add_query_arg(
+							array(
+								'page'  => $this->base->plugin->name . '-settings',
+								$this->base->plugin->name . '-disconnect' => 1,
+								'nonce' => wp_create_nonce( $this->base->plugin->name . '-disconnect' ),
+							),
+							admin_url( 'admin.php' )
+						);
+						?>
+						<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button wpzinc-button-red">
 							<?php esc_html_e( 'Deauthorize Plugin', 'wp-to-hootsuite' ); ?>
 						</a>
 					</div>
@@ -124,7 +134,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<?php
 							echo esc_html(
 								sprintf(
-								/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+								/* translators: Social Media Service Name (Buffer, Hootsuite) */
 									__( 'If enabled, status(es) are not sent to %s, but will appear in the Log, if logging is enabled. This is useful to test status text, conditions etc.', 'wp-to-hootsuite' ),
 									$this->base->plugin->account
 								)
@@ -169,7 +179,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<?php
 							echo esc_html(
 								sprintf(
-								/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+								/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite), %2$s: Social Media Service Name (Buffer, Hootsuite) */
 									__( 'If enabled, statuses sent to %1$s are performed through our proxy. This is useful if your ISP or host\'s country prevents access to %1$s.', 'wp-to-hootsuite' ),
 									$this->base->plugin->account,
 									$this->base->plugin->account
@@ -211,7 +221,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<p>
 							<?php
 							printf(
-								/* translators: Service name (Buffer, Hootsuite, SocialPilot) */
+								/* translators: Service name (Buffer, Hootsuite) */
 								esc_html__( '%s Pro provides options to generate images based on text, which are them submitted with your status message.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName )
 							);
@@ -250,7 +260,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									esc_html__( 'Plugin Logs', 'wp-to-hootsuite' ),
 									esc_html(
 										sprintf(
-											/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+											/* translators: Social Media Service Name (Buffer, Hootsuite) */
 											__( 'will detail status(es) sent to %s, including any errors or reasons why no status(es) were sent.', 'wp-to-hootsuite' ),
 											$this->base->plugin->account
 										)
@@ -260,7 +270,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								// Don't link "Plugin Log" text, as Logs are disabled so it won't show anything.
 								echo esc_html(
 									sprintf(
-									/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+									/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite) */
 										__( 'If enabled, the Plugin Logs will detail status(es) sent to %1$s, including any errors or reasons why no status(es) were sent.', 'wp-to-hootsuite' ),
 										$this->base->plugin->account
 									)
@@ -358,7 +368,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php esc_html_e( 'Provides options for when to run the WordPress Repost Cron Event on this WordPress installation.', 'wp-to-hootsuite' ); ?><br />
 						<?php
 						printf(
-							/* translators: Service (Buffer, Hootsuite, SocialPilot) */
+							/* translators: Service (Buffer, Hootsuite) */
 							esc_html__( 'When Post(s) are scheduled on %s will depend on the Repost Status Settings.', 'wp-to-hootsuite' ),
 							esc_html( $this->base->plugin->displayName )
 						);
@@ -373,7 +383,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<p>
 							<?php
 							printf(
-								/* translators: %1$s: Service (Buffer, Hootsuite, SocialPilot), %2$s: Service (Buffer, Hootsuite, SocialPilot) */
+								/* translators: %1$s: Service (Buffer, Hootsuite), %2$s: Service (Buffer, Hootsuite) */
 								esc_html__( 'Automatically schedule old Posts to %1$s with %2$s Pro.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName ),
 								esc_html( $this->base->plugin->displayName )
@@ -404,7 +414,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<p>
 							<?php
 							printf(
-								/* translators: %1$s: Service (Buffer, Hootsuite, SocialPilot) */
+								/* translators: %1$s: Service (Buffer, Hootsuite) */
 								esc_html__( '%s Pro provides options to limit which Post Types to show in the Settings screens, as well as prevent access to specific social media profiles linked to your Buffer account, on a per-WordPress Role basis.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName )
 							);
@@ -434,7 +444,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<p>
 							<?php
 							printf(
-								/* translators: %1$s: Service (Buffer, Hootsuite, SocialPilot) */
+								/* translators: %1$s: Service (Buffer, Hootsuite) */
 								esc_html__( '%s Pro provides options to define Custom Field / ACF Tags, which will then populate with Post data when used in status messages.  Tags also appear in the Insert Tags dropdown.', 'wp-to-hootsuite' ),
 								esc_html( $this->base->plugin->displayName )
 							);

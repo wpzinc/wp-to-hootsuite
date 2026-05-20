@@ -80,27 +80,31 @@ class WP_To_Social_Pro_Log {
 		// Enable error output if WP_DEBUG is enabled.
 		$wpdb->show_errors = true;
 
-		// Create database tables.
-		$query = 'CREATE TABLE IF NOT EXISTS ' . $wpdb->prefix . $this->table . " (
-            `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `post_id` int(11) NOT NULL,
-            `action` enum('publish','update','repost','bulk_publish') DEFAULT NULL,
-            `request_sent` datetime NOT NULL,
-            `profile_id` varchar(191) NOT NULL,
-            `profile_name` varchar(191) NOT NULL DEFAULT '',
-            `result` enum('success','test','pending','warning','error') NOT NULL DEFAULT 'success',
-            `result_message` text,
-            `status_text` text,
-            `status_created_at` datetime DEFAULT NULL,
-            `status_due_at` datetime DEFAULT NULL,
-            PRIMARY KEY (`id`),
-            KEY `post_id` (`post_id`),
-            KEY `action` (`action`),
-            KEY `result` (`result`),
-            KEY `profile_id` (`profile_id`)
-        ) " . $wpdb->get_charset_collate() . ' AUTO_INCREMENT=1';
+		// Create database table.
+		$query  = $wpdb->prepare(
+			"CREATE TABLE IF NOT EXISTS %i (
+				`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+				`post_id` int(11) NOT NULL,
+				`action` enum('publish','update','repost','bulk_publish') DEFAULT NULL,
+				`request_sent` datetime NOT NULL,
+				`profile_id` varchar(191) NOT NULL,
+				`profile_name` varchar(191) NOT NULL DEFAULT '',
+				`result` enum('success','test','pending','warning','error') NOT NULL DEFAULT 'success',
+				`result_message` text,
+				`status_text` text,
+				`status_created_at` datetime DEFAULT NULL,
+				`status_due_at` datetime DEFAULT NULL,
+				PRIMARY KEY (`id`),
+				KEY `post_id` (`post_id`),
+				KEY `action` (`action`),
+				KEY `result` (`result`),
+				KEY `profile_id` (`profile_id`)
+			)",
+			$wpdb->prefix . $this->table
+		);
+		$query .= ' ' . $wpdb->get_charset_collate() . ' AUTO_INCREMENT=1';
+		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL
 	}
 
 	/**
@@ -193,9 +197,9 @@ class WP_To_Social_Pro_Log {
 		$bulk_action = array_values(
 			array_filter(
 				array(
-					( isset( $_REQUEST['bulk_action'] ) && $_REQUEST['bulk_action'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
-					( isset( $_REQUEST['bulk_action2'] ) && $_REQUEST['bulk_action2'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action2'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.Security.NonceVerification
-					( isset( $_REQUEST['bulk_action3'] ) && ! empty( $_REQUEST['bulk_action3'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action3'] ) ) : '' ), // phpcs:ignore WordPress.Security.NonceVerification
+					( isset( $_REQUEST['bulk_action'] ) && $_REQUEST['bulk_action'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
+					( isset( $_REQUEST['bulk_action2'] ) && $_REQUEST['bulk_action2'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action2'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
+					( isset( $_REQUEST['bulk_action3'] ) && ! empty( $_REQUEST['bulk_action3'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action3'] ) ) : '' ),
 				)
 			)
 		);
@@ -219,7 +223,7 @@ class WP_To_Social_Pro_Log {
 			 */
 			case 'delete':
 				// Get Post IDs.
-				if ( ! isset( $_REQUEST['ids'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				if ( ! isset( $_REQUEST['ids'] ) ) {
 					$this->base->get_class( 'notices' )->add_error_notice(
 						__( 'No logs were selected for deletion.', 'wp-to-hootsuite' )
 					);
@@ -227,14 +231,15 @@ class WP_To_Social_Pro_Log {
 				}
 
 				// Delete Logs by IDs.
-				$this->delete_by_ids( array_values( wp_unslash( $_REQUEST['ids'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$ids = array_unique( array_map( 'absint', $_REQUEST['ids'] ) );
+				$this->delete_by_ids( $ids );
 
 				// Add success notice.
 				$this->base->get_class( 'notices' )->add_success_notice(
 					sprintf(
 						/* translators: Number of log entries deleted */
 						__( '%s Logs deleted.', 'wp-to-hootsuite' ),
-						count( $_REQUEST['ids'] ) // phpcs:ignore WordPress.Security.NonceVerification
+						count( $ids )
 					)
 				);
 				break;
@@ -292,10 +297,18 @@ class WP_To_Social_Pro_Log {
 			$params[ $filter ] = sanitize_text_field( wp_unslash( $_POST[ $filter ] ) );
 		}
 
+		// Include search parameter.
+		if ( array_key_exists( 's', $_POST ) ) {
+			$params['s'] = sanitize_text_field( wp_unslash( $_POST['s'] ) );
+		}
+
 		// If params don't exist, exit.
 		if ( ! count( $params ) ) {
 			return;
 		}
+
+		// Add nonce.
+		$params['_wpnonce'] = wp_create_nonce( 'bulk-wp-to-social-log' );
 
 		// Redirect.
 		wp_safe_redirect( 'admin.php?page=' . $this->base->plugin->name . '-' . $screen['screen'] . '&' . http_build_query( $params ) );
@@ -337,7 +350,7 @@ class WP_To_Social_Pro_Log {
 			add_meta_box(
 				$this->base->plugin->name . '-log',
 				sprintf(
-					/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+					/* translators: Social Media Service Name (Buffer, Hootsuite) */
 					__( '%s Log', 'wp-to-hootsuite' ),
 					$this->base->plugin->displayName
 				),
@@ -362,6 +375,13 @@ class WP_To_Social_Pro_Log {
 		// Get log.
 		$log = $this->get( $post->ID );
 
+		// Define URLs.
+		$urls = array(
+			'refresh' => add_query_arg( array( $this->base->plugin->name . '-refresh-log' => 1 ), get_edit_post_link( $post->ID ) ),
+			'export'  => add_query_arg( array( $this->base->plugin->name . '-export-log' => wp_create_nonce( $this->base->plugin->name . '-export-log' ) ), get_edit_post_link( $post->ID ) ),
+			'clear'   => add_query_arg( array( $this->base->plugin->name . '-clear-log' => 1 ), get_edit_post_link( $post->ID ) ),
+		);
+
 		// Load View.
 		include_once $this->base->plugin->folder . 'lib/views/post-log.php';
 
@@ -374,13 +394,13 @@ class WP_To_Social_Pro_Log {
 	 */
 	public function export() {
 
-		// Check the user requested a log.
-		if ( ! isset( $_GET[ $this->base->plugin->name . '-export-log' ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST[ $this->base->plugin->name . '-export-log' ] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST[ $this->base->plugin->name . '-export-log' ] ) ), $this->base->plugin->name . '-export-log' ) ) {
 			return;
 		}
 
 		// Bail if no post specified.
-		if ( ! isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! isset( $_GET['post'] ) ) {
 			return;
 		}
 
@@ -388,12 +408,12 @@ class WP_To_Social_Pro_Log {
 		if ( ! function_exists( 'current_user_can' ) ) {
 			return;
 		}
-		if ( ! current_user_can( 'edit_post', absint( $_GET['post'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! current_user_can( 'edit_post', absint( $_GET['post'] ) ) ) {
 			return;
 		}
 
 		// Get log.
-		$log = $this->get( absint( $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$log = $this->get( absint( $_GET['post'] ) );
 
 		// Build JSON.
 		$json = wp_json_encode( $log );
@@ -466,7 +486,8 @@ class WP_To_Social_Pro_Log {
 		// Get log.
 		$log = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}{$this->table} WHERE post_id = %d ORDER BY id DESC", // phpcs:ignore WordPress.DB.PreparedSQL
+				'SELECT * FROM %i WHERE post_id = %d ORDER BY id DESC',
+				$wpdb->prefix . $this->table,
 				absint( $post_id )
 			),
 			ARRAY_A
@@ -500,7 +521,10 @@ class WP_To_Social_Pro_Log {
 		global $wpdb;
 
 		$results = $wpdb->get_results(
-			"SELECT profile_id, profile_name FROM {$wpdb->prefix}{$this->table} GROUP BY profile_id ORDER BY profile_name DESC", // phpcs:ignore WordPress.DB.PreparedSQL
+			$wpdb->prepare(
+				'SELECT profile_id, profile_name FROM %i GROUP BY profile_id ORDER BY profile_name DESC',
+				$wpdb->prefix . $this->table
+			),
 			ARRAY_A
 		);
 
@@ -603,9 +627,15 @@ class WP_To_Social_Pro_Log {
 		$where = $this->build_where_clause( $params );
 
 		// Prepare query.
-		$query = '  SELECT * FROM ' . $wpdb->prefix . $this->table . '
-                    LEFT JOIN ' . $wpdb->posts . '
-                    ON ' . $wpdb->prefix . $this->table . '.post_id = ' . $wpdb->posts . '.ID';
+		$query = $wpdb->prepare(
+			'SELECT * FROM %i
+            LEFT JOIN %i
+            ON %i.post_id = %i.ID',
+			$wpdb->prefix . $this->table,
+			$wpdb->posts,
+			$wpdb->prefix . $this->table,
+			$wpdb->posts
+		);
 
 		// Add where clauses.
 		if ( $where !== false ) {
@@ -613,7 +643,12 @@ class WP_To_Social_Pro_Log {
 		}
 
 		// Order.
-		$query .= ' ORDER BY ' . $wpdb->prefix . $this->table . '.' . $order_by . ' ' . $order;
+		$query .= $wpdb->prepare(
+			' ORDER BY %i.%i',
+			$wpdb->prefix . $this->table,
+			$order_by
+		);
+		$query .= ' ' . ( strtolower( $order ) === 'asc' ? 'ASC' : 'DESC' );
 
 		// Limit.
 		if ( $page > 0 && $per_page > 0 ) {
@@ -621,7 +656,7 @@ class WP_To_Social_Pro_Log {
 		}
 
 		// Run and return query results.
-		return $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+		return $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 	}
 
@@ -641,9 +676,16 @@ class WP_To_Social_Pro_Log {
 		$where = $this->build_where_clause( $params );
 
 		// Prepare query.
-		$query = '  SELECT COUNT(' . $wpdb->prefix . $this->table . '.id) FROM ' . $wpdb->prefix . $this->table . '
-                    LEFT JOIN ' . $wpdb->posts . '
-                    ON ' . $wpdb->prefix . $this->table . '.post_id = ' . $wpdb->posts . '.ID';
+		$query = $wpdb->prepare(
+			'SELECT COUNT(%i.id) FROM %i
+            LEFT JOIN %i
+            ON %i.post_id = %i.ID',
+			$wpdb->prefix . $this->table,
+			$wpdb->prefix . $this->table,
+			$wpdb->posts,
+			$wpdb->prefix . $this->table,
+			$wpdb->posts
+		);
 
 		// Add where clauses.
 		if ( $where !== false ) {
@@ -651,7 +693,7 @@ class WP_To_Social_Pro_Log {
 		}
 
 		// Run and return total records found.
-		return $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL
+		return $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 	}
 
@@ -664,6 +706,8 @@ class WP_To_Social_Pro_Log {
 	 * @return  string              WHERE SQL clause
 	 */
 	private function build_where_clause( $params ) {
+
+		global $wpdb;
 
 		// Bail if no params.
 		if ( ! $params ) {
@@ -682,34 +726,49 @@ class WP_To_Social_Pro_Log {
 				// Build condition based on the key.
 				switch ( $key ) {
 					case 'post_title':
-						$where[] = $key . " LIKE '%" . $value . "%'";
+						$where[] = $wpdb->prepare(
+							'(%i LIKE %s OR status_text LIKE %s OR result_message LIKE %s)',
+							$key,
+							'%' . $wpdb->esc_like( $value ) . '%',
+							'%' . $wpdb->esc_like( $value ) . '%',
+							'%' . $wpdb->esc_like( $value ) . '%'
+						);
 						break;
 
 					case 'request_sent_start_date':
 						if ( ! empty( $params['request_sent_end_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
-							$where[] = "request_sent <= '" . $value . " 23:59:59'";
+							$where[] = $wpdb->prepare(
+								'request_sent <= %s',
+								$value . ' 23:59:59'
+							);
 						} else {
-							$where[] = "request_sent >= '" . $value . " 00:00:00'";
+							$where[] = $wpdb->prepare(
+								'request_sent >= %s',
+								$value . ' 00:00:00'
+							);
 						}
 						break;
 
 					case 'request_sent_end_date':
 						if ( ! empty( $params['request_sent_start_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
-							$where[] = "request_sent >= '" . $value . " 00:00:00'";
+							$where[] = $wpdb->prepare(
+								'request_sent >= %s',
+								$value . ' 00:00:00'
+							);
 						} else {
-							$where[] = "request_sent <= '" . $value . " 23:59:59'";
+							$where[] = $wpdb->prepare(
+								'request_sent <= %s',
+								$value . ' 23:59:59'
+							);
 						}
 						break;
 
-					/**
-					 * Post Title
-					 */
-					case 'post_title':
-						$where[] = $key . " LIKE '%" . $value . "%'";
-						break;
-
 					default:
-						$where[] = $key . " = '" . $value . "'";
+						$where[] = $wpdb->prepare(
+							'%i = %s',
+							$key,
+							$value
+						);
 						break;
 				}
 			}
@@ -756,7 +815,16 @@ class WP_To_Social_Pro_Log {
 
 		global $wpdb;
 
-		return $wpdb->query( "DELETE FROM {$wpdb->prefix}{$this->table} WHERE id IN (" . implode( ',', array_map( 'absint', $ids ) ) . ')' ); // phpcs:ignore WordPress.DB.PreparedSQL
+		return $wpdb->query(
+			$wpdb->prepare(
+				sprintf(
+					'DELETE FROM %s WHERE id IN (%s)',
+					$wpdb->prefix . $this->table, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+					implode( ',', array_fill( 0, count( $ids ), '%d' ) )
+				),
+				$ids
+			)
+		);
 
 	}
 
@@ -841,7 +909,8 @@ class WP_To_Social_Pro_Log {
 		// Run query.
 		return $wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM {$wpdb->prefix}{$this->table} WHERE request_sent < %s", // phpcs:ignore WordPress.DB.PreparedSQL
+				'DELETE FROM %i WHERE request_sent < %s',
+				$wpdb->prefix . $this->table,
 				$date_time
 			)
 		);
@@ -859,7 +928,12 @@ class WP_To_Social_Pro_Log {
 
 		global $wpdb;
 
-		return $wpdb->query( "TRUNCATE TABLE {$wpdb->prefix}{$this->table}" ); // phpcs:ignore WordPress.DB.PreparedSQL
+		return $wpdb->query(
+			$wpdb->prepare(
+				'TRUNCATE TABLE %i',
+				$wpdb->prefix . $this->table
+			)
+		);
 
 	}
 
@@ -982,7 +1056,7 @@ class WP_To_Social_Pro_Log {
                     <tr>
                         <td colspan="' . $colspan . '">' .
 							sprintf(
-								/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+								/* translators: Social Media Service Name (Buffer, Hootsuite) */
 								__( 'No log entries exist, or no status updates have been sent to %s.', 'wp-to-hootsuite' ),
 								$this->base->plugin->account
 							)

@@ -77,8 +77,8 @@ class WP_To_Social_Pro_Admin {
 		do_action( $this->base->plugin->filter_name . '_save_settings_auth' );
 
 		// If we've returned from the oAuth process and an error occured, add it to the notices.
-		if ( isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification
-			$oauth_error = sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] ) );  // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_has_var( INPUT_GET, $this->base->plugin->settingsName . '-oauth-error' ) ) {
+			$oauth_error = filter_input( INPUT_GET, $this->base->plugin->settingsName . '-oauth-error', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			switch ( $oauth_error ) {
 				/**
 				 * Access Denied
@@ -87,7 +87,7 @@ class WP_To_Social_Pro_Admin {
 				case 'access_denied':
 					$this->base->get_class( 'notices' )->add_error_notice(
 						sprintf(
-							/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+							/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite), %2$s: Social Media Service Name (Buffer, Hootsuite) */
 							__( 'You did not grant our Plugin access to your %1$s account. We are unable to post to %2$s until you do this. Please click on the Authorize Plugin button.', 'wp-to-hootsuite' ),
 							$this->base->plugin->account,
 							$this->base->plugin->account
@@ -104,7 +104,7 @@ class WP_To_Social_Pro_Admin {
 						sprintf(
 							'%1$s <a href="%2$s" target="_blank">%3$s</a>',
 							sprintf(
-								/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+								/* translators: Social Media Service Name (Buffer, Hootsuite) */
 								__( 'We were unable to complete authentication with %s.  Please try again, or', 'wp-to-hootsuite' ),
 								$this->base->plugin->account
 							),
@@ -135,20 +135,20 @@ class WP_To_Social_Pro_Admin {
 				 */
 				default:
 					$this->base->get_class( 'notices' )->add_error_notice(
-						esc_html( sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-error' ] ) ) )  // phpcs:ignore WordPress.Security.NonceVerification
+						esc_html( sanitize_text_field( wp_unslash( filter_input( INPUT_GET, $this->base->plugin->settingsName . '-oauth-error', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) )
 					);
 					break;
 			}
 		}
 
 		// If an Access Token is included in the request, store it and show a success message.
-		if ( isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_has_var( INPUT_GET, $this->base->plugin->settingsName . '-oauth-access-token' ) ) {
 			// Define tokens and expiry.
-			$access_token  = isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-access-token' ] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification
-			$refresh_token = isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-refresh-token' ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-refresh-token' ] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification
-			$expiry        = isset( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-expires' ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $this->base->plugin->settingsName . '-oauth-expires' ] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification
+			$access_token  = filter_input( INPUT_GET, $this->base->plugin->settingsName . '-oauth-access-token', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$refresh_token = filter_input( INPUT_GET, $this->base->plugin->settingsName . '-oauth-refresh-token', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$expiry        = filter_input( INPUT_GET, $this->base->plugin->settingsName . '-oauth-expires', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			if ( $expiry > 0 ) {
-				$expiry = strtotime( '+' . $expiry . ' seconds' );  // phpcs:ignore WordPress.Security.NonceVerification
+				$expiry = strtotime( '+' . $expiry . ' seconds' );
 			}
 
 			// Setup API.
@@ -170,7 +170,7 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'notices' )->enable_store();
 			$this->base->get_class( 'notices' )->add_success_notice(
 				sprintf(
-					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite), %2$s: Social Media Service Name (Buffer, Hootsuite) */
 					__( 'Thanks! You\'ve connected our Plugin to %1$s. Now select profiles below to enable, and define your statuses to start sending Posts to %2$s', 'wp-to-hootsuite' ),
 					$this->base->plugin->account,
 					$this->base->plugin->account
@@ -218,7 +218,7 @@ class WP_To_Social_Pro_Admin {
 				sprintf(
 					'%1$s <a href="%2$s">%3$s</a>',
 					sprintf(
-						/* translators: %1$s: Plugin Name, %2$s, %3$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %4$s: URL to Authorize Plugin Screen, %5$s: URL to Register Account with Service */
+						/* translators: %1$s: Plugin Name, %2$s, %3$s: Social Media Service Name (Buffer, Hootsuite), %4$s: URL to Authorize Plugin Screen, %5$s: URL to Register Account with Service */
 						esc_html__( '%1$s needs to be authorized with %2$s before you can start sending Posts to %3$s.', 'wp-to-hootsuite' ),
 						$this->base->plugin->displayName,
 						$this->base->plugin->account,
@@ -305,10 +305,7 @@ class WP_To_Social_Pro_Admin {
 		$minified = $this->base->dashboard->should_load_minified_js();
 
 		// Define JS and localization.
-		wp_register_script( $this->base->plugin->name . '-bulk-publish', $this->base->plugin->url . 'lib/assets/js/' . ( $minified ? 'min/' : '' ) . 'bulk-publish' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->base->plugin->version, true );
 		wp_register_script( $this->base->plugin->name . '-log', $this->base->plugin->url . 'lib/assets/js/' . ( $minified ? 'min/' : '' ) . 'log' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->base->plugin->version, true );
-		wp_register_script( $this->base->plugin->name . '-quick-edit', $this->base->plugin->url . 'lib/assets/js/' . ( $minified ? 'min/' : '' ) . 'quick-edit' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->base->plugin->version, true );
-		wp_register_script( $this->base->plugin->name . '-settings', $this->base->plugin->url . 'lib/assets/js/' . ( $minified ? 'min/' : '' ) . 'settings' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery', 'wp-color-picker' ), $this->base->plugin->version, true );
 		wp_register_script( $this->base->plugin->name . '-statuses', $this->base->plugin->url . 'lib/assets/js/' . ( $minified ? 'min/' : '' ) . 'statuses' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->base->plugin->version, true );
 
 		// Define localization for statuses.
@@ -317,7 +314,7 @@ class WP_To_Social_Pro_Admin {
 
 			'clear_log_nonce'          => wp_create_nonce( $this->base->plugin->name . '-clear-log' ),
 			'clear_log_completed'      => sprintf(
-				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+				/* translators: Social Media Service Name (Buffer, Hootsuite) */
 				__( 'No log entries exist, or no status updates have been sent to %s.', 'wp-to-hootsuite' ),
 				$this->base->plugin->account
 			),
@@ -357,8 +354,10 @@ class WP_To_Social_Pro_Admin {
 					 * Add/Edit
 					 */
 					case 'edit':
-						// JS.
+						// Plugin JS.
 						wp_enqueue_script( $this->base->plugin->name . '-log' );
+
+						// Localize.
 						wp_localize_script( $this->base->plugin->name . '-log', 'wp_to_social_pro', $localization );
 						break;
 				}
@@ -393,6 +392,13 @@ class WP_To_Social_Pro_Admin {
 
 						// Plugin JS.
 						wp_enqueue_script( $this->base->plugin->name . '-statuses' );
+
+						// Add Twitter Username Save Action and Nonce.
+						$localization['username_save_twitter_action'] = $this->base->plugin->filter_name . '_username_save_twitter';
+						$localization['username_save_twitter_nonce']  = wp_create_nonce( $this->base->plugin->name . '-username-save-twitter' );
+
+						// Localize.
+						wp_localize_script( $this->base->plugin->name . '-settings', 'wp_to_social_pro', $localization );
 
 						// Add Post Type, Action and Nonce to allow AJAX saving.
 						$localization['post_type']              = $this->get_post_type_tab();
@@ -553,16 +559,7 @@ class WP_To_Social_Pro_Admin {
 		$this->base->get_class( 'notices' )->set_key_prefix( $this->base->plugin->filter_name . '_' . wp_get_current_user()->ID );
 
 		// Maybe disconnect.
-		if ( isset( $_GET[ $this->base->plugin->name . '-disconnect' ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->disconnect();
-			$this->base->get_class( 'notices' )->add_success_notice(
-				sprintf(
-					/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
-					__( '%s account disconnected successfully.', 'wp-to-hootsuite' ),
-					$this->base->plugin->account
-				)
-			);
-		}
+		$this->maybe_disconnect_account();
 
 		// Maybe save settings.
 		$result = $this->save_settings();
@@ -600,7 +597,7 @@ class WP_To_Social_Pro_Admin {
 				// Error notice.
 				$this->base->get_class( 'notices' )->add_error_notice(
 					sprintf(
-						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
 						__( 'Hmm, it looks like you revoked access to %1$s through your %2$s account, or your account no longer exists. This means we can no longer post updates to your social networks.  To re-authorize, click the Authorize Plugin button.', 'wp-to-hootsuite' ),
 						$this->base->plugin->displayName,
 						$this->base->plugin->account
@@ -676,7 +673,7 @@ class WP_To_Social_Pro_Admin {
 						sprintf(
 							'%1$s <a href="%2$s" target="_blank">%3$s</a>',
 							sprintf(
-								/* translators: %1$s: Post Type, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Documentation URL */
+								/* translators: %1$s: Post Type, %2$s: Social Media Service Name (Buffer, Hootsuite), %3$s: Documentation URL */
 								__( 'To send %1$s to %2$s, at least one action on the Defaults tab must be enabled with a status defined, and at least one social media profile must be enabled below by clicking the applicable profile name and ticking the "Account Enabled" box.', 'wp-to-hootsuite' ),
 								$post_type_object->label,
 								$this->base->plugin->account
@@ -784,12 +781,28 @@ class WP_To_Social_Pro_Admin {
 	/**
 	 * Disconnect by removing the access token
 	 *
-	 * @since   3.0.0
+	 * @since   4.1.0
 	 *
 	 * @return  string Result
 	 */
-	public function disconnect() {
+	public function maybe_disconnect_account() {
 
+		// Bail if no nonce.
+		if ( ! isset( $_GET['nonce'] ) ) {
+			return;
+		}
+
+		// Bail if nonce is invalid.
+		if ( ! wp_verify_nonce( sanitize_key( $_GET['nonce'] ), $this->base->plugin->name . '-disconnect' ) ) {
+			return;
+		}
+
+		// Bail if account ID is not set.
+		if ( ! isset( $_GET[ $this->base->plugin->name . '-disconnect' ] ) ) {
+			return;
+		}
+
+		// Disconnect account.
 		return $this->base->get_class( 'settings' )->delete_tokens();
 
 	}
@@ -835,15 +848,16 @@ class WP_To_Social_Pro_Admin {
 			case 'auth':
 				// oAuth settings are now handled by this class' oauth() function.
 				// Save other Settings.
+				$settings = map_deep( $_POST, 'sanitize_text_field' );
 
 				// General Settings.
-				$this->base->get_class( 'settings' )->update_option( 'test_mode', ( isset( $_POST['test_mode'] ) ? 1 : 0 ) );
-				$this->base->get_class( 'settings' )->update_option( 'force_trailing_forwardslash', ( isset( $_POST['force_trailing_forwardslash'] ) ? 1 : 0 ) );
-				$this->base->get_class( 'settings' )->update_option( 'proxy', ( isset( $_POST['proxy'] ) ? 1 : 0 ) );
+				$this->base->get_class( 'settings' )->update_option( 'test_mode', ( isset( $settings['test_mode'] ) ? 1 : 0 ) );
+				$this->base->get_class( 'settings' )->update_option( 'force_trailing_forwardslash', ( isset( $settings['force_trailing_forwardslash'] ) ? 1 : 0 ) );
+				$this->base->get_class( 'settings' )->update_option( 'proxy', ( isset( $settings['proxy'] ) ? 1 : 0 ) );
 
 				// Log Settings.
 				// Always force errors.
-				$log = isset( $_POST['log'] ) ? wp_unslash( $_POST['log'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$log = isset( $settings['log'] ) ? wp_unslash( $settings['log'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				if ( ! isset( $log['log_level'] ) ) {
 					$log['log_level'] = array(
 						'error',
@@ -854,6 +868,10 @@ class WP_To_Social_Pro_Admin {
 					$log['log_level'][] = 'error';
 				}
 				$this->base->get_class( 'settings' )->update_option( 'log', $log );
+
+				// Reschedule CRON events.
+				$this->base->get_class( 'cron' )->reschedule_log_cleanup_event();
+				$this->base->get_class( 'cron' )->reschedule_media_cleanup_event();
 
 				// Done.
 				return true;
@@ -888,12 +906,13 @@ class WP_To_Social_Pro_Admin {
 	 */
 	private function get_tab( $profiles = false ) {
 
-		$tab = ( isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'auth' ); // phpcs:ignore WordPress.Security.NonceVerification
-
-		// If we're on the Settings tab, return.
-		if ( $tab === 'auth' ) {
-			return $tab;
+		// If no tab, default to auth.
+		if ( ! filter_has_var( INPUT_GET, 'tab' ) ) {
+			return 'auth';
 		}
+
+		// Get current tab.
+		$tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		// If Profiles are an error, show error.
 		if ( is_wp_error( $profiles ) ) {
@@ -919,7 +938,21 @@ class WP_To_Social_Pro_Admin {
 	 */
 	private function get_post_type_tab() {
 
-		return ( isset( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification
+		// If no type, default to empty string.
+		if ( ! filter_has_var( INPUT_GET, 'type' ) ) {
+			return '';
+		}
+
+		// Get supported post types.
+		$post_types = array_keys( $this->base->get_class( 'common' )->get_post_types() );
+		$post_type  = filter_input( INPUT_GET, 'type', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		// If the post type is not supported, return empty string.
+		if ( ! in_array( $post_type, $post_types, true ) ) {
+			return '';
+		}
+
+		return $post_type;
 
 	}
 

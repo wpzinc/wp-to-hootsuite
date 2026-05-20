@@ -86,7 +86,7 @@ class WP_To_Social_Pro_Post {
 					<?php
 					echo esc_html(
 						sprintf(
-						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
 							__( '%1$s: Post successfully added to %2$s.', 'wp-to-hootsuite' ),
 							$this->base->plugin->displayName,
 							$this->base->plugin->account
@@ -109,7 +109,7 @@ class WP_To_Social_Pro_Post {
 					<?php
 					echo esc_html(
 						sprintf(
-						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
 							__( '%1$s: Some status(es) could not be sent to %2$s', 'wp-to-hootsuite' ),
 							$this->base->plugin->displayName,
 							$this->base->plugin->account

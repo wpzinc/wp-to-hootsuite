@@ -140,4 +140,79 @@ class WP_To_Social_Pro_Cron {
 
 	}
 
+	/**
+	 * Schedules the media cleanup event in the WordPress CRON on a daily basis
+	 *
+	 * @since   4.2.0
+	 */
+	public function schedule_media_cleanup_event() {
+
+		// Bail if the scheduled event already exists.
+		$scheduled_event = $this->get_media_cleanup_event();
+		if ( $scheduled_event !== false ) {
+			return;
+		}
+
+		// Schedule event.
+		$scheduled_date_time = gmdate( 'Y-m-d', strtotime( '+1 day' ) ) . ' 01:00:00';
+		wp_schedule_event( strtotime( $scheduled_date_time ), 'daily', $this->base->plugin->filter_name . '_media_cleanup_cron' );
+
+	}
+
+	/**
+	 * Unschedules the media cleanup event in the WordPress CRON.
+	 *
+	 * @since   4.2.0
+	 */
+	public function unschedule_media_cleanup_event() {
+
+		wp_clear_scheduled_hook( $this->base->plugin->filter_name . '_media_cleanup_cron' );
+
+	}
+
+	/**
+	 * Reschedules the media cleanup event in the WordPress CRON, by unscheduling
+	 * and scheduling it.
+	 *
+	 * @since   4.2.0
+	 */
+	public function reschedule_media_cleanup_event() {
+
+		$this->unschedule_media_cleanup_event();
+		$this->schedule_media_cleanup_event();
+
+	}
+
+	/**
+	 * Returns the scheduled media cleanup event, if it exists
+	 *
+	 * @since   4.2.0
+	 */
+	public function get_media_cleanup_event() {
+
+		return wp_get_schedule( $this->base->plugin->filter_name . '_media_cleanup_cron' );
+
+	}
+
+	/**
+	 * Returns the scheduled media cleanup event's next date and time to run, if it exists
+	 *
+	 * @since   4.2.0
+	 *
+	 * @param   mixed $format     Format Timestamp (false | php date() compat. string).
+	 */
+	public function get_media_cleanup_event_next_scheduled( $format = false ) {
+
+		// Get timestamp for when the event will next run.
+		$scheduled = wp_next_scheduled( $this->base->plugin->filter_name . '_media_cleanup_cron' );
+
+		// If no timestamp or we're not formatting the result, return it now.
+		if ( ! $scheduled || ! $format ) {
+			return $scheduled;
+		}
+
+		// Return formatted date/time.
+		return date( $format, $scheduled ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+	}
+
 }

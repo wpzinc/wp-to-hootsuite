@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			echo esc_html(
 				sprintf(
-					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite) */
 					__( 'You must connect at least one social media account in %1$s for this Plugin to send status updates to it.', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)

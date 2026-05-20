@@ -38,10 +38,40 @@ class WP_To_Social_Pro_Ajax {
 		$this->base = $base;
 
 		// Actions.
+		add_action( 'wp_ajax_' . $this->base->plugin->filter_name . '_username_save_twitter', array( $this, 'username_save_twitter' ) );
 		add_action( 'wp_ajax_' . $this->base->plugin->filter_name . '_save_statuses', array( $this, 'save_statuses' ) );
 		add_action( 'wp_ajax_' . $this->base->plugin->filter_name . '_get_status_row', array( $this, 'get_status_row' ) );
 		add_action( 'wp_ajax_' . $this->base->plugin->filter_name . '_get_log', array( $this, 'get_log' ) );
 		add_action( 'wp_ajax_' . $this->base->plugin->filter_name . '_clear_log', array( $this, 'clear_log' ) );
+
+	}
+
+	/**
+	 * Saves the given Twitter username and user ID to the API.
+	 *
+	 * @since   4.1.0
+	 */
+	public function username_save_twitter() {
+
+		// Run a security check first.
+		check_ajax_referer( $this->base->plugin->name . '-username-save-twitter', 'nonce' );
+
+		// Bail if no user ID or username was provided.
+		if ( ! isset( $_REQUEST['user_id'] ) ) {
+			wp_send_json_error( __( 'No user ID was provided.', 'wp-to-hootsuite' ) );
+		}
+		if ( ! isset( $_REQUEST['username'] ) ) {
+			wp_send_json_error( __( 'No username was provided.', 'wp-to-hootsuite' ) );
+		}
+
+		// Sanitize inputs.
+		$user_id  = sanitize_text_field( wp_unslash( $_REQUEST['user_id'] ) );
+		$username = sanitize_text_field( wp_unslash( $_REQUEST['username'] ) );
+
+		// Save.
+		$results = $this->base->get_class( 'twitter_api' )->username_save( $user_id, $username );
+
+		wp_send_json_success( $results );
 
 	}
 

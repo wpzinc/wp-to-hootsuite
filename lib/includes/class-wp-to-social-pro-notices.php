@@ -421,7 +421,18 @@ class WP_To_Social_Pro_Notices {
 			?>
 			<div class="notice notice-success is-dismissible">
 				<p>
-					<?php echo implode( '<br />', $this->notices['success'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+					<?php
+					echo wp_kses(
+						implode( '<br />', $this->notices['success'] ),
+						array(
+							'a'  => array(
+								'href'   => array(),
+								'target' => array(),
+							),
+							'br' => array(),
+						)
+					);
+					?>
 				</p>
 			</div>
 			<?php
@@ -432,7 +443,18 @@ class WP_To_Social_Pro_Notices {
 			?>
 			<div class="notice notice-warning is-dismissible">
 				<p>
-					<?php echo implode( '<br />', $this->notices['warning'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+					<?php
+					echo wp_kses(
+						implode( '<br />', $this->notices['warning'] ),
+						array(
+							'a'  => array(
+								'href'   => array(),
+								'target' => array(),
+							),
+							'br' => array(),
+						)
+					);
+					?>
 				</p>
 			</div>
 			<?php
@@ -443,7 +465,18 @@ class WP_To_Social_Pro_Notices {
 			?>
 			<div class="notice notice-error is-dismissible">
 				<p>
-					<?php echo implode( '<br />', $this->notices['error'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+					<?php
+					echo wp_kses(
+						implode( '<br />', $this->notices['error'] ),
+						array(
+							'a'  => array(
+								'href'   => array(),
+								'target' => array(),
+							),
+							'br' => array(),
+						)
+					);
+					?>
 				</p>
 			</div>
 			<?php

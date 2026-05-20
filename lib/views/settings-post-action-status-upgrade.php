@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			echo esc_html(
 				sprintf(
-				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+				/* translators: Social Media Service Name (Buffer, Hootsuite) */
 					__( 'Want to Publish multiple Status Updates to %s Pro?', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)
