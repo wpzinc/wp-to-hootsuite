@@ -162,13 +162,29 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	public function search_box( $text, $input_id ) {
 
+		// Build default values for filters.
+		$filters_values = array();
+		foreach ( $this->base->get_class( 'common' )->get_log_filters() as $filter ) {
+			$filters_values[ $filter ] = false;
+		}
+
+		// If a nonce is present, read the request.
+		if ( isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			foreach ( $this->base->get_class( 'common' )->get_log_filters() as $filter ) {
+				if ( ! array_key_exists( $filter, $_REQUEST ) ) {
+					continue;
+				}
+				$filters_values[ $filter ] = sanitize_text_field( wp_unslash( $_REQUEST[ $filter ] ) );
+			}
+		}
+
 		$input_id = $input_id . '-search-input';
 
 		// Preserve Filters by storing any defined as hidden form values.
 		foreach ( $this->base->get_class( 'common' )->get_log_filters() as $filter ) {
-			if ( ! empty( $_REQUEST[ $filter ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( $filters_values[ $filter ] !== false ) {
 				?>
-				<input type="hidden" name="<?php echo esc_attr( $filter ); ?>" value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_REQUEST[ $filter ] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification ?>" />
+				<input type="hidden" name="<?php echo esc_attr( $filter ); ?>" value="<?php echo esc_attr( $filters_values[ $filter ] ); ?>" />
 				<?php
 			}
 		}
@@ -200,12 +216,12 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 			'result'            => __( 'Result', 'wp-to-hootsuite' ),
 			'result_message'    => __( 'Response', 'wp-to-hootsuite' ),
 			'status_created_at' => sprintf(
-				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+				/* translators: Social Media Service Name (Buffer, Hootsuite) */
 				__( '%s: Status Created At', 'wp-to-hootsuite' ),
 				$this->base->plugin->account
 			),
 			'status_due_at'     => sprintf(
-				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+				/* translators: Social Media Service Name (Buffer, Hootsuite) */
 				__( '%s: Status Scheduled For', 'wp-to-hootsuite' ),
 				$this->base->plugin->account
 			),
@@ -325,7 +341,33 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	public function display_rows() {
 
-		echo $this->base->get_class( 'log' )->build_log_table_output( $this->items, true, $this->_column_headers ); // phpcs:ignore WordPress.Security.EscapeOutput
+		echo wp_kses(
+			$this->base->get_class( 'log' )->build_log_table_output( $this->items, true, $this->_column_headers ),
+			array(
+				'tr'    => array(
+					'class' => array(),
+				),
+				'th'    => array(
+					'scope' => array(),
+					'class' => array(),
+				),
+				'td'    => array(
+					'class' => array(),
+				),
+				'a'     => array(
+					'href'   => array(),
+					'target' => array(),
+				),
+				'br'    => array(),
+				'input' => array(
+					'type'  => array(
+						'checkbox',
+					),
+					'name'  => array(),
+					'value' => array(),
+				),
+			)
+		);
 
 	}
 
@@ -348,15 +390,14 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 		);
 
 		// Return params if freeform search isn't supplied.
-		if ( ! isset( $_REQUEST['s'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			return $params;
-		}
-		if ( empty( $_REQUEST['s'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 's' ) ) {
 			return $params;
 		}
 
+		// Get search.
+		$search = filter_input( INPUT_GET, 's', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
 		// If search is a number, add it as the Post ID and return.
-		$search = esc_html( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		if ( is_numeric( $search ) ) {
 			$params['post_id'] = absint( $search );
 			return $params;
@@ -378,7 +419,7 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	public function is_search() {
 
-		return ( isset( $_REQUEST['s'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		return filter_has_var( INPUT_GET, 's' );
 
 	}
 
@@ -391,7 +432,16 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	public function get_search() {
 
-		return ( isset( $_REQUEST['s'] ) ? urldecode( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 's', $_REQUEST ) ) {
+			return '';
+		}
+
+		return urldecode( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) );
 
 	}
 
@@ -404,7 +454,16 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_action() {
 
-		return ( isset( $_REQUEST['action'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ) : '' );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 'action', $_REQUEST ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
 
 	}
 
@@ -417,7 +476,16 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_profile_id() {
 
-		return ( isset( $_REQUEST['profile_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['profile_id'] ) ) : '' );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 'profile_id', $_REQUEST ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( wp_unslash( $_REQUEST['profile_id'] ) );
 
 	}
 
@@ -430,7 +498,16 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_result() {
 
-		return ( isset( $_REQUEST['result'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['result'] ) ) : '' );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 'result', $_REQUEST ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( wp_unslash( $_REQUEST['result'] ) );
 
 	}
 
@@ -443,7 +520,16 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_request_sent_start_date() {
 
-		return ( isset( $_REQUEST['request_sent_start_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['request_sent_start_date'] ) ) : '' );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 'request_sent_start_date', $_REQUEST ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( wp_unslash( $_REQUEST['request_sent_start_date'] ) );
 
 	}
 
@@ -456,7 +542,16 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_request_sent_end_date() {
 
-		return ( isset( $_REQUEST['request_sent_end_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['request_sent_end_date'] ) ) : '' );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 'get_request_sent_end_date', $_REQUEST ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( wp_unslash( $_REQUEST['get_request_sent_end_date'] ) );
 
 	}
 
@@ -469,7 +564,12 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_order_by() {
 
-		return ( isset( $_GET['orderby'] ) ? sanitize_sql_orderby( wp_unslash( $_GET['orderby'] ) ) : 'request_sent' );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Don't nonce check because order by may not include a nonce if no search performed.
+		if ( ! filter_has_var( INPUT_GET, 'orderby' ) ) {
+			return 'request_sent';
+		}
+
+		return filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 	}
 
@@ -482,7 +582,12 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_order() {
 
-		return ( isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'DESC' );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Don't nonce check because order may not include a nonce if no search performed.
+		if ( ! filter_has_var( INPUT_GET, 'order' ) ) {
+			return 'DESC';
+		}
+
+		return filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 	}
 
@@ -495,7 +600,12 @@ class WP_To_Social_Pro_Log_Table extends WP_List_Table {
 	 */
 	private function get_page() {
 
-		return ( ( isset( $_GET['paged'] ) && ! empty( $_GET['paged'] ) ) ? absint( $_GET['paged'] ) : 1 );  // phpcs:ignore WordPress.Security.NonceVerification
+		// Don't nonce check because pagination may not include a nonce if no search performed.
+		if ( ! filter_has_var( INPUT_GET, 'paged' ) ) {
+			return 1;
+		}
+
+		return absint( filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 
 	}
 

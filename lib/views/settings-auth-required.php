@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php
 									echo esc_html(
 										sprintf(
-										/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+										/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite), %2$s: Social Media Service Name (Buffer, Hootsuite) */
 											__( 'To allow this Plugin to post updates to your social media profiles using %1$s, please authorize %2$s below.', 'wp-to-hootsuite' ),
 											$this->base->plugin->account,
 											$this->base->plugin->account
@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php
 									echo esc_html(
 										sprintf(
-										/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+										/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite) */
 											__( 'Don\'t have a %1$s account?', 'wp-to-hootsuite' ),
 											$this->base->plugin->account
 										)

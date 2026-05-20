@@ -55,7 +55,7 @@ class WP_To_Social_Pro_Common {
 			case 'wp-to-buffer':
 				$schedule = array(
 					'queue_bottom' => sprintf(
-						/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+						/* translators: Social Media Service Name (Buffer, Hootsuite) */
 						__( 'Add to End of %s Queue', 'wp-to-hootsuite' ),
 						$this->base->plugin->account
 					),
@@ -594,6 +594,44 @@ class WP_To_Social_Pro_Common {
 
 		// Return filtered results.
 		return $filters;
+
+	}
+
+	/**
+	 * Helper method to check if the collation of the given table is correct
+	 *
+	 * @since   5.5.5
+	 *
+	 * @param   string $table_name            Table Name.
+	 * @param   string $required_collation    Required Collation.
+	 * @return  bool
+	 */
+	public function is_table_charset_and_collation_correct( $table_name = 'options', $required_collation = 'utf8mb4' ) {
+
+		global $wpdb;
+
+		$result = $wpdb->get_row(
+			"SHOW CREATE TABLE `{$wpdb->{$table_name}}`",
+			ARRAY_A
+		);
+
+		// If no result, return true, as we can't reliably tell if the collation is correct.
+		if ( ! array_key_exists( 'Create Table', $result ) || empty( $result['Create Table'] ) ) {
+			return true;
+		}
+
+		// Extract the default charset and collation from the create table SQL.
+		preg_match( '/DEFAULT CHARSET=([a-zA-Z0-9_]+)/i', $result['Create Table'], $default_charset );
+		preg_match( '/COLLATE=([a-zA-Z0-9_]+)/i', $result['Create Table'], $default_collation );
+
+		if ( strpos( $default_charset[1], $required_collation ) === false ) {
+			return false;
+		}
+		if ( strpos( $default_collation[1], $required_collation ) === false ) {
+			return false;
+		}
+
+		return true;
 
 	}
 

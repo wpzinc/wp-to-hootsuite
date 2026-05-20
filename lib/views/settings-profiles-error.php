@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			echo esc_html(
 				sprintf(
-				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+				/* translators: Social Media Service Name (Buffer, Hootsuite) */
 					__( 'Visit your %s account to resolve this error.', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			echo esc_html(
 				sprintf(
-				/* translators: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+				/* translators: Social Media Service Name (Buffer, Hootsuite) */
 					__( 'Visit %s', 'wp-to-hootsuite' ),
 					$this->base->plugin->account
 				)

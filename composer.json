@@ -1,8 +1,7 @@
 {
-    "name": "n7studios/wp-to-hootsuite",
-    "description": "WordPress to Hootsuite Plugin",
+    "name": "n7studios/wp-to-buffer-pro",
+    "description": "WordPress to Buffer Pro Plugin",
     "type": "project",
-    "license": "GPLv3",
     "require-dev": {
         "php-webdriver/webdriver": "^1.0",
         "wp-coding-standards/wpcs": "^3.0.0",
@@ -15,15 +14,22 @@
     "prefer-stable": true,
     "scripts": {
         "create-release-assets": [
-            "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-hootsuite.pot",
+            "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-social-pro.pot",
             "@php .scripts/create-actions-filters-docs.php"
         ],
-        "create-pot": "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-hootsuite.pot",
+        "create-pot": "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-social-pro.pot",
         "create-dev-docs": "@php .scripts/create-actions-filters-docs.php",
         "phpcs": "vendor/bin/phpcs ./ -s -v",
         "phpcbf": "vendor/bin/phpcbf ./ -s -v",
         "phpcs-tests": "vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -s -v",
         "phpcbf-tests": "vendor/bin/phpcbf ./tests --standard=phpcs.tests.xml -s -v",
+        "lint-css": "npm run lint:css",
+        "fix-css": "npm run fix:css",
+        "build-css": "npm run build:css",
+        "lint-js": "npm run lint:js",
+        "fix-js": "npm run fix:js",
+        "build-js": "npm run build:js",
+        "build": "npm run build",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1250M",
         "test": [
             "vendor/bin/codecept build",

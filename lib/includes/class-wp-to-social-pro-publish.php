@@ -492,7 +492,7 @@ class WP_To_Social_Pro_Publish {
 			return new WP_Error(
 				'no_access_token',
 				sprintf(
-					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %2$s: Plugin Name */
+					/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite), %2$s: Plugin Name */
 					__( 'The Plugin has not been authorized with %1$s! Go to %2$s > Settings to setup the plugin.', 'wp-to-hootsuite' ),
 					$this->base->plugin->account,
 					$this->base->plugin->displayName
@@ -601,7 +601,7 @@ class WP_To_Social_Pro_Publish {
 				$error = new WP_Error(
 					$this->base->plugin->filter_name . '_no_statuses_conditions',
 					sprintf(
-						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
+						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
 						__( 'Status(es) exist for sending this %1$s to %2$s when you %3$s a %4$s, but no status was sent because the %5$s did not meet the status conditions. If you want this %6$s to be sent to %7$s, navigate to <a href="%8$s" target="_blank">%9$s > Settings > %10$s Tab > %11$s Action Tab</a>, ensuring that no Conditions are set on the defined statuses.', 'wp-to-hootsuite' ),
 						$post_type_object->labels->singular_name,
 						$this->base->plugin->account,
@@ -624,7 +624,7 @@ class WP_To_Social_Pro_Publish {
 				$error = new WP_Error(
 					$this->base->plugin->filter_name . '_no_statuses_enabled',
 					sprintf(
-						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
+						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
 						__( 'No Plugin Settings are defined for sending %1$s to %2$s when you %3$s a %4$s. To send statuses to %5$s on %6$s, navigate to <a href="%7$s" target="_blank">%8$s > Settings > %9$s Tab > %10$s Action Tab</a>, tick "Enabled", and also enable at least one social media profile.', 'wp-to-hootsuite' ),
 						$post_type_object->labels->name,
 						$this->base->plugin->account,
@@ -769,13 +769,14 @@ class WP_To_Social_Pro_Publish {
 				break;
 
 			/**
-			 * Pinterest, Instagram, Google Business, Mastodon
+			 * Pinterest, Instagram, Google Business, TikTok
 			 * - Force No Image, OpenGraph and Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
 			 * - Force Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
 			 */
 			case 'pinterest':
 			case 'instagram':
 			case 'googlebusiness':
+			case 'tiktok':
 				// Set No Image, OpenGraph and Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
 				if ( $status['image'] == -1 || $status['image'] == 0 || $status['image'] == 1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$status['image'] = 2;

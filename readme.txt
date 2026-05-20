@@ -3,9 +3,9 @@ Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
 Tags: auto post, auto publish, social media scheduling, social media automation, hootsuite
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.7
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,11 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 1.7.0 (2026-05-20) =
+* Fix: Automatically delete temporary images
+* Updated: Coding standards
+* Updated: Sanitization
 
 = 1.6.7 (2026-04-08) =
 * Removed: Settings: Products section

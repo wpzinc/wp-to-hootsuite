@@ -82,12 +82,14 @@ class WP_To_Social_Pro_Validation {
 			$this->base->get_class( 'settings' )->get_refresh_token(),
 			$this->base->get_class( 'settings' )->get_token_expires()
 		);
-		$wordpress_timezone = $this->base->get_class( 'date' )->convert_wordpress_gmt_offset_to_offset_value( get_option( 'gmt_offset' ) );
 
 		// Pass test if the API date couldn't be fetched.
 		if ( ! $api_profile_timezone ) {
 			return true;
 		}
+
+		// Fetch timezones for WordPress, Server and API.
+		$wordpress_timezone = $this->base->get_class( 'date' )->convert_wordpress_gmt_offset_to_offset_value( get_option( 'gmt_offset' ) );
 
 		// Fetch the current date and time, to the minute, for each of the timezones.
 		try {

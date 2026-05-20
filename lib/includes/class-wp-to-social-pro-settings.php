@@ -188,7 +188,7 @@ class WP_To_Social_Pro_Settings {
 			return new WP_Error(
 				$this->base->plugin->filter_name . '_settings_update_settings_duplicates',
 				sprintf(
-					/* translators: %1$s: Post Type Name, Plural, %2$s: Social Media Profile Name, %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s: Social Media Service Name (Buffer, Hootsuite, SocialPilot) */
+					/* translators: %1$s: Post Type Name, Plural, %2$s: Social Media Profile Name, %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s: Social Media Service Name (Buffer, Hootsuite) */
 					__( 'Two or more statuses defined in %1$s > %2$s > %3$s are the same. Please correct this to ensure each status update is unique, otherwise your status updates will NOT publish to %4$s as they will be seen as duplicates, which violate Facebook and Twitter\'s Terms of Service.', 'wp-to-hootsuite' ),
 					$post_type_object->label,
 					$profile,
