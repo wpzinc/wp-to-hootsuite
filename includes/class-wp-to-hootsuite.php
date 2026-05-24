@@ -102,8 +102,8 @@ class WP_To_Hootsuite {
 		// Admin Menus.
 		add_action( $this->plugin->filter_name . '_admin_admin_menu', array( $this, 'admin_menus' ) );
 
-		// Remove the Link Post Type.
-		add_filter( 'wp_to_hootsuite_get_status_post_type_options', array( $this, 'remove_link_post_type_from_status_post_type_options' ) );
+		// Remove the 'Link' Post Type.
+		add_filter( $this->plugin->filter_name . '_get_status_post_type_options', array( $this, 'remove_link_post_type' ) );
 
 	}
 
@@ -133,17 +133,18 @@ class WP_To_Hootsuite {
 	}
 
 	/**
-	 * Remove the Link Post Type from the status post type options.
+	 * Remove the 'Link' Post Type from the status post type options,
+	 * as this isn't supported by Hootsuite.
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   array $status_post_type_options   Status Post Type Options.
-	 * @return  array
+	 * @param   array $post_types   Post Types.
+	 * @return  array               Post Types.
 	 */
-	public function remove_link_post_type_from_status_post_type_options( $status_post_type_options ) {
+	public function remove_link_post_type( $post_types ) {
 
-		unset( $status_post_type_options['link'] );
-		return $status_post_type_options;
+		unset( $post_types['link'] );
+		return $post_types;
 
 	}
 
