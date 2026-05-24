@@ -73,8 +73,27 @@ class WP_To_Hootsuite {
 		$this->plugin->documentation_url = 'https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro';
 		$this->plugin->support_url       = 'https://www.wpzinc.com/support';
 		$this->plugin->upgrade_url       = 'https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro';
-		$this->plugin->logo              = WP_TO_HOOTSUITE_PLUGIN_URL . 'lib/assets/images/icons/hootsuite-dark.svg';
-		$this->plugin->review_name       = 'wp-to-hootsuite';
+
+		// Logo.
+		$this->plugin->logo                        = WP_TO_HOOTSUITE_PLUGIN_URL . 'lib/assets/images/icons/hootsuite-dark.svg';
+		$this->plugin->review_name                 = 'wp-to-hootsuite';
+		$this->plugin->header_background_color     = '#ffffff';
+		$this->plugin->header_primary_text_color   = '#3d3d3d';
+		$this->plugin->header_secondary_text_color = '#6e6e6e';
+
+		// Review.
+		$this->plugin->review_name   = 'wp-to-hootsuite';
+		$this->plugin->review_notice = sprintf(
+			'Thanks for using %s to schedule your social media statuses on %s!',
+			$this->plugin->displayName,
+			$this->plugin->account
+		);
+
+		// ConvertKit Form UID.
+		$this->plugin->convertkit_form_uid = '6c1d63c124';
+
+		// Default Settings.
+		$this->plugin->default_schedule = 'now';
 
 		// Defer loading of Plugin Classes.
 		add_action( 'init', array( $this, 'initialize' ), 1 );
@@ -82,6 +101,9 @@ class WP_To_Hootsuite {
 
 		// Admin Menus.
 		add_action( $this->plugin->filter_name . '_admin_admin_menu', array( $this, 'admin_menus' ) );
+
+		// Remove the Link Post Type.
+		add_filter( 'wp_to_hootsuite_get_status_post_type_options', array( $this, 'remove_link_post_type_from_status_post_type_options' ) );
 
 	}
 
@@ -111,6 +133,21 @@ class WP_To_Hootsuite {
 	}
 
 	/**
+	 * Remove the Link Post Type from the status post type options.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $status_post_type_options   Status Post Type Options.
+	 * @return  array
+	 */
+	public function remove_link_post_type_from_status_post_type_options( $status_post_type_options ) {
+
+		unset( $status_post_type_options['link'] );
+		return $status_post_type_options;
+
+	}
+
+	/**
 	 * Initializes required classes
 	 *
 	 * @since   3.4.9
@@ -122,12 +159,6 @@ class WP_To_Hootsuite {
 			__( 'Thanks for using %s to schedule your social media statuses on Hootsuite!', 'wp-to-hootsuite' ),
 			$this->plugin->displayName
 		);
-
-		// ConvertKit Form UID.
-		$this->plugin->convertkit_form_uid = '6c1d63c124';
-
-		// Default Settings.
-		$this->plugin->default_schedule = 'now';
 
 		// Upgrade Reasons.
 		$this->plugin->upgrade_reasons = array(
