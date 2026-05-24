@@ -62,8 +62,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<tr>
 							<th>&nbsp;</th>
 							<th><?php esc_html_e( 'Actions', 'wp-to-hootsuite' ); ?></th>
+							<th><?php esc_html_e( 'Type', 'wp-to-hootsuite' ); ?></th>
 							<th><?php esc_html_e( 'Text', 'wp-to-hootsuite' ); ?></th>
-							<th><?php esc_html_e( 'Image', 'wp-to-hootsuite' ); ?></th>
 							<th><?php esc_html_e( 'Schedule', 'wp-to-hootsuite' ); ?></th>
 						</tr>
 					</thead>
@@ -73,24 +73,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 						$statuses = $this->get_setting( $post_type, '[' . $profile_id . '][' . $post_action . '][status]' );
 
 						if ( ! is_array( $statuses ) || ! count( $statuses ) ) {
-							// Define default status.
-							$key    = 0;
-							$status = $this->base->get_class( 'settings' )->get_default_status( $post_type, false, $this->base->plugin->default_schedule ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-							$labels = array();
+							$statuses = array(
+								$this->base->get_class( 'settings' )->get_default_status( $post_type, false, $this->base->plugin->default_schedule ),
+							);
+						}
+
+						// Iterate through saved statuses.
+						foreach ( $statuses as $key => $status ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+							$status = $this->base->get_class( 'settings' )->get_status( $status, $post_type ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+							$labels = $this->base->get_class( 'settings' )->get_status_value_labels( $status, $post_type );
 							$row    = $this->base->get_class( 'settings' )->get_status_row( $status, $post_type, $post_action );
 
 							// Load sub view.
 							require $this->base->plugin->folder . 'lib/views/settings-post-action-status-row.php';
-						} else {
-							// Iterate through saved statuses.
-							foreach ( $statuses as $key => $status ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-								$status = $this->base->get_class( 'settings' )->get_status( $status, $post_type ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-								$labels = $this->base->get_class( 'settings' )->get_status_value_labels( $status, $post_type );
-								$row    = $this->base->get_class( 'settings' )->get_status_row( $status, $post_type, $post_action );
-
-								// Load sub view.
-								require $this->base->plugin->folder . 'lib/views/settings-post-action-status-row.php';
-							}
 						}
 						?>
 						<tr class="hidden status-form-container"><td colspan="6"></td></tr>

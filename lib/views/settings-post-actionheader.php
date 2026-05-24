@@ -38,7 +38,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 				?>
 				<div class="notice-inline notice-warning">
 					<p>
-						<?php echo $timezones_match->get_error_message(); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+						<?php
+						echo wp_kses(
+							$timezones_match->get_error_message(),
+							array(
+								'a'  => array(
+									'href'   => array(),
+									'target' => array(),
+								),
+								'br' => array(),
+							)
+						);
+						?>
 					</p>
 				</div>
 				<?php
@@ -49,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php
 	if ( ( class_exists( 'WP_To_Buffer' ) || class_exists( 'WP_To_Hootsuite' ) ) &&
-		( $profile['service'] === 'instagram' || $profile['service'] === 'pinterest' ) ) {
+		( $profile['service'] === 'instagram' || $profile['service'] === 'pinterest' || $profile['service'] === 'googlebusiness' ) ) {
 		require $this->base->plugin->folder . 'lib/views/settings-post-actionheader-upgrade-profile.php';
 	} else {
 		?>
@@ -60,7 +71,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 			<div class="right">
 				<input type="checkbox" id="<?php echo esc_attr( $profile_id ); ?>_enabled" class="enable" name="<?php echo esc_attr( $this->base->plugin->name ); ?>[<?php echo esc_attr( $profile_id ); ?>][enabled]" id="<?php echo esc_attr( $profile_id ); ?>_enabled" value="1"<?php checked( $this->get_setting( $post_type, '[' . $profile_id . '][enabled]', 0 ), 1, true ); ?> data-tab="profile-<?php echo esc_attr( $profile_id ); ?>" />
-				<p class="description"><?php esc_html_e( 'Enabling this social media account means that Posts will be sent to this social media account, if the conditions in the Settings are met.', 'wp-to-hootsuite' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Enabling this social media account means that Posts will be sent to this social media account.', 'wp-to-hootsuite' ); ?></p>
 			</div>
 		</div>
 		<?php

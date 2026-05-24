@@ -40,24 +40,6 @@ class WP_To_Social_Pro_Validation {
 	}
 
 	/**
-	 * Checks if an Access Token exists, meaning that the API service is connected
-	 * to the Plugin.
-	 *
-	 * @since   3.8.1
-	 *
-	 * @return  bool    API Connected
-	 */
-	public function api_connected() {
-
-		$access_token = $this->base->get_class( 'settings' )->get_access_token();
-		if ( empty( $access_token ) ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Checks if the WordPress timezone matches the given API Timezone,
 	 * which could be a global API timezone or a profile-specific timezone.
 	 *
@@ -71,17 +53,9 @@ class WP_To_Social_Pro_Validation {
 	public function timezones_match( $api_profile_timezone = false, $api_profile_name = '', $api_profile_change_timezone_url = '#' ) {
 
 		// Pass test if we don't have API access.
-		$api_connected = $this->api_connected();
-		if ( ! $api_connected ) {
+		if ( ! $this->base->get_class( 'settings' )->account_connected() ) {
 			return true;
 		}
-
-		// Fetch timezones for WordPress, Server and API.
-		$this->base->get_class( 'api' )->set_tokens(
-			$this->base->get_class( 'settings' )->get_access_token(),
-			$this->base->get_class( 'settings' )->get_refresh_token(),
-			$this->base->get_class( 'settings' )->get_token_expires()
-		);
 
 		// Pass test if the API date couldn't be fetched.
 		if ( ! $api_profile_timezone ) {

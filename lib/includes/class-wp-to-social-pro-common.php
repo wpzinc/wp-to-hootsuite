@@ -39,6 +39,36 @@ class WP_To_Social_Pro_Common {
 	}
 
 	/**
+	 * Helper method to retrieve status post type options
+	 *
+	 * @since   6.0.0
+	 *
+	 * @return  array   Status Post Type Options
+	 */
+	public function get_status_post_type_options() {
+
+		// Build status post type options.
+		$status_post_type_options = array(
+			'text'  => __( 'Text', 'wp-to-hootsuite' ),
+			'link'  => __( 'Link', 'wp-to-hootsuite' ),
+			'image' => __( 'Image', 'wp-to-hootsuite' ),
+		);
+
+		/**
+		 * Defines the available status post type options.
+		 *
+		 * @since   6.0.0
+		 *
+		 * @param   array   $status_post_type_options   Status Post Type Options.
+		 */
+		$status_post_type_options = apply_filters( $this->base->plugin->filter_name . '_get_status_post_type_options', $status_post_type_options );
+
+		// Return filtered results.
+		return $status_post_type_options;
+
+	}
+
+	/**
 	 * Helper method to retrieve schedule options
 	 *
 	 * @since   3.0.0
@@ -54,17 +84,13 @@ class WP_To_Social_Pro_Common {
 
 			case 'wp-to-buffer':
 				$schedule = array(
-					'queue_bottom' => sprintf(
-						/* translators: Social Media Service Name (Buffer, Hootsuite) */
-						__( 'Add to End of %s Queue', 'wp-to-hootsuite' ),
-						$this->base->plugin->account
-					),
+					'queue_end' => __( 'Add to End of Queue', 'wp-to-hootsuite' ),
 				);
 				break;
 
 			case 'wp-to-hootsuite':
 				$schedule = array(
-					'now' => __( 'Post Immediately', 'wp-to-hootsuite' ),
+					'immediate' => __( 'Post Immediately', 'wp-to-hootsuite' ),
 				);
 				break;
 

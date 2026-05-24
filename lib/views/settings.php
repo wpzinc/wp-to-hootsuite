@@ -25,9 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	// Output notices.
 	$this->base->get_class( 'notices' )->set_key_prefix( $this->base->plugin->filter_name . '_' . wp_get_current_user()->ID );
 	$this->base->get_class( 'notices' )->output_notices();
-
-	// Get access token.
-	$access_token = $this->get_setting( '', 'access_token' );
 	?>
 
 	<!-- Container for JS notices -->
@@ -40,10 +37,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Tabs -->
 		<h2 class="nav-tab-wrapper wpzinc-horizontal-tabbed-ui">
 			<!-- Settings -->
-			<a href="admin.php?page=<?php echo esc_attr( $this->base->plugin->name ); ?>-settings" class="nav-tab<?php echo esc_attr( $tab === 'auth' ? ' nav-tab-active' : '' ) . ( ! empty( $access_token ) ? ' enabled' : ' error' ); ?>" title="<?php esc_attr_e( 'Settings', 'wp-to-hootsuite' ); ?>">
+			<a href="admin.php?page=<?php echo esc_attr( $this->base->plugin->name ); ?>-settings" class="nav-tab<?php echo esc_attr( $tab === 'auth' ? ' nav-tab-active' : '' ) . ( $this->base->get_class( 'settings' )->account_connected() ? ' enabled' : ' error' ); ?>" title="<?php esc_attr_e( 'Settings', 'wp-to-hootsuite' ); ?>">
 				<span class="dashicons dashicons-lock"></span> 
 				<?php
-				if ( ! empty( $access_token ) ) {
+				if ( $this->base->get_class( 'settings' )->account_connected() ) {
 					?>
 					<span class="dashicons dashicons-yes"></span>
 					<?php
@@ -61,7 +58,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<!-- Public Post Types -->
 			<?php
 			// Go through all Post Types, if authenticated.
-			if ( ! empty( $access_token ) ) {
+			if ( $this->base->get_class( 'settings' )->account_connected() ) {
 				foreach ( $post_types as $public_post_type => $post_type_obj ) {
 					// Work out the icon to display.
 					$icon = '';
@@ -105,7 +102,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
 				<!-- Content -->
-				<form name="post" method="post" action="<?php echo ( isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' ); ?>" id="<?php echo esc_attr( $this->base->plugin->name ); ?>" class="wp-to-social-pro">      	
+				<form name="post" method="post" action="<?php echo ( isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' ); ?>" id="<?php echo esc_attr( $this->base->plugin->name ); ?>" class="wp-to-social-pro">
 					<div id="post-body-content">
 						<div id="normal-sortables" class="meta-box-sortables ui-sortable publishing-defaults">  
 							<?php
