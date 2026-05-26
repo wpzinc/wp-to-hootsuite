@@ -42,15 +42,15 @@ class WP_To_Social_Pro_Image {
 	}
 
 	/**
-	 * Helper method to retrieve Featured Image Options
+	 * Helper method to retrieve Image Options
 	 *
 	 * @since   3.4.3
 	 *
 	 * @param   bool   $network    Network (false = defaults).
 	 * @param   string $post_type  Post Type.
-	 * @return  array               Featured Image Options
+	 * @return  array              Image Options
 	 */
-	public function get_featured_image_options( $network = false, $post_type = false ) {
+	public function get_status_image_options( $network = false, $post_type = false ) {
 
 		// If a Post Type has been specified, get its featured_image label.
 		$label = __( 'Feat. Image', 'wp-to-hootsuite' );
@@ -59,53 +59,14 @@ class WP_To_Social_Pro_Image {
 			$label            = $post_type_object->labels->featured_image;
 		}
 
-		// Build featured image options, depending on the Plugin.
-		switch ( $this->base->plugin->name ) {
-
-			case 'wp-to-buffer':
-				$options = array(
-					-1 => __( 'No Image', 'wp-to-hootsuite' ),
-					0  => __( 'Use OpenGraph Settings', 'wp-to-hootsuite' ),
-					2  => sprintf(
-						/* translators: Translated name for a Post Type's Featured Image (e.g. for WooCommerce, might be "Product image") */
-						__( 'Use %s, not Linked to Post', 'wp-to-hootsuite' ),
-						$label
-					),
-				);
-				break;
-
-			case 'wp-to-hootsuite':
-				$options = array(
-					-1 => __( 'No Image', 'wp-to-hootsuite' ),
-					2  => sprintf(
-						/* translators: Translated name for a Post Type's Featured Image (e.g. for WooCommerce, might be "Product image") */
-						__( 'Use %s, not Linked to Post', 'wp-to-hootsuite' ),
-						$label
-					),
-				);
-				break;
-
-		}
-
-		// Depending on the network, remove some options that aren't supported.
-		switch ( $network ) {
-			/**
-			 * Twitter
-			 * - Remove "Use Feat. Image, Linked to Post"
-			 */
-			case 'twitter':
-				unset( $options[1], $options[3] );
-				break;
-
-			/**
-			 * Instagram, Pinterest
-			 * - Remove all options excluding "Use Feat. Image, not Linked to Post"
-			 */
-			case 'instagram':
-			case 'pinterest':
-				unset( $options[0], $options[1], $options[3] );
-				break;
-		}
+		// Build featured image options.
+		$options = array(
+			'featured_image' => array(
+				'label'             => $label,
+				'additional_images' => true,
+				'text_to_image'     => false,
+			),
+		);
 
 		/**
 		 * Defines the available Featured Image select dropdown options on a status, depending
@@ -115,64 +76,12 @@ class WP_To_Social_Pro_Image {
 		 *
 		 * @param   array   $options    Featured Image Dropdown Options.
 		 * @param   string  $network    Social Network.
+		 * @param   string  $post_type  Post Type.
 		 */
-		$options = apply_filters( $this->base->plugin->filter_name . '_get_featured_image_options', $options, $network );
+		$options = apply_filters( $this->base->plugin->filter_name . '_get_status_image_options', $options, $network, $post_type );
 
 		// Return filtered results.
 		return $options;
-
-	}
-
-	/**
-	 * Determines if "Use OpenGraph Settings" is an option available for the Status Image dropdown
-	 *
-	 * @since   4.2.0
-	 *
-	 * @return  bool    Supports OpenGraph
-	 */
-	public function supports_opengraph() {
-
-		$featured_image_options = $this->get_featured_image_options();
-
-		if ( isset( $featured_image_options[0] ) ) {
-			return true;
-		}
-
-		return false;
-
-	}
-
-	/**
-	 * Determines if the WordPress installations has a Plugin installed that outputs
-	 * OpenGraph metadata
-	 *
-	 * @since   4.4.0
-	 *
-	 * @return  bool    Supports OpenGraph
-	 */
-	public function is_opengraph_plugin_active() {
-
-		// Load function if required.
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			include_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		// Fetch OpenGraph supported SEO Plugins and Fetured Image Options.
-		$featured_image_options = array_keys( $this->get_featured_image_options() );
-
-		// If the Plugin only offers "Use OpenGraph Settings", no need to check for SEO Plugin availability.
-		if ( count( $featured_image_options ) === 1 && ! $featured_image_options[0] ) {
-			return false;
-		}
-
-		foreach ( $this->get_opengraph_seo_plugins() as $seo_plugin ) {
-			// If plugin active, use OpenGraph for images.
-			if ( is_plugin_active( $seo_plugin ) ) {
-				return true;
-			}
-		}
-
-		return false;
 
 	}
 
@@ -188,12 +97,20 @@ class WP_To_Social_Pro_Image {
 	 *
 	 * @since   4.6.6
 	 *
-	 * @param   int         $image_id   Image ID.
-	 * @param   string      $source     Source Image ID was derived from (plugin, featured_image, post_content, text_to_image).
-	 * @param   bool|string $service    Social Media Service the image is for. If not defined, just return the large version.
-	 * @return  array|WP_Error              Image ID, Image URLs, Source
+	 * @param   int         $image_id             Image ID.
+	 * @param   string      $source               Source Image ID was derived from (plugin, featured_image, post_content, text_to_image).
+	 * @param   bool|string $service              Social Media Service the image is for. If not defined, just return the large version.
+	 * @param   bool|string $status_post_type     Status format (for example, 'story' or 'post' for Instagram).
+	 * @return  array|WP_Error                    Image ID, Image URLs, Source
 	 */
-	public function get_image_sources( $image_id, $source, $service = false ) {
+	public function get_image_sources( $image_id, $source, $service = false, $status_post_type = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		// Load WordPress image libraries, if they are not currently loaded.
+		if ( ! class_exists( 'WP_Image_Editor' ) ) {
+			require_once ABSPATH . WPINC . '/class-wp-image-editor.php';
+			require_once ABSPATH . WPINC . '/class-wp-image-editor-gd.php';
+			require_once ABSPATH . WPINC . '/class-wp-image-editor-imagick.php';
+		}
 
 		$image_mime_type = get_post_mime_type( $image_id );
 
@@ -301,34 +218,6 @@ class WP_To_Social_Pro_Image {
 			'width'     => ( is_array( $image ) ? $image[1] : '' ),
 			'height'    => ( is_array( $image ) ? $image[2] : '' ),
 		);
-
-	}
-
-	/**
-	 * Return an array of Plugins that output OpenGraph data
-	 * which can be used by this Plugin for sharing the Featured Image
-	 *
-	 * @since   4.6.6
-	 *
-	 * @return  array   Plugins
-	 */
-	private function get_opengraph_seo_plugins() {
-
-		// Define Plugins.
-		$plugins = array();
-
-		/**
-		 * Defines the Plugins that output OpenGraph metadata on Posts, Pages
-		 * and Custom Post Types.
-		 *
-		 * @since   3.7.9
-		 *
-		 * @param   array   $plugins    Plugins
-		 */
-		$plugins = apply_filters( $this->base->plugin->filter_name . '_get_opengraph_seo_plugins', $plugins );
-
-		// Return filtered results.
-		return $plugins;
 
 	}
 

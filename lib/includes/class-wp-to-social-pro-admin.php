@@ -49,6 +49,7 @@ class WP_To_Social_Pro_Admin {
 		$this->base = $base;
 
 		// Actions.
+		add_action( 'init', array( $this, 'maybe_get_access_token' ) );
 		add_action( 'init', array( $this, 'oauth' ) );
 		add_action( 'init', array( $this, 'check_plugin_setup' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
@@ -59,8 +60,95 @@ class WP_To_Social_Pro_Admin {
 	}
 
 	/**
-	 * Stores the access token if supplied, showing a success message
-	 * Displays any errors from the oAuth process
+	 * Exchanges the authorization code for an access token, if included in the request.
+	 *
+	 * This applies to WordPress to Buffer Pro.
+	 *
+	 * @since   6.0.0
+	 */
+	public function maybe_get_access_token() {
+
+		// If a code is included in the request, exchange it for an access token.
+		if ( ! filter_has_var( INPUT_GET, $this->base->plugin->settingsName . '-code' ) ) {
+			return;
+		}
+
+		// Setup notices class.
+		$this->base->get_class( 'notices' )->set_key_prefix( $this->base->plugin->filter_name . '_' . wp_get_current_user()->ID );
+
+		// Sanitize token.
+		$authorization_code = filter_input( INPUT_GET, $this->base->plugin->settingsName . '-code', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		// Exchange the authorization code and verifier for an access token.
+		// If this succeeds, the API class will have its tokens and expiry set, and
+		// the return value will be an array with the tokens and expiry.
+		$tokens = $this->base->get_class( 'api' )->get_access_token( $authorization_code );
+
+		// If an error occured, add it to the notices.
+		if ( is_wp_error( $tokens ) ) {
+			$this->base->get_class( 'notices' )->add_error_notice( $tokens->get_error_message() );
+			return;
+		}
+
+		// Fetch Account.
+		$account = $this->base->get_class( 'api' )->account();
+
+		// If something went wrong, show an error.
+		if ( is_wp_error( $account ) ) {
+			$this->base->get_class( 'notices' )->add_error_notice( $account->get_error_message() );
+			return;
+		}
+
+		// Fetch Profiles.
+		$profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time(), $account['id'] );
+
+		// If something went wrong, show an error.
+		if ( is_wp_error( $profiles ) ) {
+			$this->base->get_class( 'notices' )->add_error_notice( $profiles->get_error_message() );
+			return;
+		}
+
+		// If an account ID is included in the request, delete that account before adding the account.
+		// This handles account re-connection where we're coming from the old API.
+		if ( filter_has_var( INPUT_GET, 'account_id' ) ) {
+			$this->base->get_class( 'settings' )->delete_account( filter_input( INPUT_GET, 'account_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
+		}
+
+		// Update account.
+		$this->base->get_class( 'settings' )->update_account(
+			$tokens['access_token'],
+			$tokens['refresh_token'],
+			$tokens['token_expires'],
+			$account['id'],
+			$account['name'],
+			$account['plan'],
+			array_keys( $profiles )
+		);
+
+		// Store success message.
+		$this->base->get_class( 'notices' )->enable_store();
+		$this->base->get_class( 'notices' )->add_success_notice(
+			sprintf(
+				/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite), %2$s: Social Media Service Name (Buffer, Hootsuite) */
+				__( 'Thanks! You\'ve connected our Plugin to %1$s. Now select profiles below to enable, and define your statuses to start sending Posts to %2$s', 'wp-to-hootsuite' ),
+				$this->base->plugin->account,
+				$this->base->plugin->account
+			)
+		);
+
+		// Redirect to Post tab.
+		wp_safe_redirect( 'admin.php?page=' . $this->base->plugin->name . '-settings&tab=post&type=post' );
+		die();
+
+	}
+
+	/**
+	 * Handles displaying any errors from the OAuth process, and storing the access token if supplied,
+	 * when the OAuth gateway exchanges the authorization code for an access token.
+	 *
+	 * Used by:
+	 * - WP to Hootsuite
+	 * - WP to Hootsuite Pro
 	 *
 	 * @since   3.3.3
 	 */
@@ -135,7 +223,7 @@ class WP_To_Social_Pro_Admin {
 				 */
 				default:
 					$this->base->get_class( 'notices' )->add_error_notice(
-						esc_html( sanitize_text_field( wp_unslash( filter_input( INPUT_GET, $this->base->plugin->settingsName . '-oauth-error', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) )
+						filter_input( INPUT_GET, $this->base->plugin->settingsName . '-oauth-error', FILTER_SANITIZE_FULL_SPECIAL_CHARS )
 					);
 					break;
 			}
@@ -154,8 +242,17 @@ class WP_To_Social_Pro_Admin {
 			// Setup API.
 			$this->base->get_class( 'api' )->set_tokens( $access_token, $refresh_token, $expiry );
 
+			// Fetch Account.
+			$account = $this->base->get_class( 'api' )->account();
+
+			// If something went wrong, show an error.
+			if ( is_wp_error( $account ) ) {
+				$this->base->get_class( 'notices' )->add_error_notice( $account->get_error_message() );
+				return;
+			}
+
 			// Fetch Profiles.
-			$profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time() );
+			$profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time(), $account['id'] );
 
 			// If something went wrong, show an error.
 			if ( is_wp_error( $profiles ) ) {
@@ -164,7 +261,15 @@ class WP_To_Social_Pro_Admin {
 			}
 
 			// Test worked! Save Tokens and Expiry.
-			$this->base->get_class( 'settings' )->update_tokens( $access_token, $refresh_token, $expiry );
+			$this->base->get_class( 'settings' )->update_account(
+				$access_token,
+				$refresh_token,
+				$expiry,
+				$account['id'],
+				$account['name'],
+				$account['plan'],
+				array_keys( $profiles )
+			);
 
 			// Store success message.
 			$this->base->get_class( 'notices' )->enable_store();
@@ -205,14 +310,14 @@ class WP_To_Social_Pro_Admin {
 			);
 		}
 
-		// Check the API is connected.
-		if ( ! $this->base->get_class( 'validation' )->api_connected() ) {
-			// Don't display the notice if this request is for the settings auth screen.
-			$screen = $this->base->get_class( 'screen' )->get_current_screen();
-			if ( $screen['screen'] === 'settings' && $screen['section'] === 'auth' ) {
-				return;
-			}
+		// Don't display the notice if this request is for the settings auth screen.
+		$screen = $this->base->get_class( 'screen' )->get_current_screen();
+		if ( $screen['screen'] === 'settings' && $screen['section'] === 'auth' ) {
+			return;
+		}
 
+		// Check the API is connected.
+		if ( ! $this->base->get_class( 'settings' )->account_connected() ) {
 			// Display the notice.
 			$this->base->get_class( 'notices' )->add_error_notice(
 				sprintf(
@@ -228,6 +333,21 @@ class WP_To_Social_Pro_Admin {
 					esc_html__( 'Click here to Authorize.', 'wp-to-hootsuite' )
 				)
 			);
+		}
+
+		// Buffer: If an access token begins with '2/', it's from the old API.
+		$accounts = $this->base->get_class( 'settings' )->get_accounts();
+		foreach ( $accounts as $account ) {
+			if ( strpos( $account['access_token'], '2/' ) === 0 ) {
+				$this->base->get_class( 'notices' )->add_error_notice(
+					sprintf(
+						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
+						__( '%1$s uses a new API. Please click the `Reconnect` button at %2$s Settings > Authentication to reconnect your account. You won\'t need to do this again.', 'wp-to-hootsuite' ),
+						$this->base->plugin->displayName,
+						$this->base->plugin->account
+					)
+				);
+			}
 		}
 
 	}
@@ -258,29 +378,6 @@ class WP_To_Social_Pro_Admin {
 		$screen = $this->base->get_class( 'screen' )->get_current_screen();
 
 		// CSS - always load.
-		// Menu Icon is inline, because when Gravity Forms no conflict mode is ON, it kills all enqueued styles,
-		// which results in a large menu SVG icon displaying.
-		// However, don't load this on customize.php, as it wrongly outputs above the opening <html> tag.
-		if ( $screen['screen'] !== 'customize' ) {
-			?>
-			<style type="text/css">
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->settingsName ); ?>-settings a div.wp-menu-image, 
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->settingsName ); ?> a div.wp-menu-image, 
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->name ); ?>-settings a div.wp-menu-image,
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->name ); ?> a div.wp-menu-image {
-					background: url(<?php echo esc_attr( $this->base->plugin->url ); ?>/lib/assets/images/icons/<?php echo esc_attr( strtolower( $this->base->plugin->account ) ); ?>-light.svg) center no-repeat;
-					background-size: 16px 16px;
-				}
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->settingsName ); ?>-settings a div.wp-menu-image img, 
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->settingsName ); ?> a div.wp-menu-image img, 
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->name ); ?>-settings a div.wp-menu-image img,
-				li.toplevel_page_<?php echo esc_attr( $this->base->plugin->name ); ?> a div.wp-menu-image img {
-					display: none;
-				}
-			</style>
-			<?php
-		}
-
 		wp_enqueue_style( $this->base->plugin->name, $this->base->plugin->url . 'lib/assets/css/admin.css', array(), $this->base->plugin->version );
 
 		// Define CSS variables for design.
@@ -291,6 +388,9 @@ class WP_To_Social_Pro_Admin {
 			trim(
 				':root {
 			--wpzinc-logo: url(\'' . esc_attr( $this->base->plugin->logo ) . '\');
+			--wpzinc-header-background-color: ' . esc_attr( $this->base->plugin->header_background_color ) . ';
+			--wpzinc-header-primary-text-color: ' . esc_attr( $this->base->plugin->header_primary_text_color ) . ';
+			--wpzinc-header-secondary-text-color: ' . esc_attr( $this->base->plugin->header_secondary_text_color ) . ';
 			--wpzinc-plugin-display-name: "' . esc_attr( $this->base->plugin->displayName ) . ' ";
 		}'
 			)
@@ -334,6 +434,9 @@ class WP_To_Social_Pro_Admin {
 			'plugin_name'              => $this->base->plugin->name,
 			'status_form_container'    => '#' . $this->base->plugin->name . '-status-form-container',
 			'status_form'              => '#' . $this->base->plugin->name . '-status-form',
+
+			// status.js appends profile service to this e.g. twitter,facebook.
+			'usernames_search_action'  => $this->base->plugin->filter_name . '_usernames_search_',
 		);
 
 		// If here, we're on a Plugin or Post screen.
@@ -434,7 +537,7 @@ class WP_To_Social_Pro_Admin {
 	}
 
 	/**
-	 * Returns configuration for tribute.js autocomplete instances for Tags.
+	 * Returns configuration for tribute.js autocomplete instances for Tags, Facebook Pages and Twitter Username mentions.
 	 *
 	 * @since   4.5.7
 	 *
@@ -448,12 +551,7 @@ class WP_To_Social_Pro_Admin {
 			array(
 				'fields'   => array(
 					'textarea.message',
-					'textarea.text-to-image',
-
-					// Google Business.
-					'input#googlebusiness_title',
-					'input#googlebusiness_code',
-					'input#googlebusiness_terms',
+					'input.url',
 				),
 				'triggers' => array(
 					// Tags.
@@ -558,7 +656,7 @@ class WP_To_Social_Pro_Admin {
 		// Setup notices class.
 		$this->base->get_class( 'notices' )->set_key_prefix( $this->base->plugin->filter_name . '_' . wp_get_current_user()->ID );
 
-		// Maybe disconnect.
+		// Maybe disconnect an account.
 		$this->maybe_disconnect_account();
 
 		// Maybe save settings.
@@ -571,41 +669,48 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'notices' )->add_success_notice( __( 'Settings saved successfully.', 'wp-to-hootsuite' ) );
 		}
 
-		// If the Plugin isn't connected to the API, show the screen to do this now.
-		if ( ! $this->base->get_class( 'validation' )->api_connected() ) {
+		// If the Plugin isn't connected an account, show the screen to do this now.
+		if ( ! $this->base->get_class( 'settings' )->account_connected() ) {
 			$this->auth_screen();
 			return;
 		}
 
-		// Authentication.
-		$access_token  = $this->base->get_class( 'settings' )->get_access_token();
-		$refresh_token = $this->base->get_class( 'settings' )->get_refresh_token();
-		$expires       = $this->base->get_class( 'settings' )->get_token_expires();
-		if ( ! empty( $access_token ) ) {
-			$this->base->get_class( 'api' )->set_tokens( $access_token, $refresh_token, $expires );
-		}
+		// Get Profiles for accounts.
+		$profiles = array();
+		foreach ( $this->base->get_class( 'settings' )->get_accounts() as $account_id => $account ) {
+			// Configure API for this account.
+			$this->base->get_class( 'api' )->set_tokens( $account['access_token'], $account['refresh_token'], $account['token_expires'] );
 
-		// Profiles.
-		$profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time() );
-		if ( is_wp_error( $profiles ) ) {
-			// If the error is a 401, the user revoked access to the plugin.
-			// Disconnect the Plugin, and explain why this happened.
-			if ( $profiles->get_error_code() === 401 ) {
-				// Disconnect the Plugin.
-				$this->disconnect();
+			// Fetch account information.
+			$account_information = $this->base->get_class( 'api' )->account();
 
-				// Error notice.
-				$this->base->get_class( 'notices' )->add_error_notice(
-					sprintf(
-						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
-						__( 'Hmm, it looks like you revoked access to %1$s through your %2$s account, or your account no longer exists. This means we can no longer post updates to your social networks.  To re-authorize, click the Authorize Plugin button.', 'wp-to-hootsuite' ),
-						$this->base->plugin->displayName,
-						$this->base->plugin->account
-					)
-				);
-			} else {
-				// Some other error.
-				$this->base->get_class( 'notices' )->add_error_notice( $profiles->get_error_message() );
+			// Display an error.
+			if ( is_wp_error( $account_information ) ) {
+				$this->base->get_class( 'notices' )->add_error_notice( $account_information->get_error_message() );
+				continue;
+			}
+
+			// Fetch account profiles.
+			$account_profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time(), $account_id );
+
+			// Display an error.
+			if ( is_wp_error( $account_profiles ) ) {
+				$this->base->get_class( 'notices' )->add_error_notice( $account_profiles->get_error_message() );
+				continue;
+			}
+
+			// Update account information.
+			$this->base->get_class( 'settings' )->update_account_information(
+				$account_id,
+				$account_information['name'],
+				$account_information['plan'],
+				array_keys( $account_profiles )
+			);
+
+			// Merge profiles with existing profiles from other accounts.
+			// array_merge() is not used here as it will re-index numeric keys.
+			foreach ( $account_profiles as $profile ) {
+				$profiles[ $profile['id'] ] = $profile;
 			}
 		}
 
@@ -752,16 +857,6 @@ class WP_To_Social_Pro_Admin {
 			return $this->base->get_class( 'settings' )->get_setting( $type, $key, $default_value );
 		}
 
-		// Access token.
-		if ( $key === 'access_token' ) {
-			return $this->base->get_class( 'settings' )->get_access_token();
-		}
-
-		// Refresh token.
-		if ( $key === 'refresh_token' ) {
-			return $this->base->get_class( 'settings' )->get_refresh_token();
-		}
-
 		// Depending on the type, return settings / options.
 		switch ( $type ) {
 			case 'text_to_image':
@@ -779,13 +874,11 @@ class WP_To_Social_Pro_Admin {
 	}
 
 	/**
-	 * Disconnect by removing the access token
+	 * Disconnects an account if the user clicks the disconnect link.
 	 *
-	 * @since   4.1.0
-	 *
-	 * @return  string Result
+	 * @since   5.4.0
 	 */
-	public function maybe_disconnect_account() {
+	private function maybe_disconnect_account() {
 
 		// Bail if no nonce.
 		if ( ! isset( $_GET['nonce'] ) ) {
@@ -803,7 +896,14 @@ class WP_To_Social_Pro_Admin {
 		}
 
 		// Disconnect account.
-		return $this->base->get_class( 'settings' )->delete_tokens();
+		$this->base->get_class( 'settings' )->delete_account( sanitize_text_field( wp_unslash( $_GET[ $this->base->plugin->name . '-disconnect' ] ) ) );
+		$this->base->get_class( 'notices' )->add_success_notice(
+			sprintf(
+				/* translators: Social Media Service Name (Buffer, Hootsuite) */
+				__( '%s account disconnected successfully.', 'wp-to-hootsuite' ),
+				$this->base->plugin->account
+			)
+		);
 
 	}
 
@@ -857,7 +957,7 @@ class WP_To_Social_Pro_Admin {
 
 				// Log Settings.
 				// Always force errors.
-				$log = isset( $settings['log'] ) ? wp_unslash( $settings['log'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$log = isset( $settings['log'] ) ? $settings['log'] : array();
 				if ( ! isset( $log['log_level'] ) ) {
 					$log['log_level'] = array(
 						'error',

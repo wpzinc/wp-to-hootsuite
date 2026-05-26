@@ -135,7 +135,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 		<div class="wpzinc-option">
 			<div class="full">
 				<a href="<?php echo esc_attr( $this->get_oauth_url() ); ?>" class="button button-primary">
-					<?php esc_html_e( 'Authorize Plugin', 'wp-to-hootsuite' ); ?>
+					<?php esc_html_e( 'Connect a Hootsuite Account', 'wp-to-hootsuite' ); ?>
 				</a>
 			</div>
 		</div>
@@ -214,9 +214,9 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @param   string $access_token    Access Token.
-	 * @param   string $refresh_token   Refresh Token.
-	 * @param   mixed  $token_expires   Token Expires (false | timestamp).
+	 * @param   string   $access_token    Access Token.
+	 * @param   string   $refresh_token   Refresh Token.
+	 * @param   bool|int $token_expires   Token Expiry.
 	 */
 	public function set_tokens( $access_token = '', $refresh_token = '', $token_expires = false ) {
 
@@ -235,21 +235,17 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 *
 	 * @return  mixed   WP_Error | bool
 	 */
-	public function update_access_token() {
+	public function refresh_token() {
 
 		// Bail if we don't have a refresh token.
-		if ( ! $this->check_refresh_token_exists() ) {
-			$this->base->get_class( 'log' )->add_to_debug_log( 'API: update_access_token(): No refresh token exists' );
+		if ( empty( $this->refresh_token ) ) {
 			return new WP_Error( 'missing_refresh_token', __( 'No refresh token exists', 'wp-to-hootsuite' ) );
 		}
 
 		// Bail if the access token hasn't yet expired.
 		if ( strtotime( '+5 minutes' ) < $this->token_expires ) {
-			$this->base->get_class( 'log' )->add_to_debug_log( 'API: update_access_token(): Token expiry of ' . date( 'Y-m-d H:i:s', $this->token_expires ) . ' is not in the next 5 minutes. No need to refresh now.' ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 			return false;
 		}
-
-		$this->base->get_class( 'log' )->add_to_debug_log( 'API: update_access_token(): Refreshing tokens using existing Refresh Token: ' . $this->refresh_token );
 
 		// Send request.
 		$result = wp_remote_get(
@@ -268,11 +264,10 @@ class WP_To_Social_Pro_Hootsuite_API {
 		// Fetch the body.
 		$body = json_decode( wp_remote_retrieve_body( $result ) );
 
-		$this->base->get_class( 'log' )->add_to_debug_log( 'API: update_access_token(): Refresh Token Response: ' . print_r( $body, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-
 		// Bail if an error occured.
 		if ( ! $body->success ) {
-			return new WP_Error(
+			// Define error.
+			$result = new WP_Error(
 				'wp_to_social_pro_hootsuite_api_update_access_token',
 				sprintf(
 					/* translators: Error message */
@@ -280,60 +275,46 @@ class WP_To_Social_Pro_Hootsuite_API {
 					$body->data
 				)
 			);
+
+			/**
+			 * Perform any actions when refreshing an expired access token fails.
+			 *
+			 * @since   3.0.0
+			 *
+			 * @param   WP_Error  $result        Error from API.
+			 * @param   string    $client_id     OAuth Client ID.
+			 * @param   string    $access_token  Access Token.
+			 * @param   string    $refresh_token Refresh Token.
+			 */
+			do_action( 'wp_to_hootsuite_pro_api_refresh_token_error', $result, $this->client_id, $this->access_token, $this->refresh_token );
+
+			return $result;
 		}
 
-		$this->base->get_class( 'log' )->add_to_debug_log( 'API: update_access_token(): New Access Token: ' . $body->data->access_token );
-		$this->base->get_class( 'log' )->add_to_debug_log( 'API: update_access_token(): New Refresh Token: ' . $body->data->refresh_token );
-		$this->base->get_class( 'log' )->add_to_debug_log( 'API: update_access_token(): New Expiry: ' . strtotime( '+' . $body->data->expires_in . ' seconds' ) );
-
-		// Set access and refresh tokens in this class now.
-		$this->set_tokens( $body->data->access_token, $body->data->refresh_token, strtotime( '+' . $body->data->expires_in . ' seconds' ) );
-
-		// Store access and refresh tokens in the plugin settings.
-		$this->base->get_class( 'settings' )->update_tokens(
-			$body->data->access_token,
-			$body->data->refresh_token,
-			strtotime( '+' . $body->data->expires_in . ' seconds' )
+		// Build result data.
+		$result = array(
+			'access_token'  => $body->data->access_token,
+			'refresh_token' => $body->data->refresh_token,
+			'token_expires' => strtotime( '+' . $body->data->expires_in . ' seconds' ),
 		);
 
-		// Done.
-		return true;
+		/**
+		 * Perform any actions with the new access token, such as saving it.
+		 *
+		 * @since   3.0.0
+		 *
+		 * @param   array   $result                  New Access Token, Refresh Token and Expiry timestamp.
+		 * @param   string  $client_id               OAuth Client ID.
+		 * @param   string  $previous_access_token   Existing Access Token.
+		 * @param   string  $previous_refresh_token  Existing Refresh Token.
+		 */
+		do_action( 'wp_to_hootsuite_pro_api_refresh_token', $result, $this->client_id, $this->access_token, $this->refresh_token );
 
-	}
+		// Update the access and refresh tokens in this class.
+		$this->set_tokens( $result['access_token'], $result['refresh_token'], $result['token_expires'] );
 
-	/**
-	 * Checks if an access token was set.  Called by any function which
-	 * performs a call to the API
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  bool    Token Exists
-	 */
-	private function check_access_token_exists() {
-
-		if ( empty( $this->access_token ) ) {
-			return false;
-		}
-
-		return true;
-
-	}
-
-	/**
-	 * Checks if a refresh token was set.  Called by any function which
-	 * performs a call to the API
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  bool    Token Exists
-	 */
-	private function check_refresh_token_exists() {
-
-		if ( empty( $this->refresh_token ) ) {
-			return false;
-		}
-
-		return true;
+		// Return new access token, refresh token and expiry timestamp.
+		return $result;
 
 	}
 
@@ -346,13 +327,34 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 */
 	public function user() {
 
-		// Check access token.
-		if ( ! $this->check_access_token_exists() ) {
-			return false;
-		}
-
 		// Run the main request.
 		return $this->get( 'me' );
+
+	}
+
+	/**
+	 * Returns the account ID and name for the current account.
+	 *
+	 * @since   2.8.0
+	 *
+	 * @return  WP_Error|array
+	 */
+	public function account() {
+
+		// Query API.
+		$account = $this->user();
+
+		// Bail if an error occurred.
+		if ( is_wp_error( $account ) ) {
+			return $account;
+		}
+
+		// Return the account ID and name.
+		return array(
+			'id'   => $account->id,
+			'name' => ! empty( $account->companyName ) ? $account->companyName : $account->fullName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			'plan' => 'unknown',
+		);
 
 	}
 
@@ -361,27 +363,20 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @param   bool $force                      Force API call (false = use WordPress transient).
-	 * @param   int  $transient_expiration_time  Transient Expiration Time, in seconds (default: 12 hours).
-	 * @return  mixed                               WP_Error | Profiles object
+	 * @param   bool   $force                      Force API call (false = use WordPress transient).
+	 * @param   int    $transient_expiration_time  Transient Expiration Time, in seconds (default: 12 hours).
+	 * @param   string $account_id                 Account ID.
+	 * @return  WP_Error|array
 	 */
-	public function profiles( $force = false, $transient_expiration_time = 43200 ) {
-
-		// Check access token.
-		if ( ! $this->check_access_token_exists() ) {
-			return false;
-		}
+	public function profiles( $force = false, $transient_expiration_time = 43200, $account_id = 'default' ) {
 
 		// Setup profiles array.
 		$profiles = array();
 
 		// Check if our WordPress transient already has this data.
 		// This reduces the number of times we query the API.
-		$profiles = get_transient( $this->base->plugin->name . '_hootsuite_api_profiles' );
+		$profiles = get_transient( $this->base->plugin->name . '_hootsuite_api_profiles_' . $account_id );
 		if ( $force || false === $profiles ) {
-			// Setup profiles array.
-			$profiles = array();
-
 			// Get user, which contains the timezone.
 			// Individual profiles do not have their own timezones vs. Hootsuite, where they do.
 			$timezone = false;
@@ -400,6 +395,9 @@ class WP_To_Social_Pro_Hootsuite_API {
 				return $results;
 			}
 
+			// Define profiles as a blank array.
+			$profiles = array();
+
 			// Check data is valid.
 			foreach ( $results as $result ) {
 				// We don't support Instagram or Pinterest in the Free version.
@@ -415,7 +413,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 				}
 
 				// Add profile to array.
-				$profiles[ $result->id ] = array(
+				$profiles[ (string) $result->id ] = array(
 					// Hootsuite ID.
 					'id'                 => $result->id,
 					// Social Network (e.g. FB, Twitter) ID.
@@ -430,7 +428,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 				// Twitter's 2019 Developer Policies mean that the formatted username and profile image are no longer returned.
 				// In turn, Hootsuite cannot provide this information, so we must directly query for it through the Twitter API.
-				if ( $result->type === 'TWITTER' && empty( $profiles[ $result->id ]['formatted_username'] ) ) {
+				if ( $result->type === 'TWITTER' && empty( $profiles[ (string) $result->id ]['formatted_username'] ) ) {
 					// Fetch Twitter username from the API.
 					// The API class will check the transient first and use cached results if available.
 					$twitter_username = $this->base->get_class( 'twitter_api' )->get_username_by_id( $profiles[ $result->id ]['social_network_id'], $transient_expiration_time );
@@ -444,7 +442,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 			}
 
 			// Store profiles in transient.
-			set_transient( $this->base->plugin->name . '_hootsuite_api_profiles', $profiles, $transient_expiration_time );
+			set_transient( $this->base->plugin->name . '_hootsuite_api_profiles_' . $account_id, $profiles, $transient_expiration_time );
 		}
 
 		// Return results.
@@ -488,6 +486,12 @@ class WP_To_Social_Pro_Hootsuite_API {
 			case 'PINTEREST':
 				return __( 'Pinterest', 'wp-to-hootsuite' );
 
+			case 'THREADS':
+				return __( 'Threads', 'wp-to-hootsuite' );
+
+			case 'TIKTOKBUSINESS':
+				return __( 'TikTok', 'wp-to-hootsuite' );
+
 			default:
 				return '';
 
@@ -527,38 +531,16 @@ class WP_To_Social_Pro_Hootsuite_API {
 			case 'PINTEREST':
 				return 'pinterest';
 
+			case 'THREADS':
+				return 'threads';
+
+			case 'TIKTOKBUSINESS':
+				return 'tiktok';
+
 			default:
 				return '';
 
 		}
-
-	}
-
-	/**
-	 * Returns an array of status update(s) that are queued for the given Profile ID
-	 *
-	 * @since   2.0.7
-	 *
-	 * @param   string $profile_id     Profile ID.
-	 * @return  mixed                   WP_Error | Updates array
-	 */
-	public function profiles_updates_pending( $profile_id ) {
-
-		// Check access token.
-		if ( ! $this->check_access_token_exists() ) {
-			return false;
-		}
-
-		return $this->get(
-			'messages',
-			array(
-				'startTime'        => '2021-04-15T00:00:00Z',
-				'endTime'          => '2021-05-15T00:00:00Z',
-				'socialProfileIds' => $profile_id,
-				'state'            => 'SCHEDULED',
-				'limit'            => 5,
-			)
-		);
 
 	}
 
@@ -572,11 +554,6 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 */
 	public function updates_create( $params ) {
 
-		// Check access token.
-		if ( ! $this->check_access_token_exists() ) {
-			return false;
-		}
-
 		// Convert parameters into Hootsuite REST API compatible params.
 		$status = array(
 			'text'             => $params['text'],
@@ -584,116 +561,111 @@ class WP_To_Social_Pro_Hootsuite_API {
 		);
 
 		// Scheduling.
-		if ( isset( $params['scheduled_at'] ) ) {
-			$status['scheduledSendTime'] = str_replace( ' ', 'T', $params['scheduled_at'] ) . 'Z';
+		switch ( $params['schedule_type'] ) {
+			case 'immediate':
+				$variables['mode'] = 'shareNow';
+				break;
+
+			default:
+				$status['scheduledSendTime'] = str_replace( ' ', 'T', $params['scheduled_at'] ) . 'Z';
+				break;
 		}
 
-		// Media.
-		if ( isset( $params['media'] ) ) {
-			// Use Amazon S3 method if we have an image ID, or fallback to the ow.ly if we don't.
-			if ( isset( $params['media']['id'] ) ) {
-				// Upload the media to Hootsuite, if we haven't already for this Attachment ID.
-				if ( ! array_key_exists( $params['media']['id'], $this->media_ids ) ) {
-					$result = $this->media_upload( $params['media']['id'], $params['media']['picture'] );
-
-					// Bail if the upload failed.
-					if ( is_wp_error( $result ) ) {
-						return $result;
+		// Extended Info.
+		$extended_info = array();
+		switch ( $params['post_type'] ) {
+			case 'pin':
+				// If the subprofile is a URL, it'll be a Pinterest Board URL that we need to convert to a Board ID.
+				if ( filter_var( $params['pinterest']['board'], FILTER_VALIDATE_URL ) ) {
+					// Fetch Pinterest Board ID from the API.
+					// The API class will check the transient first and use cached results if available.
+					$board_id = $this->base->get_class( 'pinterest_api' )->get_board_id_by_url( $params['pinterest']['board'], $this->base->get_class( 'common' )->get_transient_expiration_time() );
+					if ( is_wp_error( $board_id ) ) {
+						return $board_id;
 					}
-
-					// Store the Amazon S3 ID.
-					$this->media_ids[ $params['media']['id'] ] = $result;
+				} else {
+					$board_id = $params['pinterest']['board'];
 				}
 
-				// Define the Amazon S3 ID which Hootsuite provided, so the media
-				// is included in the status.
-				$status['media'] = array(
-					array(
-						'id' => $this->media_ids[ $params['media']['id'] ],
+				$extended_info = array(
+					'socialProfileType' => 'PINTEREST',
+					'socialProfileId'   => $params['profile_ids'][0], // Pinterest account.
+					'data'              => array(
+						'boardId'        => (string) $board_id, // Pinterest Board ID.
+						'destinationUrl' => $params['url'],
 					),
 				);
-			} elseif ( isset( $params['media']['picture'] ) ) {
-				// Upload the media to ow.ly.
-				$result = $this->base->get_class( 'owly_api' )->photo_upload( $params['media']['picture'] );
-
-				// Bail if the upload failed.
-				if ( is_wp_error( $result ) ) {
-					return $result;
-				}
-
-				// Define the ow.ly media URL.
-				$status['mediaUrls'] = array(
-					array(
-						'url' => $result,
-					),
-				);
-			}
+				break;
 		}
 
-		// Additional Media.
-		if ( isset( $params['extra_media'] ) ) {
-			foreach ( $params['extra_media'] as $extra_media ) {
-				// Use Amazon S3 method if we have an image ID, or fallback to the ow.ly if we don't.
-				if ( isset( $extra_media['id'] ) ) {
-					// Upload the media to Hootsuite, if we haven't already for this Attachment ID.
-					if ( ! array_key_exists( $extra_media['id'], $this->media_ids ) ) {
-						$result = $this->media_upload( $extra_media['id'], $extra_media['photo'] );
+		if ( ! empty( $extended_info ) ) {
+			$status['extendedInfo'] = array(
+				$extended_info,
+			);
+		}
+
+		// Assets / Images.
+		$media_ids  = array();
+		$media_urls = array();
+		switch ( $params['post_type'] ) {
+			case 'image':
+			case 'story':
+			case 'pin':
+			case 'googlebusiness':
+				$assets = array();
+				$images = array();
+
+				// Bail if no images are defined.
+				if ( ! array_key_exists( 'media_urls', $params ) ) {
+					break;
+				}
+
+				// Build images array.
+				foreach ( $params['media_urls'] as $media ) {
+					// Use Amazon S3 method if we have an image ID, or fallback to the ow.ly if we don't.
+					if ( isset( $media['id'] ) ) {
+						// Upload the media to Hootsuite, if we haven't already for this Attachment ID.
+						if ( ! array_key_exists( $media['id'], $this->media_ids ) ) {
+							$result = $this->media_upload( $media['id'], $media['image'] );
+
+							// Bail if the upload failed.
+							if ( is_wp_error( $result ) ) {
+								return $result;
+							}
+
+							// Store the Amazon S3 ID.
+							$this->media_ids[ $media['id'] ] = $result;
+						}
+
+						// Define the Amazon S3 ID which Hootsuite provided, so the media
+						// is included in the status.
+						$media_ids[] = array(
+							'id' => $this->media_ids[ $media['id'] ],
+						);
+					} elseif ( isset( $media['image'] ) ) {
+						// Upload the media to ow.ly.
+						$result = $this->base->get_class( 'owly_api' )->photo_upload( $media['image'] );
 
 						// Bail if the upload failed.
 						if ( is_wp_error( $result ) ) {
 							return $result;
 						}
 
-						// Store the Amazon S3 ID.
-						$this->media_ids[ $extra_media['id'] ] = $result;
+						// Define the ow.ly media URL.
+						$media_urls[] = array(
+							'url' => $result,
+						);
 					}
-					// Define the Amazon S3 ID which Hootsuite provided, so the media
-					// is included in the status.
-					$status['media'][] = array(
-						'id' => $this->media_ids[ $extra_media['id'] ],
-					);
-				} elseif ( isset( $extra_media['photo'] ) ) {
-					// Upload the media to ow.ly.
-					$result = $this->base->get_class( 'owly_api' )->photo_upload( $extra_media['photo'] );
-
-					// Bail if the upload failed.
-					if ( is_wp_error( $result ) ) {
-						return $result;
-					}
-
-					// Define the ow.ly media URL.
-					$status['mediaUrls'][] = array(
-						'url' => $result,
-					);
 				}
-			}
-		}
 
-		// Pinterest.
-		if ( isset( $params['subprofile_ids'] ) && is_array( $params['subprofile_ids'] ) && count( $params['subprofile_ids'] ) > 0 ) {
-			// If the subprofile is a URL, it'll be a Pinterest Board URL that we need to convert to a Board ID.
-			if ( filter_var( $params['subprofile_ids'][0], FILTER_VALIDATE_URL ) ) {
-				// Fetch Pinterest Board ID from the API.
-				// The API class will check the transient first and use cached results if available.
-				$board_id = $this->base->get_class( 'pinterest_api' )->get_board_id_by_url( $params['subprofile_ids'][0], $this->base->get_class( 'common' )->get_transient_expiration_time() );
-				if ( is_wp_error( $board_id ) ) {
-					return $board_id;
+				// Add media to status.
+				if ( ! empty( $media_ids ) ) {
+					$status['media'] = $media_ids;
 				}
-			} else {
-				$board_id = $params['subprofile_ids'][0];
-			}
-
-			// Define the extendedInfo array to include the Pinterest Board ID and Destination URL.
-			$status['extendedInfo'] = array(
-				array(
-					'socialProfileType' => 'PINTEREST',
-					'socialProfileId'   => $params['profile_ids'][0],
-					'data'              => array(
-						'boardId'        => (string) $board_id,
-						'destinationUrl' => $params['source_url'],
-					),
-				),
-			);
+				if ( ! empty( $media_urls ) ) {
+					$status['mediaUrls'] = $media_urls;
+				}
+				break;
 		}
 
 		// Send request.
@@ -730,7 +702,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 * @param   string $media_url      Media URL.
 	 * @return  mixed                   WP_Error | string (ID)
 	 */
-	public function media_upload( $id, $media_url ) {
+	private function media_upload( $id, $media_url ) {
 
 		// Get Attachment.
 		$file = get_attached_file( $id );
@@ -843,7 +815,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 		}
 
 		// Fetch a new access token and refresh token.
-		$result = $this->update_access_token();
+		$result = $this->refresh_token();
 
 		// Bail if something went wrong.
 		if ( is_wp_error( $result ) ) {

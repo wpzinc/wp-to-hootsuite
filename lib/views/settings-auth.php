@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</li>
 		<?php
 		// Only display if we've auth'd and have profiles.
-		if ( ! empty( $access_token ) ) {
+		if ( $this->base->get_class( 'settings' )->account_connected() ) {
 			?>
 			<li class="wpzinc-nav-tab users">
 				<a href="#user-access" data-documentation="<?php echo esc_attr( $this->base->plugin->documentation_url ); ?>/user-access-settings/">
@@ -59,57 +59,56 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</ul>
 
 	<!-- Content -->
-	<div id="settings-container" class="wpzinc-nav-tabs-content no-padding">
+	<div id="settings-container" class="wpzinc-nav-tabs-content">
 		<!-- Authentication -->
 		<div id="authentication" class="panel">
 			<div class="postbox">
 				<header>
-					<h3><?php esc_html_e( 'Authentication', 'wp-to-hootsuite' ); ?></h3>
+					<h3><?php esc_html_e( 'Connected Accounts', 'wp-to-hootsuite' ); ?></h3>
 
 					<p class="description">
 						<?php
 						echo esc_html(
 							sprintf(
-							/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
-								__( 'Authentication allows %1$s to post to %2$s', 'wp-to-hootsuite' ),
-								$this->base->plugin->displayName,
-								$this->base->plugin->account
+								/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
+								__( 'A list of %1$s accounts that are connected to %2$s.', 'wp-to-hootsuite' ),
+								$this->base->plugin->account,
+								$this->base->plugin->displayName
 							)
 						);
 						?>
 					</p>
 				</header>
 
-				<div class="wpzinc-option">
-					<div class="full">
-						<?php
-						echo esc_html(
-							sprintf(
-							/* translators: Social Media Service Name (Buffer, Hootsuite) */
-								__( 'Thanks - you\'ve authorized the plugin to post updates to your %s account.', 'wp-to-hootsuite' ),
-								$this->base->plugin->account
-							)
-						);
-						?>
+				<?php
+				// List connected accounts.
+				foreach ( $this->base->get_class( 'settings' )->get_accounts() as $account_id => $account ) {
+					$reconnect_url  = $this->base->get_class( 'api' )->get_oauth_url( $account_id );
+					$disconnect_url = add_query_arg(
+						array(
+							'page'  => $this->base->plugin->name . '-settings',
+							$this->base->plugin->name . '-disconnect' => $account_id,
+							'nonce' => wp_create_nonce( $this->base->plugin->name . '-disconnect' ),
+						),
+						admin_url( 'admin.php' )
+					);
+					?>
+					<div class="wpzinc-option">
+						<div class="left">
+							<strong><?php echo esc_html( $account['name'] ); ?></strong>
+						</div>
+						<div class="right">
+							<a href="<?php echo esc_url( $reconnect_url ); ?>" class="button button-secondary">
+								<?php esc_html_e( 'Reconnect', 'wp-to-hootsuite' ); ?>
+							</a>
+							<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button wpzinc-button-red">
+								<?php esc_html_e( 'Disconnect', 'wp-to-hootsuite' ); ?>
+							</a>
+						</div>
 					</div>
-				</div>
-				<div class="wpzinc-option">
-					<div class="full">
-						<?php
-						$disconnect_url = add_query_arg(
-							array(
-								'page'  => $this->base->plugin->name . '-settings',
-								$this->base->plugin->name . '-disconnect' => 1,
-								'nonce' => wp_create_nonce( $this->base->plugin->name . '-disconnect' ),
-							),
-							admin_url( 'admin.php' )
-						);
-						?>
-						<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button wpzinc-button-red">
-							<?php esc_html_e( 'Deauthorize Plugin', 'wp-to-hootsuite' ); ?>
-						</a>
-					</div>
-				</div>
+					<?php
+				}
+				?>
 			</div>   
 		</div>
 
@@ -314,7 +313,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<div class="right">
 							<?php
-							$log_levels_settings = $this->get_setting( 'log', 'log_level' );
+							$log_levels_settings = $this->get_setting(
+								'log',
+								'log_level',
+								array(
+									'success',
+									'test',
+									'pending',
+									'warning',
+									'error',
+								)
+							);
 
 							foreach ( $log_levels as $log_level => $label ) {
 								?>

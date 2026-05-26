@@ -138,10 +138,11 @@ class WP_To_Social_Pro_Settings {
 		 *
 		 * @since   3.0.0
 		 *
-		 * @param   array   $settings   Settings.
-		 * @param   string  $type       Post Type.
+		 * @param   array   $settings            Settings.
+		 * @param   string  $type                Post Type.
+		 * @param   array   $existing_settings   Existing Settings.
 		 */
-		$settings = apply_filters( $this->base->plugin->filter_name . '_update_settings', $settings, $type );
+		$settings = apply_filters( $this->base->plugin->filter_name . '_update_settings', $settings, $type, $existing_settings );
 
 		// Save.
 		$result = $this->update_option( $type, $settings );
@@ -233,13 +234,13 @@ class WP_To_Social_Pro_Settings {
 				'publish' => array(
 					'enabled' => 1,
 					'status'  => array(
-						$this->get_default_status( $post_type, 'New ' . ucfirst( $post_type ) . ': {title} {url}', $this->base->plugin->default_schedule ),
+						$this->get_default_status( $post_type, 'New ' . ucfirst( $post_type ) . ': {title}', $this->base->plugin->default_schedule ),
 					),
 				),
 				'update'  => array(
 					'enabled' => 1,
 					'status'  => array(
-						$this->get_default_status( $post_type, 'Updated ' . ucfirst( $post_type ) . ': {title} {url}', $this->base->plugin->default_schedule ),
+						$this->get_default_status( $post_type, 'Updated ' . ucfirst( $post_type ) . ': {title}', $this->base->plugin->default_schedule ),
 					),
 				),
 			),
@@ -365,23 +366,18 @@ class WP_To_Social_Pro_Settings {
 	 * @param   string $action     Action (publish,update,repost,bulk_publish).
 	 * @return  array               Table Row Cell Status (message, image, schedule)
 	 */
-	public function get_status_row( $status, $post_type, $action ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	public function get_status_row( $status, $post_type, $action ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Get Options.
-		$featured_image_options = $this->base->get_class( 'image' )->get_featured_image_options( $post_type );
+		$featured_image_options = $this->base->get_class( 'image' )->get_status_image_options( false, $post_type );
 		$schedule               = $this->base->get_class( 'common' )->get_schedule_options( $post_type, true );
 
 		// Define row.
-		$row = array(
-			'message'  => ( ( strlen( $status['message'] ) > 100 ) ? substr( $status['message'], 0, 100 ) . '...' : $status['message'] ),
-			'image'    => $featured_image_options[ $status['image'] ],
-			'schedule' => '',
+		return array(
+			'message'   => ( ( strlen( $status['message'] ) > 100 ) ? substr( $status['message'], 0, 100 ) . '...' : $status['message'] ),
+			'post_type' => $status['post_type'],
+			'schedule'  => $schedule[ $status['schedule'] ],
 		);
-
-		// Define row schedule text.
-		$row['schedule'] = $schedule[ $status['schedule'] ];
-
-		return $row;
 
 	}
 
@@ -395,7 +391,7 @@ class WP_To_Social_Pro_Settings {
 	 * @param   string $default_schedule   Default Schedule.
 	 * @return  array                       Status
 	 */
-	public function get_default_status( $post_type, $default_message = false, $default_schedule = 'queue_bottom' ) {
+	public function get_default_status( $post_type, $default_message = false, $default_schedule = 'queue_end' ) {
 
 		// Get Taxonomies supported by this Post Type.
 		$conditions = array();
@@ -408,9 +404,14 @@ class WP_To_Social_Pro_Settings {
 		// Define skeleton status to be used for new statuses.
 		$status = array(
 			// All Profiles.
-			'image'                          => ( $this->base->get_class( 'image' )->is_opengraph_plugin_active() ? 0 : 2 ),
-			'message'                        => ( ! $default_message ? '{title} {url}' : $default_message ),
+			'post_type'                      => 'link',
+			'message'                        => ( ! $default_message ? '{title}' : $default_message ),
+			'first_comment'                  => '',
+			'url'                            => '{url}',
 			'schedule'                       => $default_schedule,
+			'image'                          => 'featured_image',
+			'image_additional'               => '',
+			'image_additional_limit'         => '',
 			'days'                           => 0,
 			'hours'                          => 0,
 			'minutes'                        => 0,
@@ -418,13 +419,17 @@ class WP_To_Social_Pro_Settings {
 			'schedule_relative_time'         => '00:00:00',
 			'schedule_custom_field_name'     => '',
 			'schedule_custom_field_relation' => 'after',
+			'schedule_tec_relation'          => 'after',
 			'schedule_specific'              => '',
 
-			// Profiles: Pinterest.
-			'sub_profile'                    => 0,
+			// Text to Image.
+			'text_to_image'                  => '',
 
-			// Update Type: Instagram.
-			'update_type'                    => '',
+			// Profiles: Pinterest.
+			'pinterest'                      => array(
+				'board' => '',
+				'title' => '{title}',
+			),
 
 			// Profiles: Google Business.
 			'googlebusiness'                 => array(
@@ -444,9 +449,6 @@ class WP_To_Social_Pro_Settings {
 				'code'              => '',
 				'terms'             => '',
 			),
-
-			// Text to Image.
-			'text_to_image'                  => '',
 
 			// Post Conditions.
 			'post_title'                     => array(
@@ -620,185 +622,269 @@ class WP_To_Social_Pro_Settings {
 	}
 
 	/**
-	 * Stores the given access token and refresh token into the options table.
+	 * Returns all accounts and their access token, refresh token and token expiry values.
+	 *
+	 * @since   5.4.0
+	 *
+	 * @return  array
+	 */
+	public function get_accounts() {
+
+		return get_option( $this->base->plugin->settingsName . '-accounts', array() );
+
+	}
+
+	/**
+	 * Checks if at least one account is connected.
+	 *
+	 * @since   5.4.0
+	 *
+	 * @return  bool
+	 */
+	public function account_connected() {
+
+		$accounts = $this->get_accounts();
+		return ! empty( $accounts ) && count( $accounts ) > 0;
+
+	}
+
+	/**
+	 * Stores the given account, including its credentials.
 	 *
 	 * @since   3.5.0
+	 *
+	 * @param   string   $access_token    Access Token.
+	 * @param   string   $refresh_token   Refresh Token.
+	 * @param   bool|int $token_expires   Token Expires (false | timestamp).
+	 * @param   string   $account_id      Account ID.
+	 * @param   string   $account_name    Account Name.
+	 * @param   string   $plan            Plan Name.
+	 * @param   array    $profile_ids     Profile IDs.
+	 */
+	public function update_account( $access_token = '', $refresh_token = '', $token_expires = false, $account_id = 'default', $account_name = 'Default', $plan = 'free', $profile_ids = array() ) {
+
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// Add new account.
+		$accounts[ $account_id ] = array(
+			'id'            => $account_id,
+			'name'          => $account_name,
+			'plan'          => $plan,
+			'access_token'  => $access_token,
+			'refresh_token' => $refresh_token,
+			'token_expires' => $token_expires,
+			'profile_ids'   => $profile_ids,
+		);
+
+		// Update the accounts.
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+
+	}
+
+	/**
+	 * Updates the credentials for the given account ID.
+	 *
+	 * @since   6.0.0
+	 *
+	 * @param   string   $access_token    Access Token.
+	 * @param   string   $refresh_token   Refresh Token.
+	 * @param   bool|int $token_expires   Token Expires (false | timestamp).
+	 * @param   string   $account_id      Account ID.
+	 */
+	public function update_account_credentials( $access_token, $refresh_token, $token_expires = false, $account_id = 'default' ) {
+
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// If the account doesn't exist, bail.
+		if ( ! isset( $accounts[ $account_id ] ) ) {
+			return;
+		}
+
+		// Update the account credentials.
+		$accounts[ $account_id ]['access_token']  = $access_token;
+		$accounts[ $account_id ]['refresh_token'] = $refresh_token;
+		$accounts[ $account_id ]['token_expires'] = $token_expires;
+
+		// Update the accounts.
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+
+	}
+
+	/**
+	 * Updates the information for the given account ID.
+	 *
+	 * @since   6.0.0
+	 *
+	 * @param   string $account_id      Account ID.
+	 * @param   string $account_name    Account Name.
+	 * @param   string $plan            Plan Name.
+	 * @param   array  $profile_ids     Profile IDs.
+	 */
+	public function update_account_information( $account_id = 'default', $account_name = 'Default', $plan = 'free', $profile_ids = array() ) {
+
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// If the account doesn't exist, bail.
+		if ( ! isset( $accounts[ $account_id ] ) ) {
+			return;
+		}
+
+		// Update the account information.
+		$accounts[ $account_id ]['name']        = $account_name;
+		$accounts[ $account_id ]['plan']        = $plan;
+		$accounts[ $account_id ]['profile_ids'] = $profile_ids;
+
+		// Update the accounts.
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+
+	}
+
+	/**
+	 * Stores the given profile IDs against the given account ID.
+	 *
+	 * @since   5.4.7
+	 *
+	 * @param   string $account_id      Account ID.
+	 * @param   array  $profile_ids     Profile IDs.
+	 */
+	public function update_account_profile_ids( $account_id, $profile_ids ) {
+
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// If the account doesn't exist, bail.
+		if ( ! isset( $accounts[ $account_id ] ) ) {
+			return;
+		}
+
+		// Update the account profile IDs.
+		$accounts[ $account_id ]['profile_ids'] = $profile_ids;
+
+		// Update the accounts.
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+
+	}
+
+	/**
+	 * Deletes the access, refresh and token expiry values for the specified account ID.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   string $account_id      Account ID.
+	 * @return  bool
+	 */
+	public function delete_account( $account_id = 'default' ) {
+
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// Delete the account.
+		unset( $accounts[ $account_id ] );
+
+		// Delete the profile transient for this account.
+		delete_transient( $this->base->plugin->name . '_' . $this->base->plugin->account . '_api_profiles_' . $account_id );
+
+		// Update the accounts.
+		return update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+
+	}
+
+	/**
+	 * Retrieves the account ID for the given access token.
+	 *
+	 * @since   6.0.0
 	 *
 	 * @param   string $access_token    Access Token.
-	 * @param   string $refresh_token   Refresh Token.
-	 * @param   mixed  $token_expires   Token Expires (false | timestamp).
+	 * @return  string
 	 */
-	public function update_tokens( $access_token = '', $refresh_token = '', $token_expires = false ) {
+	public function get_account_id_by_access_token( $access_token ) {
 
-		$this->update_access_token( $access_token );
-		$this->update_refresh_token( $refresh_token );
-		$this->update_token_expires( $token_expires );
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// Iterate through accounts to find the account that contains the given access token.
+		foreach ( $accounts as $account_id => $account ) {
+			if ( $account['access_token'] === $access_token ) {
+				return $account_id;
+			}
+		}
+
+		return '';
 
 	}
 
 	/**
-	 * Deletes the access, refresh and toke expiry values from the options table.
+	 * Retrieves the access token for the given profile ID.
 	 *
-	 * @since   3.5.0
+	 * @since   5.4.0
+	 *
+	 * @param   string $profile_id      Profile ID.
+	 * @return  string
 	 */
-	public function delete_tokens() {
+	public function get_access_token_by_profile_id( $profile_id = '' ) {
 
-		$this->delete_access_token();
-		$this->delete_refresh_token();
-		$this->delete_token_expires();
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// Iterate through accounts to find the account that contains the given profile ID.
+		foreach ( $accounts as $account ) {
+			if ( in_array( $profile_id, $account['profile_ids'], true ) ) {
+				return $account['access_token'];
+			}
+		}
+
+		return '';
 
 	}
 
 	/**
-	 * Retrieves the access token from the options table
+	 * Retrieves the refresh token for the given profile ID.
 	 *
-	 * @since   3.0.0
+	 * @since   5.4.0
 	 *
-	 * @return  string  Access Token
+	 * @param   string $profile_id      Profile ID.
+	 * @return  string
 	 */
-	public function get_access_token() {
+	public function get_refresh_token_by_profile_id( $profile_id = '' ) {
 
-		return get_option( $this->base->plugin->settingsName . '-access-token' );
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
+
+		// Iterate through accounts to find the account that contains the given profile ID.
+		foreach ( $accounts as $account ) {
+			if ( in_array( $profile_id, $account['profile_ids'], true ) ) {
+				return $account['refresh_token'];
+			}
+		}
+
+		return '';
 
 	}
 
 	/**
-	 * Stores the given access token into the options table
+	 * Retrieves the access token for the given profile ID.
 	 *
-	 * @since   3.0.0
+	 * @since   5.4.0
 	 *
-	 * @param   string $access_token   Access Token.
-	 * @return  bool                    Success
+	 * @param   string $profile_id      Profile ID.
+	 * @return  string
 	 */
-	public function update_access_token( $access_token ) {
+	public function get_token_expires_by_profile_id( $profile_id = '' ) {
 
-		/**
-		 * Filters the API access token before saving.
-		 *
-		 * @since   3.0.0
-		 *
-		 * @param   array   $access_token   Access Token.
-		 */
-		$access_token = apply_filters( $this->base->plugin->filter_name . '_update_access_token', $access_token );
+		// Get existing accounts.
+		$accounts = $this->get_accounts();
 
-		// Return result.
-		return update_option( $this->base->plugin->settingsName . '-access-token', $access_token );
+		// Iterate through accounts to find the account that contains the given profile ID.
+		foreach ( $accounts as $account ) {
+			if ( in_array( $profile_id, $account['profile_ids'], true ) ) {
+				return $account['token_expires'];
+			}
+		}
 
-	}
-
-	/**
-	 * Deletes the access token from the options table
-	 *
-	 * @since   3.4.7
-	 *
-	 * @return  bool    Success
-	 */
-	public function delete_access_token() {
-
-		// Return result.
-		return delete_option( $this->base->plugin->settingsName . '-access-token' );
-
-	}
-
-	/**
-	 * Retrieves the refresh token from the options table
-	 *
-	 * @since   3.0.0
-	 *
-	 * @return  string  Access Token
-	 */
-	public function get_refresh_token() {
-
-		return get_option( $this->base->plugin->settingsName . '-refresh-token' );
-
-	}
-
-	/**
-	 * Stores the given refresh token into the options table
-	 *
-	 * @since   3.0.0
-	 *
-	 * @param   string $refresh_token  Refresh Token.
-	 * @return  bool                    Success
-	 */
-	public function update_refresh_token( $refresh_token ) {
-
-		/**
-		 * Filters the API refresh token before saving.
-		 *
-		 * @since   3.0.0
-		 *
-		 * @param   array   $refresh_token   Refresh Token.
-		 */
-		$refresh_token = apply_filters( $this->base->plugin->filter_name . '_update_refresh_token', $refresh_token );
-
-		// Return result.
-		return update_option( $this->base->plugin->settingsName . '-refresh-token', $refresh_token );
-
-	}
-
-	/**
-	 * Deletes the access token from the options table
-	 *
-	 * @since   3.4.7
-	 *
-	 * @return  bool    Success
-	 */
-	public function delete_refresh_token() {
-
-		// Return result.
-		return delete_option( $this->base->plugin->settingsName . '-refresh-token' );
-
-	}
-
-	/**
-	 * Retrieves the token expiry timestamp from the options table
-	 *
-	 * @since   3.5.0
-	 *
-	 * @return  mixed   false | Token Expiry Timestamp
-	 */
-	public function get_token_expires() {
-
-		return get_option( $this->base->plugin->settingsName . '-token-expires' );
-
-	}
-
-	/**
-	 * Stores the given token expiry timestamp into the options table
-	 *
-	 * @since   3.5.0
-	 *
-	 * @param   mixed $token_expires      Token Expires (false | timestamp).
-	 * @return  bool                        Success
-	 */
-	public function update_token_expires( $token_expires ) {
-
-		/**
-		 * Filters the API token expiry timestamp token before saving.
-		 *
-		 * @since   3.0.0
-		 *
-		 * @param   array   $token_expires  Token Expiry.
-		 */
-		$token_expires = apply_filters( $this->base->plugin->filter_name . '_update_token_expires', $token_expires );
-
-		// Return result.
-		return update_option( $this->base->plugin->settingsName . '-token-expires', $token_expires );
-
-	}
-
-	/**
-	 * Deletes the token expiry timestamp from the options table
-	 *
-	 * @since   3.5.0
-	 *
-	 * @return  bool    Success
-	 */
-	public function delete_token_expires() {
-
-		// Return result.
-		return delete_option( $this->base->plugin->settingsName . '-token-expires' );
+		return '';
 
 	}
 
@@ -870,9 +956,7 @@ class WP_To_Social_Pro_Settings {
 		$value = apply_filters( $this->base->plugin->filter_name . '_update_option', $value, $key );
 
 		// Update.
-		update_option( $this->base->plugin->settingsName . '-' . $key, $value );
-
-		return true;
+		return update_option( $this->base->plugin->settingsName . '-' . $key, $value );
 
 	}
 

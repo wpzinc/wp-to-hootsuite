@@ -267,7 +267,7 @@ class WP_To_Social_Pro_Publish {
 
 		// Gutenberg requests are REST API requests, but include a _locale key.
 		// 'True' REST API requests do not include this key.
-		if ( ! array_key_exists( '_locale', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_POST, '_locale' ) && ! filter_has_var( INPUT_GET, '_locale' ) ) {
 			return false;
 		}
 
@@ -294,7 +294,7 @@ class WP_To_Social_Pro_Publish {
 
 		// Gutenberg requests are REST API requests, but include a _locale key.
 		// 'True' REST API requests do not include this key.
-		if ( array_key_exists( '_locale', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_has_var( INPUT_POST, '_locale' ) || filter_has_var( INPUT_GET, '_locale' ) ) {
 			return false;
 		}
 
@@ -484,11 +484,8 @@ class WP_To_Social_Pro_Publish {
 		// Clear any cached data that we have stored in this class.
 		$this->clear_search_replacements();
 
-		// Check a valid access token exists.
-		$access_token  = $this->base->get_class( 'settings' )->get_access_token();
-		$refresh_token = $this->base->get_class( 'settings' )->get_refresh_token();
-		$expires       = $this->base->get_class( 'settings' )->get_token_expires();
-		if ( ! $access_token ) {
+		// Check at least one account is connected.
+		if ( ! $this->base->get_class( 'settings' )->account_connected() ) {
 			return new WP_Error(
 				'no_access_token',
 				sprintf(
@@ -500,16 +497,30 @@ class WP_To_Social_Pro_Publish {
 			);
 		}
 
-		// Setup API.
-		$this->base->get_class( 'api' )->set_tokens( $access_token, $refresh_token, $expires );
-
 		// Get Profiles.
-		$profiles = $this->base->get_class( 'api' )->profiles( false, $this->base->get_class( 'common' )->get_transient_expiration_time() );
+		$profiles = array();
+		foreach ( $this->base->get_class( 'settings' )->get_accounts() as $account_id => $account ) {
+			// Configure API for this account and fetch its profiles.
+			$this->base->get_class( 'api' )->set_tokens( $account['access_token'], $account['refresh_token'], $account['token_expires'] );
+			$account_profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time(), $account_id );
 
-		// Bail if the Profiles could not be fetched.
-		if ( is_wp_error( $profiles ) ) {
-			$this->base->get_class( 'log' )->add_to_debug_log( $this->base->plugin->displayName . ': publish(): Profiles Error: ' . $profiles->get_error_message() );
-			return $profiles;
+			// Display an error.
+			if ( is_wp_error( $account_profiles ) ) {
+				$this->base->get_class( 'notices' )->add_error_notice( $account_profiles->get_error_message() );
+				continue;
+			}
+
+			// Store profile IDs against account.
+			$this->base->get_class( 'settings' )->update_account_profile_ids(
+				$account_id,
+				array_keys( $account_profiles )
+			);
+
+			// Merge profiles with existing profiles from other accounts.
+			// array_merge() is not used here as it will re-index numeric keys.
+			foreach ( $account_profiles as $profile ) {
+				$profiles[ $profile['id'] ] = $profile;
+			}
 		}
 
 		// Array for storing statuses we'll send to the API.
@@ -530,8 +541,7 @@ class WP_To_Social_Pro_Publish {
 
 			// If the Profile's ID belongs to a Google Social Media Profile, skip it, as this is no longer supported
 			// as Google+ closed down.
-			// Allow this to go through for SocialPilot which supports GMB.
-			if ( $profile_id !== 'default' && $profiles[ $profile_id ]['service'] === 'google' && $this->base->plugin->name !== 'wp-to-socialpilot-pro' ) {
+			if ( $profile_id !== 'default' && $profiles[ $profile_id ]['service'] === 'google' ) {
 				continue;
 			}
 
@@ -570,7 +580,7 @@ class WP_To_Social_Pro_Publish {
 			// Iterate through each Status.
 			foreach ( $status_settings as $index => $status ) {
 				// Add the status to our array for it to be sent to the API.
-				$status = $this->build_args( $post, $profile_id, $service, $status, $action );
+				$status = $this->build_args( $post, $profile_id, $service, $status, $action, $account );
 
 				// If the status built is a WP_Error, something went wrong with e.g. the image.
 				// Include the error object and the profile ID, so the error is logged.
@@ -726,148 +736,132 @@ class WP_To_Social_Pro_Publish {
 
 	}
 
-
 	/**
 	 * Helper method to build arguments and create a status via the API
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   obj    $post                       Post.
-	 * @param   string $profile_id                 Profile ID.
-	 * @param   string $service                    Service.
-	 * @param   array  $status                     Status Settings.
-	 * @param   string $action                     Action (publish|update|repost|bulk_publish).
-	 * @return  bool                                Success
+	 * @param   WP_Post    $post                       Post.
+	 * @param   string     $profile_id                 Profile ID.
+	 * @param   string     $service                    Service.
+	 * @param   array      $status                     Status Settings.
+	 * @param   string     $action                     Action (publish|update|repost|bulk_publish).
+	 * @param   bool|array $account                    Account.
+	 * @return  bool
 	 */
-	private function build_args( $post, $profile_id, $service, $status, $action ) {
+	private function build_args( $post, $profile_id, $service, $status, $action, $account = false ) {
 
-		// Build each API argument.
-		// Profile ID.
-		$args = array(
-			'profile_ids' => array( $profile_id ),
-		);
-
-		// Text.
-		$args['text'] = $this->parse_text( $post, $status['message'] );
-
-		// Change the Image setting if it's an invalid value for the service.
-		// This happens when e.g. Defaults are set, but per-service settings aren't.
+		// For some services, the post_type may need to be changed to a supported post type.
+		// This might happen if e.g. only defaults are set, and per-profile settings are not defined.
 		switch ( $service ) {
 			/**
-			 * Twitter
-			 * - Force Use Feat. Image, not Linked to Post if Use Feat. Image, Linked to Post chosen
+			 * Instagram:
+			 * - If `image` or `story` is not specified, default to `image`.
 			 */
-			case 'twitter':
-				if ( $status['image'] == 1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-					$status['image'] = 2;
-				}
-
-				// Set Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
-				if ( $status['image'] == 3 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-					$status['image'] = 4;
+			case 'instagram':
+				if ( ! in_array( $status['post_type'], array( 'image', 'story' ), true ) ) {
+					$status['post_type'] = 'image';
 				}
 				break;
 
 			/**
-			 * Pinterest, Instagram, Google Business, TikTok
-			 * - Force No Image, OpenGraph and Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
-			 * - Force Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
+			 * TikTok:
+			 * - If `image` is not specified, default to `image`.
+			 */
+			case 'tiktok':
+				if ( ! in_array( $status['post_type'], array( 'image' ), true ) ) {
+					$status['post_type'] = 'image';
+				}
+				break;
+
+			/**
+			 * Pinterest: Change post type to `pin`.
 			 */
 			case 'pinterest':
-			case 'instagram':
-			case 'googlebusiness':
-			case 'tiktok':
-				// Set No Image, OpenGraph and Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
-				if ( $status['image'] == -1 || $status['image'] == 0 || $status['image'] == 1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-					$status['image'] = 2;
-				}
-
-				// Set Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
-				if ( $status['image'] == 3 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-					$status['image'] = 4;
-				}
+				$status['post_type'] = 'pin';
 				break;
 
 			/**
-			 * Pinterest, Instagram, Google Business, Mastodon
-			 * - Force No Image and Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
-			 * - Force Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
+			 * Google Business: Change post type to `googlebusiness`.
 			 */
-			case 'mastodon':
-				// Set Use Feat. Image, Linked to Post = Use Feat. Image, not Linked to Post.
-				if ( $status['image'] == 1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-					$status['image'] = 2;
-				}
-
-				// Set Use Text to Image, Linked to Post = Use Text to Image, not Linked to Post.
-				if ( $status['image'] == 3 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-					$status['image'] = 4;
-				}
-
-				// Set Use OpenGraph Settings = No Image.
-				// This prevents Buffer from parsing and removing the URL from the status, which results in
-				// Mastodon not displaying the link preview.
-				if ( $status['image'] == 0 ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-					$status['image'] = -1;
-				}
+			case 'googlebusiness':
+				$status['post_type'] = 'googlebusiness';
 				break;
-
 		}
 
-		// If the status is set to No Image, don't attempt to fetch an image.
-		if ( $status['image'] == -1 ) {  // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-			$args['attachment'] = 'false';
-		} else {
-			// Featured, Additional Image or Content Image.
-			$image = $this->get_post_image( $post, $service );
+		// Build API compatible arguments.
+		$args = array(
+			'account'     => $account,
+			'post_type'   => $status['post_type'],
+			'profile_ids' => array( $profile_id ),
+			'text'        => $this->parse_text( $post, $status['message'], ( $service === 'instagram' ? true : false ) ),
+		);
 
-			// Image will be an ID, false (if no image) or WP_Error (if an image exists but something went wrong).
+		// Shorten URLs.
+		if ( $this->base->supports( 'url_shortening' ) ) {
+			$args['shorten'] = ( $this->base->get_class( 'settings' )->get_option( 'disable_url_shortening', false ) ? false : true );
+		}
 
-			// If the image is a WP_Error object, log it and return.
-			if ( is_wp_error( $image ) ) {
-				$this->base->get_class( 'log' )->add_to_debug_log( 'Image Error: ' . $image->get_error_message() );
-				return $image;
-			}
+		// Drafts.
+		if ( $this->base->supports( 'drafts' ) ) {
+			$args['is_draft'] = $this->base->get_class( 'settings' )->get_option( 'is_draft', false );
+		}
 
-			// If we have a Featured Image, add it to the Status is required.
-			if ( ! is_wp_error( $image ) && $image !== false ) {
+		// URL.
+		switch ( $args['post_type'] ) {
+			/**
+			 * Link
+			 */
+			case 'link':
+			case 'pin':
+			case 'googlebusiness':
+				// Get URL.
+				$url = $this->parse_text( $post, $status['url'] );
+
+				// If URL is empty, don't include it in the args.
+				if ( empty( $url ) ) {
+					break;
+				}
+
+				// Add URL to args.
+				$args['url'] = $url;
+				break;
+		}
+
+		// Image(s).
+		switch ( $args['post_type'] ) {
+			case 'pin':
+			case 'googlebusiness':
+			case 'story':
+			case 'image':
 				switch ( $status['image'] ) {
 					/**
-					 * Use OpenGraph Settings
+					 * Featured, Additional or Content Image
 					 */
-					case 0:
-					case '':
-						// Add Post link to media, so API service knows where to fetch OpenGraph data from.
-						$args['media'] = array(
-							'link' => $this->get_permalink( $post ),
-						);
-						break;
+					case 'featured_image':
+						// Plugin's First (Featured) Image, Post's Featured Image or Post Content's First Image.
+						$image = $this->get_post_image( $post, $service, $status['post_type'] );
 
-					/**
-					 * Use Feat. Image, not Linked to Post
-					 * - Facebook, LinkedIn, Twitter, Instagram, Pinterest
-					 */
-					case 2:
-						$args['media'] = array(
-							'description' => $this->get_excerpt( $post, false ),
-							'title'       => $this->get_title( $post ),
-							'picture'     => $image['image'],
-							'alt_text'    => $image['alt_text'],
-							'width'       => $image['width'],
-							'height'      => $image['height'],
+						// If the image is a WP_Error object, log it and return.
+						if ( is_wp_error( $image ) ) {
+							$this->base->get_class( 'log' )->add_to_debug_log( 'Image Error: ' . $image->get_error_message() );
+							return $image;
+						}
 
-							// Dashboard Thumbnail.
-							// Supplied, as required when specifying media with no link.
-							// Using the smallest possible image to avoid cURL timeouts.
-							'thumbnail'   => $image['thumbnail'],
-
-							// Hootsuite for Amazon S3 upload for quality tests.
-							'id'          => $image['id'],
-						);
+						// Add image to media_urls.
+						$args['media_urls'] = array( $image );
 						break;
 
 				}
-			}
+		}
+
+		// Scheduling.
+		switch ( $status['schedule'] ) {
+			case 'queue_end':
+			case 'queue_start':
+			case 'immediate':
+				$args['schedule_type'] = $status['schedule'];
+				break;
 		}
 
 		/**
@@ -890,34 +884,24 @@ class WP_To_Social_Pro_Publish {
 	}
 
 	/**
-	 * Attempts to fetch the given Post's Image, in the following order:
+	 * Attempts to fetch the primary Post's Image, in the following order:
 	 * - Plugin's First (Featured) Image
 	 * - Post's Featured Image
-	 * - Post's first image in content, if service = pinterest or instagram
+	 * - Post's Content's First Image
 	 *
 	 * @since   3.9.8
 	 *
-	 * @param   WP_Post $post           Post ID.
-	 * @param   string  $service        Social Media Service.
-	 * @return  mixed                       false | array
+	 * @param   WP_Post     $post       Post ID.
+	 * @param   string      $service    Social Media Service.
+	 * @param   bool|string $format     Status format (for example, 'story' or 'post' for Instagram).
+	 * @return  bool|array
 	 */
-	private function get_post_image( $post, $service ) {
+	private function get_post_image( $post, $service, $format = false ) {
 
 		// Featured Image.
 		$image_id = get_post_thumbnail_id( $post->ID );
 		if ( $image_id > 0 ) {
-			return $this->base->get_class( 'image' )->get_image_sources( $image_id, 'featured_image', $service );
-		}
-
-		// Content's First Image.
-		$images = preg_match_all( '/<img.+?src=[\'"]([^\'"]+)[\'"].*?>/i', apply_filters( 'the_content', $post->post_content ), $matches );
-		if ( $images ) {
-			return array(
-				'image'     => strtok( $matches[1][0], '?' ),
-				'thumbnail' => strtok( $matches[1][0], '?' ),
-				'alt_text'  => '',
-				'source'    => 'post_content',
-			);
+			return $this->base->get_class( 'image' )->get_image_sources( $image_id, 'featured_image', $service, $format );
 		}
 
 		// If here, no image was found in the Post.
@@ -932,9 +916,10 @@ class WP_To_Social_Pro_Publish {
 	 *
 	 * @param   WP_Post $post               Post.
 	 * @param   string  $message            Status Message to parse.
-	 * @return  string                          Parsed Status Message
+	 * @param   bool    $strip_urls         Whether to strip URLs from the status message.
+	 * @return  string                      Parsed Status Message
 	 */
-	public function parse_text( $post, $message ) {
+	public function parse_text( $post, $message, $strip_urls = false ) {
 
 		// Get Author.
 		$author = get_user_by( 'id', $post->post_author );
@@ -1102,7 +1087,7 @@ class WP_To_Social_Pro_Publish {
 		$text = do_shortcode( $text );
 
 		// Convert to plain text.
-		$text = $this->convert_to_plain_text( $text );
+		$text = $this->convert_to_plain_text( $text, true, $strip_urls );
 
 		/**
 		 * Filters the parsed status message text on a status.
@@ -1119,6 +1104,186 @@ class WP_To_Social_Pro_Publish {
 		$text = apply_filters( $this->base->plugin->filter_name . '_publish_parse_text', $text, $message, $this->searches_replacements, $this->all_possible_searches_replacements, $post, $author );
 
 		return $text;
+
+	}
+
+	/**
+	 * Parses the status' Google Business configuration to return an array of compatible
+	 * arguments that can be used to send the status.
+	 *
+	 * @since   4.9.0
+	 *
+	 * @param   WP_Post $post               Post.
+	 * @param   array   $status             Status.
+	 * @return  bool|array                  Google Business Profile status configuration
+	 */
+	public function parse_google_business( $post, $status ) {
+
+		// Bail if no Google Business configuration exists in the status.
+		if ( ! isset( $status['googlebusiness'] ) ) {
+			return false;
+		}
+		if ( ! is_array( $status['googlebusiness'] ) ) {
+			return false;
+		}
+		if ( ! isset( $status['googlebusiness']['post_type'] ) ) {
+			return false;
+		}
+
+		// Start building arguments.
+		$google_business_args = array(
+			'post_type' => $status['googlebusiness']['post_type'],
+		);
+
+		// Depending on the Google Business Post Type, build arguments.
+		switch ( $status['googlebusiness']['post_type'] ) {
+			case 'offer':
+			case 'event':
+				// Title.
+				$google_business_args['title'] = $this->parse_text( $post, $status['googlebusiness']['title'] );
+
+				// Code and Terms: Offers.
+				if ( $status['googlebusiness']['post_type'] === 'offer' ) {
+					$google_business_args = array_merge(
+						$google_business_args,
+						array(
+							'code'  => $this->parse_text( $post, $status['googlebusiness']['code'], true ),
+							'terms' => $this->parse_text( $post, $status['googlebusiness']['terms'], true ),
+						)
+					);
+				} else {
+					// Event: Button.
+					$google_business_args['cta'] = $status['googlebusiness']['cta'];
+				}
+
+				// Start Date.
+				switch ( $status['googlebusiness']['start_date_option'] ) {
+					/**
+					 * Custom Post Meta
+					 */
+					case 'custom':
+						// If no custom field key is set, set the start date to now.
+						if ( empty( $status['googlebusiness']['start_date'] ) ) {
+							$date = date( 'Y-m-d H:i:s' ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						} else {
+							// Fetch the Post's Meta Value based on the given Custom Field Key.
+							$date = get_post_meta( $post->ID, $status['googlebusiness']['start_date'], true );
+
+							// If the post date is numeric, it's most likely a timestamp
+							// Convert it to a date and time.
+							if ( is_numeric( $date ) ) {
+								$date = date( 'Y-m-d H:i:s', $date ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+							}
+						}
+
+						// Set start date.
+						$google_business_args['start_date'] = strtotime( $date );
+						$google_business_args['start_time'] = date( 'H:i', strtotime( $date ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						break;
+
+					/**
+					 * None
+					 */
+					case '':
+						break;
+
+					/**
+					 * Third Party integrations
+					 */
+					default:
+						$date = false;
+
+						/**
+						 * Allows integrations to define the status' start date for a Google Business Profile Offer or Event.
+						 *
+						 * @since   4.9.0
+						 *
+						 * @param   bool|string $date                   Date (yyyy-mm-dd hh:mm:ss format).
+						 * @param   array       $google_business_args   Google Business specific arguments for status.
+						 * @param   array       $status                 Status.
+						 * @param   WP_Post     $post                   WordPress Post.
+						 */
+						$date = apply_filters( $this->base->plugin->filter_name . '_publish_parse_google_business_start_date_' . $status['googlebusiness']['start_date_option'], $date, $google_business_args, $status, $post );
+
+						// Ignore if no date defined.
+						if ( ! $date ) {
+							break;
+						}
+
+						// Set start date.
+						$google_business_args['start_date'] = strtotime( $date );
+						$google_business_args['start_time'] = date( 'H:i', strtotime( $date ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						break;
+				}
+
+				// End Date.
+				switch ( $status['googlebusiness']['end_date_option'] ) {
+					/**
+					 * Custom Post Meta
+					 */
+					case 'custom':
+						// If no custom field key is set, set the end date to now.
+						if ( empty( $status['googlebusiness']['end_date'] ) ) {
+							$date = date( 'Y-m-d H:i:s' ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						} else {
+							// Fetch the Post's Meta Value based on the given Custom Field Key.
+							$date = get_post_meta( $post->ID, $status['googlebusiness']['end_date'], true );
+
+							// If the post date is numeric, it's most likely a timestamp
+							// Convert it to a date and time.
+							if ( is_numeric( $date ) ) {
+								$date = date( 'Y-m-d H:i:s', $date ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+							}
+						}
+
+						// Set end date.
+						$google_business_args['end_date'] = strtotime( $date );
+						$google_business_args['end_time'] = date( 'H:i', strtotime( $date ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						break;
+
+					/**
+					 * None
+					 */
+					case '':
+						break;
+
+					/**
+					 * Third Party integrations
+					 */
+					default:
+						$date = false;
+
+						/**
+						 * Allows integrations to define the status' end date for a Google Business Profile Offer or Event.
+						 *
+						 * @since   4.9.0
+						 *
+						 * @param   bool|string $date                   Date (yyyy-mm-dd hh:mm:ss format).
+						 * @param   array       $google_business_args   Google Business specific arguments for status.
+						 * @param   array       $status                 Status.
+						 * @param   WP_Post     $post                   WordPress Post.
+						 */
+						$date = apply_filters( $this->base->plugin->filter_name . '_publish_parse_google_business_end_date_' . $status['googlebusiness']['end_date_option'], $date, $google_business_args, $status, $post );
+
+						// Ignore if no date defined.
+						if ( ! $date ) {
+							break;
+						}
+
+						// Set end date.
+						$google_business_args['end_date'] = strtotime( $date );
+						$google_business_args['end_time'] = date( 'H:i', strtotime( $date ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						break;
+				}
+				break;
+
+			case 'whats_new':
+			default:
+				$google_business_args['cta'] = $status['googlebusiness']['cta'];
+				break;
+		}
+
+		return $google_business_args;
 
 	}
 
@@ -1393,7 +1558,7 @@ class WP_To_Social_Pro_Publish {
 	private function get_title( $post ) {
 
 		// Define title.
-		$title = $this->convert_to_plain_text( get_the_title( $post ), false );
+		$title = $this->convert_to_plain_text( get_the_title( $post ), false, true );
 
 		/**
 		 * Filters the dynamic {title} replacement, when a Post's status is being built.
@@ -1503,8 +1668,8 @@ class WP_To_Social_Pro_Publish {
 
 		// If the content originates from Gutenberg, remove double newlines and convert breaklines
 		// into newlines.
-		$is_gutenberg_post_content = $this->is_gutenberg_post_content( $post );
-		if ( $is_gutenberg_post_content ) {
+		$is_gutenberg_request_content = $this->is_gutenberg_post_content( $post );
+		if ( $is_gutenberg_request_content ) {
 			// Remove double newlines, which may occur due to using Gutenberg blocks.
 			// (blocks are separated with HTML comments, stripped using apply_filters( 'the_content' ), which results in double, or even triple, breaklines).
 			$content = preg_replace( '/(?:(?:\r\n|\r|\n)\s*){2}/s', "\n\n", $content );
@@ -1523,9 +1688,9 @@ class WP_To_Social_Pro_Publish {
 		 *
 		 * @param   string      $content                    Post Content.
 		 * @param   WP_Post     $post                       WordPress Post.
-		 * @param   bool        $is_gutenberg_post_content  Is Gutenberg Post Content.
+		 * @param   bool        $is_gutenberg_request_content  Is Gutenberg Post Content.
 		 */
-		$content = apply_filters( $this->base->plugin->filter_name . '_publish_get_content', $content, $post, $is_gutenberg_post_content );
+		$content = apply_filters( $this->base->plugin->filter_name . '_publish_get_content', $content, $post, $is_gutenberg_request_content );
 
 		// Return.
 		return $content;
@@ -1634,7 +1799,7 @@ class WP_To_Social_Pro_Publish {
 	 * Converts the given string (which is typically HTML from a WordPress Post or Post Meta Field)
 	 * to plain text, by performing several functions:
 	 * - stripping shortcodes (if shortcodes need processing, do so before calling this function)
-	 * - removing all inline <style> elements and their contents,
+	 * - removing all inline style elements and their contents,
 	 * - stripping HTML tags, excluding <br>, <br />, <a>, <li>
 	 * - decoding HTML entities to avoid encoding issues on status output
 	 * - converting <br> and <br /> to newlines
@@ -1646,9 +1811,10 @@ class WP_To_Social_Pro_Publish {
 	 * @param   string $text                           Text.
 	 * @param   bool   $convert_links_to_inline        true: Convert e.g. `<a href="http://foo.com">text</a>` to `text (http://foo.com)`.
 	 *                                                 false: Convert e.g. `<a href="http://foo.com">text</a>` to `text`.
-	 * @return  string                                      Text
+	 * @param   bool   $strip_urls                     Whether to strip URLs from the text.
+	 * @return  string                                 Text
 	 */
-	private function convert_to_plain_text( $text, $convert_links_to_inline = true ) {
+	private function convert_to_plain_text( $text, $convert_links_to_inline = true, $strip_urls = false ) {
 
 		// Strip any shortcodes still remaining.
 		// If shortcodes need to be processed, they should be processed before calling this function.
@@ -1669,7 +1835,7 @@ class WP_To_Social_Pro_Publish {
 		// Load DOMDocument into XPath.
 		$xpath = new DOMXPath( $html );
 
-		// Remove inline <style> tags and their contents.
+		// Remove inline style tags and their contents.
 		foreach ( $xpath->query( '//style' ) as $node ) {
 			$node->parentNode->removeChild( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
@@ -1678,7 +1844,8 @@ class WP_To_Social_Pro_Publish {
 		$text = $html->saveHTML();
 
 		// Remove HTML, except breaklines, links and unordered list items.
-		$text = strip_tags( $text, '<br><a><li>' );
+		$retain_tags = ( $strip_urls ? '<br><li>' : '<br><a><li>' );
+		$text        = strip_tags( $text, $retain_tags );
 
 		// Decode excerpt to avoid encoding issues on status output.
 		$text = html_entity_decode( $text );
@@ -1693,6 +1860,11 @@ class WP_To_Social_Pro_Publish {
 		} else {
 			// Just extract the text from the link and output it.
 			$text = preg_replace( '/<a[^>]+href=\"(.*?)\"[^>]*>(.*?)<\/a>/i', '$2', $text );
+		}
+
+		// If URLs are to be stripped, remove them.
+		if ( $strip_urls ) {
+			$text = preg_replace( '/https?:\/\/[^\s]+/', '', $text );
 		}
 
 		// Convert <li> to hyphenated.
@@ -1779,11 +1951,12 @@ class WP_To_Social_Pro_Publish {
 	 *
 	 * @since   4.3.1
 	 *
-	 * @param   string $text            Text.
-	 * @param   int    $sentence_limit  Sentence Limit.
-	 * @return  string                  Text
+	 * @param   string $text                Text.
+	 * @param   int    $sentence_limit      Sentence Limit.
+	 * @param   int    $min_sentence_length Minimum Sentence Length.
+	 * @return  string
 	 */
-	public function apply_sentence_limit( $text, $sentence_limit = 0 ) {
+	public function apply_sentence_limit( $text, $sentence_limit = 0, $min_sentence_length = 5 ) {
 
 		// Store original text.
 		$original_text = $text;
@@ -1793,19 +1966,31 @@ class WP_To_Social_Pro_Publish {
 			return $text;
 		}
 
-		// Define end of sentence delimiters.
-		$stops = array(
-			'. ',
-			'! ',
-			'? ',
-			'...',
-		);
-
 		// Build array of sentences.
-		$sentences = preg_split( '/(?<=[.?!])\s+(?=[a-z])/i', $text, -1, PREG_SPLIT_DELIM_CAPTURE );
+		$parts = preg_split( '/(?<=[.?!])\s+(?=[a-z])/i', $text, -1, PREG_SPLIT_DELIM_CAPTURE );
 
-		// Implode into text.
-		$text = implode( ' ', array_slice( $sentences, 0, $sentence_limit ) );
+		// Iterate through the array, adding sentences to the array until we hit the sentence limit.
+		// Sentences do not count towards the limit if they are shorter than the minimum sentence length.
+		// This ensures abbreviations do not count towards the limit.
+		$sentences      = array();
+		$sentence_count = 0;
+		foreach ( $parts as $index => $sentence ) {
+			// If we've hit the sentence limit, stop.
+			if ( $sentence_count >= $sentence_limit ) {
+				break;
+			}
+
+			// Trim the sentence, adding it to the array.
+			$sentences[ $index ] = trim( $sentence );
+
+			// If the sentence is longer than the minimum sentence length, count this as a sentence.
+			if ( mb_strlen( $sentences[ $index ] ) > $min_sentence_length ) {
+				++$sentence_count;
+			}
+		}
+
+		// Implode into text, with a space between each sentence, trimming the array results to avoid double spacing.
+		$text = implode( ' ', array_map( 'trim', $sentences ) );
 
 		/**
 		 * Applies the given sentence limit to the given text.
@@ -1882,19 +2067,13 @@ class WP_To_Social_Pro_Publish {
 		// Assume no errors.
 		$errors = false;
 
-		// Setup API.
-		$this->base->get_class( 'api' )->set_tokens(
-			$this->base->get_class( 'settings' )->get_access_token(),
-			$this->base->get_class( 'settings' )->get_refresh_token(),
-			$this->base->get_class( 'settings' )->get_token_expires()
-		);
-
 		// Setup logging.
 		$logs        = array();
 		$log_error   = array();
 		$log_enabled = $this->base->get_class( 'log' )->is_enabled();
 
 		foreach ( $statuses as $index => $status ) {
+
 			// If the status is a WP_Error, something went wrong in building the status to be sent.
 			// Log the error and continue to the next status.
 			if ( isset( $status['error'] ) && is_wp_error( $status['error'] ) ) {
@@ -1935,8 +2114,15 @@ class WP_To_Social_Pro_Publish {
 				continue;
 			}
 
+			// Setup API.
+			$this->base->get_class( 'api' )->set_tokens(
+				$this->base->get_class( 'settings' )->get_access_token_by_profile_id( $status['profile_ids'][0] ),
+				$this->base->get_class( 'settings' )->get_refresh_token_by_profile_id( $status['profile_ids'][0] ),
+				$this->base->get_class( 'settings' )->get_token_expires_by_profile_id( $status['profile_ids'][0] )
+			);
+
 			// Send request.
-			$result = $this->base->get_class( 'api' )->updates_create( $status );
+			$result = $this->base->get_class( 'api' )->updates_create( $status, $profiles[ $status['profile_ids'][0] ]['service'] );
 
 			// Store result in log array.
 			if ( is_wp_error( $result ) ) {
