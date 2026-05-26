@@ -313,7 +313,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<div class="right">
 							<?php
-							$log_levels_settings = $this->get_setting( 'log', 'log_level' );
+							$log_levels_settings = $this->get_setting(
+								'log',
+								'log_level',
+								array(
+									'success',
+									'test',
+									'pending',
+									'warning',
+									'error',
+								)
+							);
 
 							foreach ( $log_levels as $log_level => $label ) {
 								?>

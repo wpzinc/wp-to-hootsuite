@@ -13,12 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <div id="<?php echo esc_attr( $this->base->plugin->name ); ?>-status-form-container" class="hidden">
 	<div id="<?php echo esc_attr( $this->base->plugin->name ); ?>-status-form" class="wp-to-social-pro-status-form">
-		<div class="notice-inline notice-warning pinterest hidden">
+		<div class="notice-inline notice-warning pinterest hidden full">
 			<p>
 				<?php
 				esc_html_e( 'You need to create at least one Pinterest Board, and then refresh the screen to choose the board to post this status to.', 'wp-to-hootsuite' );
 				?>
-				<a href="<?php echo esc_attr( $this->base->plugin->documentation_url ); ?>/status-settings/#status--choose-a-pinterest-board" target="_blank">
+				<a href="<?php echo esc_attr( $this->base->plugin->documentation_url ); ?>/status-settings/#buffer-pinterest" target="_blank">
 					<?php echo esc_html_e( 'Click here for instructions on creating a Pinterest board.', 'wp-to-hootsuite' ); ?>
 				</a>
 			</p>

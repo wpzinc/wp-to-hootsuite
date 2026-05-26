@@ -310,14 +310,14 @@ class WP_To_Social_Pro_Admin {
 			);
 		}
 
+		// Don't display the notice if this request is for the settings auth screen.
+		$screen = $this->base->get_class( 'screen' )->get_current_screen();
+		if ( $screen['screen'] === 'settings' && $screen['section'] === 'auth' ) {
+			return;
+		}
+
 		// Check the API is connected.
 		if ( ! $this->base->get_class( 'settings' )->account_connected() ) {
-			// Don't display the notice if this request is for the settings auth screen.
-			$screen = $this->base->get_class( 'screen' )->get_current_screen();
-			if ( $screen['screen'] === 'settings' && $screen['section'] === 'auth' ) {
-				return;
-			}
-
 			// Display the notice.
 			$this->base->get_class( 'notices' )->add_error_notice(
 				sprintf(
@@ -333,6 +333,21 @@ class WP_To_Social_Pro_Admin {
 					esc_html__( 'Click here to Authorize.', 'wp-to-hootsuite' )
 				)
 			);
+		}
+
+		// Buffer: If an access token begins with '2/', it's from the old API.
+		$accounts = $this->base->get_class( 'settings' )->get_accounts();
+		foreach ( $accounts as $account ) {
+			if ( strpos( $account['access_token'], '2/' ) === 0 ) {
+				$this->base->get_class( 'notices' )->add_error_notice(
+					sprintf(
+						/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
+						__( '%1$s uses a new API. Please click the `Reconnect` button at %2$s Settings > Authentication to reconnect your account. You won\'t need to do this again.', 'wp-to-hootsuite' ),
+						$this->base->plugin->displayName,
+						$this->base->plugin->account
+					)
+				);
+			}
 		}
 
 	}
