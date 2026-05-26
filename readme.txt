@@ -87,7 +87,7 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 
 == Changelog ==
 
-= 3.0.0 (2026-05-27) =
+= 3.0.0 (2026-05-26) =
 * Added: Status: Type. See Docs: https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/status-settings/#type
 * Fix: Settings: Authentication: Align account name with Reconnect + Disconnect buttons
 * Removed: Status: Image: No Image, OpenGraph and Feat. Image, Linked to Post. See Docs: https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/featured-image-settings/
