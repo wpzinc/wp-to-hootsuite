@@ -71,7 +71,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						echo esc_html(
 							sprintf(
 								/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
-								__( 'A list of %1$s accounts that are connected to %2$s.', 'wp-to-hootsuite' ),
+								__( 'A list of %1$s accounts/organizations that are connected to %2$s.', 'wp-to-hootsuite' ),
 								$this->base->plugin->account,
 								$this->base->plugin->displayName
 							)

@@ -5,7 +5,7 @@ Tags: auto post, auto publish, social media scheduling, social media automation,
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,10 @@ Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPr
 4. Post-level Logging.
 
 == Changelog ==
+
+= 3.0.1 (2026-05-28) =
+* Fix: PHP Warning: Attempt to read property "base" on null
+* Fix: Store refreshed tokens
 
 = 3.0.0 (2026-05-26) =
 * Added: Status: Type. See Docs: https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/status-settings/#type

@@ -8,7 +8,7 @@
  * @wordpress-plugin
  * Plugin Name: WP to Hootsuite
  * Plugin URI: http://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
- * Version: 3.0.0
+ * Version: 3.0.1
  * Author: WP Zinc
  * Author URI: http://www.wpzinc.com
  * Description: Send WordPress Pages, Posts or Custom Post Types to your Hootsuite (hootsuite.com) account for scheduled publishing to social networks.
@@ -27,8 +27,8 @@ if ( class_exists( 'WP_To_Hootsuite' ) ) {
 }
 
 // Define Plugin version and build date.
-define( 'WP_TO_HOOTSUITE_PLUGIN_VERSION', '3.0.0' );
-define( 'WP_TO_HOOTSUITE_PLUGIN_BUILD_DATE', '2026-05-26 18:00:00' );
+define( 'WP_TO_HOOTSUITE_PLUGIN_VERSION', '3.0.1' );
+define( 'WP_TO_HOOTSUITE_PLUGIN_BUILD_DATE', '2026-05-28 13:00:00' );
 
 // Define Plugin paths.
 define( 'WP_TO_HOOTSUITE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -92,6 +92,7 @@ spl_autoload_register( 'wp_to_hootsuite_autoloader' );
 // Load Activation, Cron and Deactivation functions.
 require_once WP_TO_HOOTSUITE_PLUGIN_PATH . 'includes/activation.php';
 require_once WP_TO_HOOTSUITE_PLUGIN_PATH . 'includes/cron.php';
+require_once WP_TO_HOOTSUITE_PLUGIN_PATH . 'includes/functions.php';
 require_once WP_TO_HOOTSUITE_PLUGIN_PATH . 'includes/deactivation.php';
 register_activation_hook( __FILE__, 'wp_to_hootsuite_activate' );
 if ( version_compare( get_bloginfo( 'version' ), '5.1', '>=' ) ) {

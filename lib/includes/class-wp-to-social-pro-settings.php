@@ -793,14 +793,16 @@ class WP_To_Social_Pro_Settings {
 	}
 
 	/**
-	 * Retrieves the account ID for the given access token.
+	 * Retrieves the account IDs for the given access token.
 	 *
-	 * @since   6.0.0
+	 * @since   6.0.1
 	 *
 	 * @param   string $access_token    Access Token.
-	 * @return  string
+	 * @return  array
 	 */
-	public function get_account_id_by_access_token( $access_token ) {
+	public function get_account_ids_by_access_token( $access_token ) {
+
+		$account_ids = array();
 
 		// Get existing accounts.
 		$accounts = $this->get_accounts();
@@ -808,11 +810,11 @@ class WP_To_Social_Pro_Settings {
 		// Iterate through accounts to find the account that contains the given access token.
 		foreach ( $accounts as $account_id => $account ) {
 			if ( $account['access_token'] === $access_token ) {
-				return $account_id;
+				$account_ids[] = $account_id;
 			}
 		}
 
-		return '';
+		return $account_ids;
 
 	}
 
