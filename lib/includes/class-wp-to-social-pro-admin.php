@@ -90,43 +90,55 @@ class WP_To_Social_Pro_Admin {
 			return;
 		}
 
-		// Fetch Account.
-		$account = $this->base->get_class( 'api' )->account();
+		// Store messages.
+		$this->base->get_class( 'notices' )->enable_store();
 
-		// If something went wrong, show an error.
-		if ( is_wp_error( $account ) ) {
-			$this->base->get_class( 'notices' )->add_error_notice( $account->get_error_message() );
-			return;
-		}
+		// Fetch Organizations.
+		$organizations = $this->base->get_class( 'api' )->organizations();
 
-		// Fetch Profiles.
-		$profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time(), $account['id'] );
-
-		// If something went wrong, show an error.
-		if ( is_wp_error( $profiles ) ) {
-			$this->base->get_class( 'notices' )->add_error_notice( $profiles->get_error_message() );
+		// If an error occured, add it to the notices.
+		if ( is_wp_error( $organizations ) ) {
+			$this->base->get_class( 'notices' )->add_error_notice( $organizations->get_error_message() );
 			return;
 		}
 
 		// If an account ID is included in the request, delete that account before adding the account.
 		// This handles account re-connection where we're coming from the old API.
+		$existing_account_id = false;
 		if ( filter_has_var( INPUT_GET, 'account_id' ) ) {
-			$this->base->get_class( 'settings' )->delete_account( filter_input( INPUT_GET, 'account_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
+			$existing_account_id = filter_input( INPUT_GET, 'account_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$this->base->get_class( 'settings' )->delete_account( $existing_account_id );
 		}
 
-		// Update account.
-		$this->base->get_class( 'settings' )->update_account(
-			$tokens['access_token'],
-			$tokens['refresh_token'],
-			$tokens['token_expires'],
-			$account['id'],
-			$account['name'],
-			$account['plan'],
-			array_keys( $profiles )
-		);
+		// For each organization, fetch the profiles and store the organization as an account in the Plugin.
+		foreach ( $organizations as $account ) {
+			// If the existing account ID is set, and it matches the current account ID, skip.
+			if ( $existing_account_id && $existing_account_id !== 'default' && $existing_account_id !== $account['id'] ) {
+				continue;
+			}
+
+			// Fetch Profiles.
+			$profiles = $this->base->get_class( 'api' )->profiles( true, $this->base->get_class( 'common' )->get_transient_expiration_time(), $account['id'] );
+
+			// If something went wrong, show an error.
+			if ( is_wp_error( $profiles ) ) {
+				$this->base->get_class( 'notices' )->add_error_notice( $profiles->get_error_message() );
+				continue;
+			}
+
+			// Update account.
+			$this->base->get_class( 'settings' )->update_account(
+				$tokens['access_token'],
+				$tokens['refresh_token'],
+				$tokens['token_expires'],
+				$account['id'],
+				$account['name'],
+				$account['plan'],
+				array_keys( $profiles )
+			);
+		}
 
 		// Store success message.
-		$this->base->get_class( 'notices' )->enable_store();
 		$this->base->get_class( 'notices' )->add_success_notice(
 			sprintf(
 				/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite), %2$s: Social Media Service Name (Buffer, Hootsuite) */
@@ -682,7 +694,7 @@ class WP_To_Social_Pro_Admin {
 			$this->base->get_class( 'api' )->set_tokens( $account['access_token'], $account['refresh_token'], $account['token_expires'] );
 
 			// Fetch account information.
-			$account_information = $this->base->get_class( 'api' )->account();
+			$account_information = $this->base->get_class( 'api' )->account( $account_id );
 
 			// Display an error.
 			if ( is_wp_error( $account_information ) ) {

@@ -79,6 +79,11 @@ class WP_To_Social_Pro_Screen {
 		// Get screen.
 		$screen = get_current_screen();
 
+		// Bail if screen is null.
+		if ( is_null( $screen ) ) {
+			return $result;
+		}
+
 		// Get screen ID without Plugin Display Name, which can be edited by whitelabelling.
 		$screen_id = str_replace(
 			array(

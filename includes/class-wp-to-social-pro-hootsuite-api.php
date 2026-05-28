@@ -337,9 +337,10 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 *
 	 * @since   2.8.0
 	 *
+	 * @param   string $account_id     Account ID. Unused in Hootsuite.
 	 * @return  WP_Error|array
 	 */
-	public function account() {
+	public function account( $account_id = '' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
 		// Query API.
 		$account = $this->user();
