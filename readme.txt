@@ -1,74 +1,139 @@
-=== Post to Social Media - WordPress to Hootsuite ===
+=== Social Media Auto Poster - Schedule & Publish to Hootsuite ===
 Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
-Tags: auto post, auto publish, social media scheduling, social media automation, hootsuite
+Tags: social media automation, auto post, hootsuite, social media scheduler, auto publish
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.0.1
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 3.1.0
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Automatically share WordPress Pages, Posts or Custom Post Types to Facebook, Twitter and LinkedIn using your Hootsuite (hootsuite.com) account.
+Automatically post and schedule your WordPress content to Facebook, X/Twitter, LinkedIn, Threads and more social networks using Hootsuite.
 
 == Description ==
 
-WordPress to Hootsuite is a plugin for WordPress that auto posts your Posts, Pages and/or Custom Post Types to your Hootsuite (hootsuite.com) account for scheduled publishing to Facebook, Twitter and LinkedIn.
+Social Media Auto Poster connects your WordPress site to Hootsuite, enabling automatic social media publishing whenever you create or update content. Share your blog posts, pages, and custom post types to multiple social networks without manual posting.
 
-Don't have a Hootsuite account?  [Sign up for free](https://hootsuite.com)
+=== Why Choose This Social Media Automation Plugin? ===
 
-Our [API](https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/data/) connects your website to [Hootsuite](https://hootsuite.com). An account with Hootsuite is required.
+This plugin eliminates repetitive social media posting by automatically adding your WordPress content to social media via Hootsuite.
 
-> #### WordPress to Hootsuite Pro
-> <a href="https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro/" rel="friend" title="WordPress to Hootsuite Pro - Publish to Facebook, Twitter, LinkedIn and Pinterest">WordPress to Hootsuite Pro</a> provides additional functionality:<br />
+**Automatic Social Media Publishing** - Set it once and your content automatically shares to social media when published or updated.
+
+**Compatible Social Networks** - Auto post to Facebook Pages, Twitter (X), LinkedIn, Threads, Pinterest and Bluesky.
+
+**Dynamic Content Templates** - Customize each social media post using template tags that pull your post title, excerpt, content, featured image, categories, tags, and custom fields.
+
+Don't have a Hootsuite account? [Sign up for free](https://join.Hootsuite.com/wpzinc)
+
+[youtube https://www.youtube.com/watch?v=GESEMwKSSQg]
+
+=== How to Auto Post to Social Media with Hootsuite ===
+
+1. **Connect Your Hootsuite Account** - Simple one-click authorization, no API keys or technical setup required
+2. **Link Your Social Networks** - Connect Facebook, X/Twitter, LinkedIn, and other profiles through Hootsuite's interface
+3. **Configure Post Settings** - Choose which post types to share and customize your social media message templates
+4. **Publish Content** - Your WordPress posts automatically share to social media according to your Hootsuite schedule
+
+=== Social Media Networks Supported ===
+
+**Facebook Auto Posting** - Share to Facebook Pages automatically when you publish WordPress content.
+
+**X/Twitter Auto Posting** - Still works! Hootsuite is [not impacted](https://x.com/Hootsuite/status/1652659063073783808) by X/Twitter API changes. Auto post to Twitter (X) reliably.
+
+**LinkedIn Auto Posting** - Publish to LinkedIn Company Pages and personal LinkedIn Profiles to grow your professional network.
+
+**Instagram & Pinterest** (Pro) - Direct posting to Instagram Business Profiles (Feed and Stories) and Pinterest Boards available in [Pro version](https://www.wpzinc.com/plugins/wordpress-to-Hootsuite-pro/).
+
+**Additional Networks** - Threads, Google Business Profile, Mastodon, Bluesky, and TikTok support included.
+
+=== Dynamic Template Tags for Customized Posts ===
+
+Create unique social media messages using template tags:
+
+* **{title}** - Your post title
+* **{excerpt}** - Post excerpt (with character/word limits)
+* **{content}** - Post content (with character/word limits)
+* **{url}** - Post permalink
+* **{date}** - Publication date
+* **{taxonomy_post_tag}** - Tags as hashtags
+* **{taxoomy_category}** - Categories as hashtags
+
+=== Better Than Traditional Auto Posting Plugins ===
+
+Unlike direct posting plugins (WP to Facebook, WP to Twitter clones), this plugin uses Hootsuite's smart queue system. Benefits include:
+
+**Prevents Social Media Penalties** - Hootsuite spaces posts naturally, avoiding spam flags from posting too frequently
+**Optimized Timing** - Schedule posts for when your audience is most active
+**Cross-Network Management** - Manage all social networks from one Hootsuite dashboard
+**No API Complications** - Hootsuite handles all social network API connections and changes
+**Duplicate Prevention** - Built-in protection ensures you never post the same content twice
+
+=== Pro Version Features ===
+
+> <a href="https://www.wpzinc.com/plugins/wordpress-to-Hootsuite-pro/" rel="friend" title="WordPress to Hootsuite Pro">WordPress to Hootsuite Pro</a> includes advanced social media automation features:<br />
 >
-> - **Multiple, Customisable Status Messages**<br />Each Post Type and Social Network can have multiple, unique status message and settings<br />
-> - **Conditionally send Status Messages**<br />Only send status(es) to Hootsuite based on Post Author(s), Taxonomy Term(s) and/or Custom Field Values<br />
-> - **More Scheduling Options**<br />Each status update can be added to the start/end of your Hootsuite queue, posted immediately or scheduled at a specific time<br />
-> - **Dynamic Status Tags**<br />Dynamically build status updates with data from the Post Author and Custom Fields<br />
-> - **Separate Statuses per Social Network**<br />Define different statuses for each Post Type and Social Network<br />
-> - **Per-Post Settings**<br />Override Settings on Individual Posts: Each Post can have its own Hootsuite settings<br />
-> - **Repost Old Posts**<br />Automatically Revive Old Posts that haven't been updated in a while, choosing the number of days, weeks or years to re-share content on social media.<br />
-> - **Bulk Publish Old Posts**<br />Manually re-share evergreen WordPress content and revive old posts with the Bulk Publish option<br />
-> - **The Events Calendar and Event Manager Integration**<br />Schedule Posts to Hootsuite based on your Event's Start or End date, and display Event-specific details in your status updates<br />
-> - **SEO Integration**<br />Display SEO-specific information in your status updates from All-In-One SEO Pack, Rank Math, SEOPress and Yoast SEO<br />
-> - **WooCommerce Integration**<br />Display Product-specific information in your status updates<br />
-> - **Autoblogging and Frontend Post Submission Integration**<br />Pro supports autoblogging and frontend post submission Plugins, including User Submitted Posts, WP Property Feed, WPeMatico and WP Job Manager<br />
-> - **Shortcode Support**<br />Use shortcodes in status updates<br />
-> - **Full Image Control**<br />Choose to display the WordPress Featured Image with your status updates, or define up to 4 custom images for each Post.<br />
-> - **WP-Cron and WP-CLI Compatible**<br />Optionally enable WP-Cron to send status updates via Cron, speeding up UI performance and/or choose to use WP-CLI for reposting old posts<br />
-> - **Support, Documentation and Updates**<br />Access to one on one email support, plus detailed documentation on how to install and configure the plugin and one click update notifications, right within the WordPress Administration panel.<br />
+> **Instagram and Pinterest Support** - Direct posting to Instagram Business Profiles (Feed and Stories) and Pinterest Boards
 >
-> [Upgrade to WordPress to Hootsuite Pro](https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro/)
+> **Multiple Hootsuite Accounts** - Connect multiple Hootsuite accounts to one WordPress site
+>
+> **Advanced Scheduling Options** - Post immediately, add to start/end of Hootsuite queue, or schedule for specific times
+>
+> **Conditional Publishing** - Send posts to social media based on author, category, tags, or custom field values
+>
+> **Multiple Status Templates** - Create different messages for each social network with unique templates per post type
+>
+> **Repost Old Posts** - Automatically reshare evergreen content on social media at scheduled intervals
+>
+> **Bulk Publish Feature** - Manually select and republish multiple posts to social media at once
+>
+> **Event Calendar Integration** - Schedule social posts based on event dates from The Events Calendar, Event Manager, and Modern Events Calendar
+>
+> **WooCommerce Integration** - Display product prices, SKUs, and other WooCommerce data in social media posts
+>
+> **SEO Plugin Integration** - Use SEO titles, descriptions, and meta data from Yoast SEO, Rank Math, All-In-One SEO Pack, and SEOPress
+>
+> **Advanced Custom Fields Support** - Pull any custom field data into social media messages
+>
+> **Multiple Images** - Share multiple images from Featured Image, Media Gallery, Post Content, or ACF Image fields
+>
+> **WP-Cron Support** - Queue posts to send via WP-Cron for better performance on high-traffic sites
+>
+> **Priority Email Support** - One-on-one support with our team
+>
+> [Upgrade to Pro](https://www.wpzinc.com/plugins/wordpress-to-Hootsuite-pro/)
 
-[youtube https://www.youtube.com/watch?v=9QOAxJONRYM]
+=== How to Schedule Social Media Posts ===
 
-= Support =
+**Default Hootsuite Schedule** - Hootsuite automatically spaces posts throughout the day based on your time zone preferences
 
-We will do our best to provide support through the WordPress forums. However, please understand that this is a free plugin, 
-so support will be limited. Please read this article on <a href="http://www.wpbeginner.com/beginners-guide/how-to-properly-ask-for-wordpress-support-and-get-it/">how to properly ask for WordPress support and get it</a>.
+**Immediate Posting** - Override the queue and post immediately to social media
 
-If you require one to one email support, please consider <a href="http://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro" rel="friend">upgrading to the Pro version</a>.
+**Custom Posting Schedule** (Pro) - Define specific days and times in Hootsuite when posts should publish to each social network
 
-= Data =
+**Scheduled Publishing** (Pro) - Set exact date and time for each social media post
 
-We connect directly to your Hootsuite (hootsuite.com) account, via their API, to:
+=== Support for Free Version ===
+
+We provide community support through the <a href="https://wordpress.org/support/plugin/wp-to-Hootsuite/">WordPress support forums</a>.
+
+For priority email support, comprehensive documentation, and faster response times, consider <a href="http://www.wpzinc.com/plugins/wordpress-to-Hootsuite-pro" rel="friend">upgrading to Pro</a>.
+
+=== Privacy and Data Usage ===
+
+Our [API](https://www.wpzinc.com/documentation/wordpress-Hootsuite-pro/data/) connects your website to [Hootsuite](https://Hootsuite.com/join/6392aeec568614de895ed38fafa7784b8718c77dc7800419bdfbbacaaaa793d8). An account with Hootsuite is required.
+
+We connect directly to your Hootsuite (Hootsuite.com) account, via their API, to:
 - Fetch your social media profile names and IDs, 
 - Send your WordPress Posts to one or more of your social media profiles.  The profiles and content sent will depend on the plugin settings you have configured.
 
-We connect to our own [API](https://www.wpzinc.com/documentation/wordpress-to-hootsuite-pro/data/) to pass the following requests through to Hootsuite:
+We connect to our own [API](https://www.wpzinc.com/documentation/wordpress-Hootsuite-pro/data/) to pass the following requests through to Hootsuite:
 - Connect our Plugin to Hootsuite, when you click the Authorize button (this obtains an access token from Hootsuite, once you have approved authorization)
-- Process image uploads to the ow.ly API, which is required by Hootsuite when sharing an image as part of a social media update.
 
 Both of these are done via our own API, to ensure that no secret data (such as oAuth client secret keys) are included in this Plugin's code or made public.
 
 We **never** store any information on our web site or API during this process.
-
-= WP Zinc =
-We produce free and premium WordPress Plugins that supercharge your site, by increasing user engagement, boost site visitor numbers
-and keep your WordPress web sites secure.
-
-Find out more about us at <a href="https://www.wpzinc.com" title="Premium WordPress Plugins">wpzinc.com</a>
 
 == Installation ==
 

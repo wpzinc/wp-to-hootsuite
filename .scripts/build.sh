@@ -12,23 +12,26 @@ zip -r wp-to-hootsuite.zip . \
 -x ".devcontainer/*" \
 -x ".scripts/*" \
 -x ".wordpress-org/*" \
+-x "node_modules/*" \
+-x "log/*" \
 -x "tests/*" \
 -x "vendor/*" \
 -x "*.distignore" \
 -x "*.env.*" \
--x ".gitignore" \
 -x "*.md" \
 -x "*.yml" \
--x "composer.json" \
--x "composer.lock" \
 -x "*.xml" \
 -x "*.neon" \
 -x "*.dist" \
 -x "*.example" \
 -x "*.DS_Store" \
--x "*.scss" \
--x "*codeception.*" \
--x "config.codekit3" \
+-x ".gitignore" \
+-x ".eslintrc.js" \
+-x ".stylelintrc.json" \
+-x "composer.json" \
+-x "composer.lock" \
+-x "package.json" \
+-x "package-lock.json" \
 
 # Run composer to install dev dependencies, returning enviornment back to original state
 composer update
