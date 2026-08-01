@@ -30,7 +30,7 @@ jobs:
     env:
       ROOT_DIR: /var/www/html
       PLUGIN_DIR: /var/www/html/wp-content/plugins/wp-to-hootsuite
-      WORKING_DIR: /home/runner/work/wp-to-hootsuite/wp-to-hootsuite/wp-to-hootsuite
+      WORKING_DIR: ${{ github.workspace }}/wp-to-hootsuite
       DB_NAME: test
       DB_USER: root
       DB_PASS: root

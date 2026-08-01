@@ -1,19 +1,21 @@
 <?php
 /**
- * Owly API class
+ * Ow.ly API class
  *
- * @package WP_To_Social_Pro
+ * @package WPZinc\Social
  * @author  WP Zinc
  */
 
+namespace WPZinc\Social;
+
 /**
- * Provides functions for sending statuses and querying Hootsuite's ow.ly API.
+ * Provides functions for uploading images to ow.ly and querying ow.ly's API.
  *
- * @package WP_To_Social_Pro
+ * @package WPZinc\Social
  * @author  WP Zinc
  * @version 3.0.0
  */
-class WP_To_Social_Pro_Owly_API {
+class Owly_API {
 
 	/**
 	 * Holds the base class object.
@@ -212,7 +214,7 @@ class WP_To_Social_Pro_Owly_API {
 
 		// Return basic WP_Error if we don't have any more information.
 		if ( is_null( $body ) ) {
-			return new WP_Error(
+			return new \WP_Error(
 				$http_code,
 				sprintf(
 					/* translators: HTTP Error Code */
@@ -252,7 +254,7 @@ class WP_To_Social_Pro_Owly_API {
 		}
 
 		// Return WP_Error.
-		return new WP_Error(
+		return new \WP_Error(
 			$http_code,
 			sprintf(
 				/* translators: %1$s: HTTP Error Code, %2$s: Error Message */

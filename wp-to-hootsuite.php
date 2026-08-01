@@ -57,11 +57,11 @@ function wp_to_hootsuite_autoloader( $class_name ) {
 	// Map the sub-namespace to the directories to search.
 	$namespace_paths = array(
 		'Social' => array(
-			WP_TO_BUFFER_PLUGIN_PATH . 'lib/social/includes',
-			WP_TO_BUFFER_PLUGIN_PATH . 'includes',
+			WP_TO_HOOTSUITE_PLUGIN_PATH . 'lib/social/includes',
+			WP_TO_HOOTSUITE_PLUGIN_PATH . 'includes',
 		),
 		'Shared' => array(
-			WP_TO_BUFFER_PLUGIN_PATH . 'lib/shared',
+			WP_TO_HOOTSUITE_PLUGIN_PATH . 'lib/shared',
 		),
 	);
 

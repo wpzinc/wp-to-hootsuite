@@ -2,18 +2,20 @@
 /**
  * Hootsuite API class
  *
- * @package WP_To_Social_Pro
+ * @package WPZinc\Social
  * @author  WP Zinc
  */
+
+namespace WPZinc\Social;
 
 /**
  * Provides functions for sending statuses and querying Hootsuite's API.
  *
- * @package WP_To_Social_Pro
+ * @package WPZinc\Social
  * @author  WP Zinc
  * @version 3.0.0
  */
-class WP_To_Social_Pro_Hootsuite_API {
+class Hootsuite_API {
 
 	/**
 	 * Holds the base class object.
@@ -158,7 +160,11 @@ class WP_To_Social_Pro_Hootsuite_API {
 			'response_type' => 'code',
 			'scope'         => 'offline',
 			'redirect_uri'  => $this->oauth_gateway_endpoint,
-			'state'         => admin_url( 'admin.php?page=' . $this->base->plugin->name . '-settings' ),
+			'state'         => add_query_arg(
+				'_wpnonce',
+				wp_create_nonce( $this->base->plugin->filter_name . '_oauth' ),
+				admin_url( 'admin.php?page=' . $this->base->plugin->name . '-settings' )
+			),
 		);
 
 		// Return oAuth URL.
@@ -239,7 +245,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 		// Bail if we don't have a refresh token.
 		if ( empty( $this->refresh_token ) ) {
-			return new WP_Error( 'missing_refresh_token', __( 'No refresh token exists', 'wp-to-hootsuite' ) );
+			return new \WP_Error( 'missing_refresh_token', __( 'No refresh token exists', 'wp-to-hootsuite' ) );
 		}
 
 		// Bail if the access token hasn't yet expired.
@@ -267,7 +273,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 		// Bail if an error occured.
 		if ( ! $body->success ) {
 			// Define error.
-			$result = new WP_Error(
+			$result = new \WP_Error(
 				'wp_to_social_pro_hootsuite_api_update_access_token',
 				sprintf(
 					/* translators: Error message */
@@ -350,11 +356,14 @@ class WP_To_Social_Pro_Hootsuite_API {
 			return $account;
 		}
 
-		// Return the account ID and name.
+		// Return the account ID, name and other information expected by the shared library.
+		// Hootsuite does not expose a channel limit via its API, so this is always zero (no limit).
 		return array(
-			'id'   => $account->id,
-			'name' => ! empty( $account->companyName ) ? $account->companyName : $account->fullName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			'plan' => 'unknown',
+			'id'            => $account->id,
+			'name'          => ! empty( $account->companyName ) ? $account->companyName : $account->fullName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			'email'         => ! empty( $account->email ) ? $account->email : '',
+			'channel_limit' => 0,
+			'plan'          => 'unknown',
 		);
 
 	}
@@ -364,12 +373,14 @@ class WP_To_Social_Pro_Hootsuite_API {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @param   bool   $force                      Force API call (false = use WordPress transient).
-	 * @param   int    $transient_expiration_time  Transient Expiration Time, in seconds (default: 12 hours).
-	 * @param   string $account_id                 Account ID.
+	 * @param   bool   $force       Force API call (false = use WordPress transient).
+	 * @param   string $account_id  Account ID.
 	 * @return  WP_Error|array
 	 */
-	public function profiles( $force = false, $transient_expiration_time = 43200, $account_id = 'default' ) {
+	public function profiles( $force = false, $account_id = 'default' ) {
+
+		// Determine how long to cache profiles for in the transient.
+		$transient_expiration_time = $this->base->get_class( 'common' )->get_transient_expiration_time();
 
 		// Setup profiles array.
 		$profiles = array();
@@ -710,7 +721,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 		// Bail if Attachment doesn't exist in WordPress.
 		if ( ! $file ) {
-			return new WP_Error(
+			return new \WP_Error(
 				$this->base->plugin->name . '_api_media_upload',
 				sprintf(
 					/* translators: %1$s: Attachment ID, %2$s: Attachment URL */
@@ -812,7 +823,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 		// Check required parameters exist.
 		if ( empty( $this->access_token ) ) {
-			return new WP_Error( 'missing_access_token', __( 'No access token was specified', 'wp-to-hootsuite' ) );
+			return new \WP_Error( 'missing_access_token', __( 'No access token was specified', 'wp-to-hootsuite' ) );
 		}
 
 		// Fetch a new access token and refresh token.
@@ -956,7 +967,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 		// Bail if cURL isn't installed.
 		if ( ! function_exists( 'curl_init' ) ) {
-			return new WP_Error(
+			return new \WP_Error(
 				$this->base->plugin->name . '_api_request_curl',
 				sprintf(
 					/* translators: Plugin Name */
@@ -1080,7 +1091,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 
 		// Return basic WP_Error if we don't have any more information.
 		if ( is_null( $body ) ) {
-			return new WP_Error(
+			return new \WP_Error(
 				$http_code,
 				sprintf(
 					/* translators: HTTP Error Code */
@@ -1105,7 +1116,7 @@ class WP_To_Social_Pro_Hootsuite_API {
 		}
 
 		// Return WP_Error.
-		return new WP_Error(
+		return new \WP_Error(
 			$http_code,
 			sprintf(
 				/* translators: %1$s: HTTP Error Code, %2$s: Error Message */

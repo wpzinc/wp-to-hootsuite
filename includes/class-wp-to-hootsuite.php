@@ -75,8 +75,7 @@ class WP_To_Hootsuite {
 		$this->plugin->upgrade_url       = 'https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro';
 
 		// Logo.
-		$this->plugin->logo                        = WP_TO_HOOTSUITE_PLUGIN_URL . 'lib/assets/images/icons/hootsuite-dark.svg';
-		$this->plugin->review_name                 = 'wp-to-hootsuite';
+		$this->plugin->logo                        = WP_TO_HOOTSUITE_PLUGIN_URL . 'lib/social/assets/images/icons/hootsuite-dark.svg';
 		$this->plugin->header_background_color     = '#ffffff';
 		$this->plugin->header_primary_text_color   = '#3d3d3d';
 		$this->plugin->header_secondary_text_color = '#6e6e6e';
@@ -117,7 +116,7 @@ class WP_To_Hootsuite {
 	public function admin_menus( $minimum_capability ) {
 
 		// Menus.
-		add_menu_page( $this->plugin->displayName, $this->plugin->displayName, $minimum_capability, $this->plugin->name . '-settings', array( $this->get_class( 'admin' ), 'settings_screen' ), $this->plugin->url . 'lib/assets/images/icons/' . strtolower( $this->plugin->account ) . '-light.svg' );
+		add_menu_page( $this->plugin->displayName, $this->plugin->displayName, $minimum_capability, $this->plugin->name . '-settings', array( $this->get_class( 'admin' ), 'settings_screen' ), $this->plugin->url . 'lib/social/assets/images/icons/' . strtolower( $this->plugin->account ) . '-light.svg' );
 
 		// Register Submenu Pages.
 		$settings_page = add_submenu_page( $this->plugin->name . '-settings', __( 'Settings', 'wp-to-hootsuite' ), __( 'Settings', 'wp-to-hootsuite' ), $minimum_capability, $this->plugin->name . '-settings', array( $this->get_class( 'admin' ), 'settings_screen' ) );
@@ -199,7 +198,7 @@ class WP_To_Hootsuite {
 			),
 			array(
 				__( 'The Events Calendar, Event Manager and Modern Events Calendar Integration', 'wp-to-hootsuite' ),
-				__( 'Schedule Posts to Buffer based on your Event\'s Start or End date, and display Event-specific details in your status updates', 'wp-to-hootsuite' ),
+				__( 'Schedule Posts to Hootsuite based on your Event\'s Start or End date, and display Event-specific details in your status updates', 'wp-to-hootsuite' ),
 			),
 			array(
 				__( 'SEO Integration', 'wp-to-hootsuite' ),
@@ -227,15 +226,6 @@ class WP_To_Hootsuite {
 			),
 		);
 
-		// Dashboard Submodule.
-		if ( ! class_exists( 'WPZincDashboardWidget' ) ) {
-			require_once $this->plugin->folder . '_modules/dashboard/class-wpzincdashboardwidget.php';
-		}
-		$this->dashboard = new WPZincDashboardWidget( $this->plugin, 'https://www.wpzinc.com/wp-content/plugins/lum-deactivation' );
-
-		// Initialize Plugin classes.
-		$this->classes = new stdClass();
-
 		// Shared admin module (autoloaded from lib/shared).
 		$this->dashboard = new \WPZinc\Shared\Admin_UI( $this->plugin );
 
@@ -245,7 +235,7 @@ class WP_To_Hootsuite {
 		// Initialize required classes.
 		$this->classes->admin         = new \WPZinc\Social\Admin( self::$instance );
 		$this->classes->ajax          = new \WPZinc\Social\AJAX( self::$instance );
-		$this->classes->api           = new \WPZinc\Social\Buffer_API( self::$instance );
+		$this->classes->api           = new \WPZinc\Social\Hootsuite_API( self::$instance );
 		$this->classes->common        = new \WPZinc\Social\Common( self::$instance );
 		$this->classes->cron          = new \WPZinc\Social\Cron( self::$instance );
 		$this->classes->date          = new \WPZinc\Social\Date( self::$instance );
