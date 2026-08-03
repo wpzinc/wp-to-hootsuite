@@ -8,7 +8,11 @@ li.toplevel_page_wp-to-buffer,
 li.toplevel_page_wp-to-hootsuite-pro-settings,
 li.toplevel_page_wp-to-hootsuite-pro,
 li.toplevel_page_wp-to-hootsuite-settings,
-li.toplevel_page_wp-to-hootsuite {
+li.toplevel_page_wp-to-hootsuite,
+li.toplevel_page_wpzinc-social-publisher-for-postiz-pro-settings,
+li.toplevel_page_wpzinc-social-publisher-for-postiz-pro,
+li.toplevel_page_wpzinc-social-publisher-for-postiz-settings,
+li.toplevel_page_wpzinc-social-publisher-for-postiz {
 
 	a {
 
@@ -31,7 +35,9 @@ body.post-new-php {
 	#wp-to-buffer,
 	#wp-to-buffer-pro,
 	#wp-to-hootsuite,
-	#wp-to-hootsuite-pro {
+	#wp-to-hootsuite-pro,
+	#wpzinc-social-publisher-for-postiz,
+	#wpzinc-social-publisher-for-postiz-pro {
 
 		/**
 		 * Force Gutenberg Show / Hide Arrow Button to display over h2.hndle,
@@ -54,7 +60,8 @@ body.post-new-php {
 			padding: 0;
 
 			#wp-to-buffer-pro-override,
-			#wp-to-hootsuite-pro-override {
+			#wp-to-hootsuite-pro-override,
+			#wpzinc-social-publisher-for-postiz-pro-override {
 				display: none;
 				margin-top: -1px;
 				border-bottom: 1px solid #dfdfdf;
@@ -66,7 +73,8 @@ body.post-new-php {
 	 * Image
 	 */
 	#wp-to-buffer-pro-image,
-	#wp-to-hootsuite-pro-image {
+	#wp-to-hootsuite-pro-image,
+	#wpzinc-social-publisher-for-postiz-pro-image {
 
 		div.inside {
 			margin: 0;
@@ -81,7 +89,9 @@ body.post-new-php {
 #wp-to-buffer-log,
 #wp-to-buffer-pro-log,
 #wp-to-hootsuite-log,
-#wp-to-hootsuite-pro-log {
+#wp-to-hootsuite-pro-log,
+#wpzinc-social-publisher-for-postiz-log,
+#wpzinc-social-publisher-for-postiz-pro-log {
 
 	div.inside {
 		margin: 0;
@@ -178,7 +188,9 @@ body.block-editor-page {
 	#wp-to-buffer-log,
 	#wp-to-buffer-pro-log,
 	#wp-to-hootsuite-log,
-	#wp-to-hootsuite-pro-log {
+	#wp-to-hootsuite-pro-log,
+	#wpzinc-social-publisher-for-postiz-log,
+	#wpzinc-social-publisher-for-postiz-pro-log {
 		margin-bottom: 20px;
 	}
 }
@@ -214,13 +226,29 @@ body.wpzinc.wp-to-hootsuite-pro {
 	}
 }
 
+body.wpzinc.wpzinc-social-publisher-for-postiz,
+body.wpzinc.wpzinc-social-publisher-for-postiz-pro {
+
+	div.wrap {
+
+		h1.wp-heading-inline {
+			background-image: url(../images/icons/postiz-light.svg);
+			background-position: 25px 50%;
+			background-repeat: no-repeat;
+			background-size: 32px 32px;
+		}
+	}
+}
+
 /**
 * Settings (Post Meta and Settings Screen)
 */
 #wp-to-buffer,
 #wp-to-buffer-pro,
 #wp-to-hootsuite,
-#wp-to-hootsuite-pro {
+#wp-to-hootsuite-pro,
+#wpzinc-social-publisher-for-postiz,
+#wpzinc-social-publisher-for-postiz-pro {
 
 	ul.wpzinc-nav-tabs {
 
