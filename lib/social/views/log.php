@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<form action="admin.php?page=<?php echo esc_attr( $this->base->plugin->name ); ?>-log" method="post" id="posts-filter">
 		<?php
 		// Output Search Box.
-		$table->search_box( __( 'Search', 'wp-to-hootsuite' ), 'wp-to-social-log' );
+		$table->search_box( __( 'Search', 'wp-to-hootsuite' ), 'wpzinc-social-log' );
 
 		// Output Table.
 		$table->display();

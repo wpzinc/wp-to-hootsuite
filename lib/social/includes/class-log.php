@@ -191,7 +191,7 @@ class Log {
 		}
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return;
 		}
 
@@ -283,7 +283,7 @@ class Log {
 		}
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return;
 		}
 
@@ -310,7 +310,7 @@ class Log {
 		}
 
 		// Add nonce.
-		$params['_wpnonce'] = wp_create_nonce( 'bulk-wp-to-social-log' );
+		$params['_wpnonce'] = wp_create_nonce( 'bulk-wpzinc-social-log' );
 
 		// Redirect.
 		wp_safe_redirect( 'admin.php?page=' . $this->base->plugin->name . '-' . $screen['screen'] . '&' . http_build_query( $params ) );

@@ -13,5 +13,5 @@ phpstan.neon.dist export-ignore
 phpstan.neon.example export-ignore
 tests export-ignore
 *.md export-ignore
-/lib/assets/scss export-ignore
-/_modules/dashboard/scss export-ignore
+/lib/shared/scss export-ignore
+/lib/social/assets/scss export-ignore

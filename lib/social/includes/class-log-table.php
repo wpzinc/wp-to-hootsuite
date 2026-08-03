@@ -40,8 +40,8 @@ class Log_Table extends \WP_List_Table {
 
 		parent::__construct(
 			array(
-				'singular' => 'wp-to-social-log',  // Singular label.
-				'plural'   => 'wp-to-social-log',  // plural label, also this well be one of the table css class.
+				'singular' => 'wpzinc-social-log',  // Singular label.
+				'plural'   => 'wpzinc-social-log',  // plural label, also this well be one of the table css class.
 				'ajax'     => false,                // We won't support Ajax for this table.
 			)
 		);
@@ -130,7 +130,7 @@ class Log_Table extends \WP_List_Table {
 			array(
 				'page'         => $this->base->plugin->name . '-log',
 				'bulk_action3' => 'delete_all',
-				'_wpnonce'     => wp_create_nonce( 'bulk-wp-to-social-log' ),
+				'_wpnonce'     => wp_create_nonce( 'bulk-wpzinc-social-log' ),
 			),
 			admin_url( 'admin.php' )
 		);
@@ -171,7 +171,7 @@ class Log_Table extends \WP_List_Table {
 		}
 
 		// If a nonce is present, read the request.
-		if ( isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			foreach ( $this->base->get_class( 'common' )->get_log_filters() as $filter ) {
 				if ( ! array_key_exists( $filter, $_REQUEST ) ) {
 					continue;
@@ -435,7 +435,7 @@ class Log_Table extends \WP_List_Table {
 	public function get_search() {
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return '';
 		}
 
@@ -457,7 +457,7 @@ class Log_Table extends \WP_List_Table {
 	private function get_action() {
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return '';
 		}
 
@@ -479,7 +479,7 @@ class Log_Table extends \WP_List_Table {
 	private function get_profile_id() {
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return '';
 		}
 
@@ -501,7 +501,7 @@ class Log_Table extends \WP_List_Table {
 	private function get_result() {
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return '';
 		}
 
@@ -523,7 +523,7 @@ class Log_Table extends \WP_List_Table {
 	private function get_request_sent_start_date() {
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return '';
 		}
 
@@ -545,7 +545,7 @@ class Log_Table extends \WP_List_Table {
 	private function get_request_sent_end_date() {
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wpzinc-social-log' ) ) {
 			return '';
 		}
 
