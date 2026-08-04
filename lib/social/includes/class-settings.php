@@ -589,9 +589,7 @@ class Settings {
 	}
 
 	/**
-	 * Runs the given individual status settings through validation - for example,
-	 * ensuring that a custom time is at least 5 minutes when using Hootsuite,
-	 * to ensure compatibility with the API.
+	 * Runs the given individual status settings through validation.
 	 *
 	 * @since   3.7.3
 	 *
@@ -599,15 +597,6 @@ class Settings {
 	 * @return  array               Status Message Settings
 	 */
 	private function validate_status( $status ) {
-
-		// If we're using Hootsuite, with a custom time, it must be set to at least 5 minutes.
-		if ( class_exists( 'WP_To_Hootsuite' ) || class_exists( 'WP_To_Hootsuite_Pro' ) ) {
-			if ( $status['schedule'] === 'custom' && ! $status['days'] && ! $status['hours'] ) {
-				if ( $status['minutes'] < 5 ) {
-					$status['minutes'] = 5;
-				}
-			}
-		}
 
 		/**
 		 * Filters status settings during validation, allowing them to be changed.
