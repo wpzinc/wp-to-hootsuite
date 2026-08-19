@@ -2,7 +2,7 @@
 /**
  * Reads all Actions and Filters from the Plugin.
  *
- * @package Page_Generator_Pro
+ * @package WPZinc
  * @author WP Zinc
  */
 
@@ -28,7 +28,7 @@ class Read_Actions_Filters {
 	 * @param   mixed $prefix_required                Optional prefix string required on filters and actions for inclusion in resultset (false = don't filter any found filters/actions).
 	 * @param   mixed $prefix_required_replacement    Optional prefix string replacement, to use if $prefix_required is found (e.g. $this->base->plugin->name --> convertkit_).
 	 * @param   bool  $by_file                        Denote filters and actions by filename (false = group filters and actions if they appear across multiple files).
-	 * @return  mixed                                  Output
+	 * @return  array|string
 	 */
 	public function run( $folders, $extract_filters = true, $extract_actions = true, $return_format = 'html', $prefix_required = false, $prefix_required_replacement = false, $by_file = false ) {
 
@@ -133,7 +133,7 @@ class Read_Actions_Filters {
 	 * @param   bool   $by_file                        Deliminate array results by file.
 	 * @return  array       Matches
 	 */
-	private function find_matches( $function_to_search, $results, $contents, $file_only, $prefix_required, $prefix_required_replacement = false, $by_file ) {
+	private function find_matches( $function_to_search, $results, $contents, $file_only, $prefix_required, $prefix_required_replacement = false, $by_file = true ) {
 
 		// Split the content into separate lines in an array.
 		$file_lines = explode( "\n", $contents );
@@ -321,7 +321,13 @@ class Read_Actions_Filters {
 						);
 					}
 
-					// Add docblock information to the arguments array
+					// Add docblock information to the arguments array.
+					// $results['args'] defaults to false (no params parsed yet),
+					// so initialise it as an array before adding the first param.
+					if ( ! is_array( $results['args'] ) ) {
+						$results['args'] = array();
+					}
+
 					// If the variable is $this->..., remove this-> so we have
 					// more human readable vars.
 					$results['args'][ trim( str_replace( 'this->', '', $param_parts[1] ) ) ] = array(

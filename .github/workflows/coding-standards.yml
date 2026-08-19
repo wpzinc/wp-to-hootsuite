@@ -29,8 +29,8 @@ jobs:
     # Use ${{ secrets.NAME }} to include any GitHub Secrets in ${{ env.NAME }}
     # The base folder will always be /home/runner/work/github-repo-name/github-repo-name
     env:
-      ROOT_DIR: /home/runner/work/wp-to-hootsuite/wp-to-hootsuite/wordpress
-      PLUGIN_DIR: /home/runner/work/wp-to-hootsuite/wp-to-hootsuite/wordpress/wp-content/plugins/wp-to-hootsuite
+      ROOT_DIR: ${{ github.workspace }}/wordpress
+      PLUGIN_DIR: ${{ github.workspace }}/wordpress/wp-content/plugins/wp-to-hootsuite
       DB_NAME: test
       DB_USER: root
       DB_PASS: root

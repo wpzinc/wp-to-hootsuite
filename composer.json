@@ -1,6 +1,6 @@
 {
-    "name": "n7studios/wp-to-buffer-pro",
-    "description": "WordPress to Buffer Pro Plugin",
+    "name": "wpzinc/wp-to-hootsuite",
+    "description": "WordPress to Hootsuite Plugin",
     "type": "project",
     "require-dev": {
         "php-webdriver/webdriver": "^1.0",
@@ -14,10 +14,10 @@
     "prefer-stable": true,
     "scripts": {
         "create-release-assets": [
-            "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-social-pro.pot",
+            "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-hootsuite.pot",
             "@php .scripts/create-actions-filters-docs.php"
         ],
-        "create-pot": "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-social-pro.pot",
+        "create-pot": "php -n $(which wp) i18n make-pot ./ ./languages/wp-to-hootsuite.pot",
         "create-dev-docs": "@php .scripts/create-actions-filters-docs.php",
         "phpcs": "vendor/bin/phpcs ./ -s -v",
         "phpcbf": "vendor/bin/phpcbf ./ -s -v",
