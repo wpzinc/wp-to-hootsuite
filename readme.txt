@@ -3,7 +3,7 @@ Contributors: n7studios,wpzinc
 Donate link: https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro
 Tags: social media automation, auto post, hootsuite, social media scheduler, auto publish
 Requires at least: 5.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 3.1.0
 License: GPLv3 or later
@@ -152,7 +152,7 @@ We **never** store any information on our web site or API during this process.
 
 == Changelog ==
 
-= 3.1.0 (2026-08-05) =
+= 3.1.0 (2026-08-19) =
 * Added: Namespaced `WPZinc\Social` (previously `WP_To_Social_*` classes) and `WPZinc\Shared` (previously WPZincDashboardSubmodule). See Docs: []
 * Updated: Improved WordPress Coding Standards for dates
 * Fix: Authentication: OAuth: Use nonce for improved security when connecting to Hootsuite
