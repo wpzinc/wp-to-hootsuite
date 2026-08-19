@@ -153,7 +153,7 @@ We **never** store any information on our web site or API during this process.
 == Changelog ==
 
 = 3.1.0 (2026-08-19) =
-* Added: Namespaced `WPZinc\Social` (previously `WP_To_Social_*` classes) and `WPZinc\Shared` (previously WPZincDashboardSubmodule). See Docs: []
+* Added: Namespaced `WPZinc\Social` (previously `WP_To_Social_*` classes) and `WPZinc\Shared` (previously WPZincDashboardSubmodule)
 * Updated: Improved WordPress Coding Standards for dates
 * Fix: Authentication: OAuth: Use nonce for improved security when connecting to Hootsuite
 
