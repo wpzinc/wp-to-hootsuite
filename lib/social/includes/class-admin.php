@@ -944,6 +944,9 @@ class Admin {
 				$organizations[ $account_id ]['plan'],
 				array_keys( $profiles )
 			);
+
+			// Schedule the event to refresh this account's access token before it expires.
+			$this->base->get_class( 'cron' )->reschedule_refresh_token_event();
 		} else {
 			$this->base->get_class( 'settings' )->update_account_profile_ids( $account_id, array_keys( $profiles ) );
 		}

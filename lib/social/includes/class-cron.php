@@ -218,4 +218,202 @@ class Cron {
 		return gmdate( $format, $scheduled );
 	}
 
+
+	/**
+	 * Schedules a single event in the WordPress CRON to refresh the access token(s)
+	 * shortly before the earliest one expires.
+	 *
+	 * Access tokens are short lived and refresh tokens are single use, so refreshing
+	 * proactively avoids requests failing with an authentication error, and avoids
+	 * several requests attempting to refresh using the same refresh token at once.
+	 *
+	 * @since   6.2.0
+	 */
+	public function schedule_refresh_token_event() {
+
+		// Clear any existing scheduled event.
+		$this->unschedule_refresh_token_event();
+
+		// Get the earliest expiry timestamp across all connected accounts.
+		$token_expires = $this->get_earliest_token_expiry();
+
+		// Bail if no account has an expiry timestamp, or the access token already
+		// expired. In the latter case the API class refreshes on the next request,
+		// or the user needs to reconnect.
+		if ( ! $token_expires || $token_expires <= time() ) {
+			return;
+		}
+
+		// The default number of seconds before an access token expires to refresh it.
+		$seconds = 5 * MINUTE_IN_SECONDS;
+
+		/**
+		 * The number of seconds before an access token expires to refresh it.
+		 *
+		 * @since   6.2.0
+		 *
+		 * @param   int     $seconds    Seconds before expiry.
+		 */
+		$seconds = apply_filters( $this->base->plugin->filter_name . '_cron_refresh_token_seconds_before_expiry', $seconds );
+
+		// Determine when to refresh.
+		$refresh_at = $token_expires - $seconds;
+
+		// If that point has already passed, we're inside the refresh window, or a
+		// refresh just failed and we're rescheduling. Either way try again shortly,
+		// rather than scheduling an event in the past.
+		if ( $refresh_at <= time() ) {
+			$refresh_at = time() + MINUTE_IN_SECONDS;
+		}
+
+		// Schedule event.
+		wp_schedule_single_event( $refresh_at, $this->base->plugin->filter_name . '_refresh_token_cron' );
+
+	}
+
+	/**
+	 * Unschedules the refresh token event in the WordPress CRON.
+	 *
+	 * @since   6.2.0
+	 */
+	public function unschedule_refresh_token_event() {
+
+		wp_clear_scheduled_hook( $this->base->plugin->filter_name . '_refresh_token_cron' );
+
+	}
+
+	/**
+	 * Reschedules the refresh token event in the WordPress CRON, based on the expiry
+	 * of the stored access token(s).
+	 *
+	 * Called on upgrade, so that sites connected before this event existed get one
+	 * scheduled without having to reconnect, and whenever a token is issued or
+	 * refreshed, so that each token schedules the refresh of its successor.
+	 *
+	 * @since   6.2.0
+	 */
+	public function reschedule_refresh_token_event() {
+
+		$this->schedule_refresh_token_event();
+
+	}
+
+	/**
+	 * Returns the scheduled refresh token event, if it exists
+	 *
+	 * @since   6.2.0
+	 *
+	 * @return  mixed   bool | string
+	 */
+	public function get_refresh_token_event() {
+
+		return wp_get_schedule( $this->base->plugin->filter_name . '_refresh_token_cron' );
+
+	}
+
+	/**
+	 * Returns the scheduled refresh token event's next date and time to run, if it exists
+	 *
+	 * @since   6.2.0
+	 *
+	 * @param   mixed $format     Format Timestamp (false | php date() compat. string).
+	 * @return  mixed               bool | int | string
+	 */
+	public function get_refresh_token_event_next_scheduled( $format = false ) {
+
+		// Get timestamp for when the event will next run.
+		$scheduled = wp_next_scheduled( $this->base->plugin->filter_name . '_refresh_token_cron' );
+
+		// If no timestamp or we're not formatting the result, return it now.
+		if ( ! $scheduled || ! $format ) {
+			return $scheduled;
+		}
+
+		// Return formatted date/time.
+		return gmdate( $format, $scheduled );
+
+	}
+
+	/**
+	 * Returns the earliest access token expiry timestamp across all connected accounts.
+	 *
+	 * @since   6.2.0
+	 *
+	 * @return  mixed   false | int
+	 */
+	private function get_earliest_token_expiry() {
+
+		$earliest = false;
+
+		foreach ( $this->base->get_class( 'settings' )->get_accounts() as $account ) {
+			// Skip accounts with no expiry timestamp or no refresh token, as there's
+			// nothing to schedule for them.
+			if ( empty( $account['token_expires'] ) || empty( $account['refresh_token'] ) ) {
+				continue;
+			}
+
+			if ( ! $earliest || (int) $account['token_expires'] < $earliest ) {
+				$earliest = (int) $account['token_expires'];
+			}
+		}
+
+		return $earliest;
+
+	}
+
+	/**
+	 * Runs the refresh token CRON event, exchanging each stored refresh token that is
+	 * due to expire for a new access token.
+	 *
+	 * The API class fires an action on a successful refresh, which stores the new
+	 * access token, refresh token and expiry against the account.
+	 *
+	 * @since   6.2.0
+	 */
+	public function refresh_token() {
+
+		// Bail if the API class cannot refresh tokens, for example where the service
+		// issues a token that does not expire.
+		if ( ! method_exists( $this->base->get_class( 'api' ), 'refresh_token' ) ) {
+			return;
+		}
+
+		// The default number of seconds before an access token expires to refresh it.
+		$seconds = 5 * MINUTE_IN_SECONDS;
+
+		/**
+		 * The number of seconds before an access token expires to refresh it.
+		 *
+		 * @since   6.2.0
+		 *
+		 * @param   int     $seconds    Seconds before expiry.
+		 */
+		$seconds = apply_filters( $this->base->plugin->filter_name . '_cron_refresh_token_seconds_before_expiry', $seconds );
+
+		// Iterate through accounts, refreshing any access token that is due to expire.
+		foreach ( $this->base->get_class( 'settings' )->get_accounts() as $account ) {
+			// Skip accounts with no refresh token, as there's nothing to refresh with.
+			if ( empty( $account['refresh_token'] ) ) {
+				continue;
+			}
+
+			// Skip accounts whose access token isn't due to expire yet.
+			if ( ! empty( $account['token_expires'] ) && (int) $account['token_expires'] > ( time() + $seconds ) ) {
+				continue;
+			}
+
+			// Refresh this account's access token.
+			$this->base->get_class( 'api' )->set_tokens(
+				$account['access_token'],
+				$account['refresh_token'],
+				$account['token_expires']
+			);
+			$this->base->get_class( 'api' )->refresh_token();
+		}
+
+		// Schedule the next event based on what is now stored. If a refresh failed,
+		// this retries shortly, while the current access token may still be valid.
+		$this->schedule_refresh_token_event();
+
+	}
 }
