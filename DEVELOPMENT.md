@@ -1,12 +1,12 @@
 # Development Guide
 
-This document describes the high level workflow used when working on the Kit WordPress Plugin.
+This document describes the high level workflow used when working on the WP to Hootsuite WordPress Plugin.
 
 You're free to use your preferred IDE and Git client.
 
 ## Prerequisites
 
-If you haven't yet set up your local development environment with the Kit Plugin repository installed, refer to the [Setup Guide](SETUP.md).
+If you haven't yet set up your local development environment with the WP to Hootsuite Plugin repository installed, refer to the [Setup Guide](SETUP.md).
 
 ## Create a Branch
 
@@ -46,8 +46,10 @@ Packages listed in the "require" directive are packages that the Plugin needs in
 These packages are included when the Plugin is deployed to wordpress.org
 
 Typically, packages listed in this section would be libraries that the Plugin uses, such as:
-- Kit WordPress Libraries; a shared connection of WordPress specific API, Resource and Review Request classes that are used
-across multiple Kit WordPress Plugins.
+- Shared WP Zinc libraries.
+
+At present this Plugin has no runtime Composer dependencies; shared code is vendored directly in the `lib/shared`
+and `lib/social` directories, which are kept in sync across the WP Zinc social Plugins.
 
 ### "require-dev"
 

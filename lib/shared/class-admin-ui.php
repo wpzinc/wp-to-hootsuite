@@ -997,6 +997,13 @@ class Admin_UI {
 				'price'       => 39,
 			),
 			array(
+				'name'        => 'WordPress to Postiz Pro',
+				'url'         => $this->append_utm_params_to_url( 'https://www.wpzinc.com/plugins/wordpress-to-postiz-pro/' ),
+				'icon'        => 'https://www.wpzinc.com/wp-content/uploads/2026/08/postiz.png',
+				'description' => 'Automatically send content to your Postiz account for scheduled publishing to Facebook, Twitter, Instagram, Pinterest, LinkedIn and more.',
+				'price'       => 39,
+			),
+			array(
 				'name'        => 'WordPress to Hootsuite Pro',
 				'url'         => $this->append_utm_params_to_url( 'https://www.wpzinc.com/plugins/wordpress-to-hootsuite-pro/' ),
 				'icon'        => 'https://www.wpzinc.com/wp-content/uploads/2018/03/hootsuite-logo-1.png',

@@ -3,7 +3,7 @@
  * Creates the ACTIONS-FILTERS.md markdown file, comprising of all
  * action and filter hooks parsed from the Plugin code.
  *
- * @package WPZinc
+ * @package WP_To_Hootsuite
  * @author WP Zinc
  */
 
@@ -46,8 +46,6 @@ $action_docs = $read_actions_filters->run(
 // Build HTML.
 $html = '<h1>Filters</h1>' . $filter_docs;
 $html .= '<h1>Actions</h1>' . $action_docs;
-
-echo $html;
 
 // Write to file.
 file_put_contents( '../ACTIONS-FILTERS.md', $html );
