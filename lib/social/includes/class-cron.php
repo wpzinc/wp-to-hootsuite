@@ -218,7 +218,6 @@ class Cron {
 		return gmdate( $format, $scheduled );
 	}
 
-
 	/**
 	 * Schedules a single event in the WordPress CRON to refresh the access token(s)
 	 * shortly before the earliest one expires.
@@ -237,10 +236,8 @@ class Cron {
 		// Get the earliest expiry timestamp across all connected accounts.
 		$token_expires = $this->get_earliest_token_expiry();
 
-		// Bail if no account has an expiry timestamp, or the access token already
-		// expired. In the latter case the API class refreshes on the next request,
-		// or the user needs to reconnect.
-		if ( ! $token_expires || $token_expires <= time() ) {
+		// Bail only if no account has a refresh token.
+		if ( $token_expires === false ) {
 			return;
 		}
 
@@ -259,9 +256,7 @@ class Cron {
 		// Determine when to refresh.
 		$refresh_at = $token_expires - $seconds;
 
-		// If that point has already passed, we're inside the refresh window, or a
-		// refresh just failed and we're rescheduling. Either way try again shortly,
-		// rather than scheduling an event in the past.
+		// If the refresh time is in the past, schedule the event for 1 minute from now.
 		if ( $refresh_at <= time() ) {
 			$refresh_at = time() + MINUTE_IN_SECONDS;
 		}
@@ -337,23 +332,31 @@ class Cron {
 	/**
 	 * Returns the earliest access token expiry timestamp across all connected accounts.
 	 *
+	 * Accounts holding a refresh token but no expiry timestamp are treated as due now,
+	 * returning zero, so that an event is still scheduled for them.
+	 *
 	 * @since   6.2.0
 	 *
-	 * @return  mixed   false | int
+	 * @return  mixed   false | int    false if no account has a refresh token.
 	 */
 	private function get_earliest_token_expiry() {
 
 		$earliest = false;
 
 		foreach ( $this->base->get_class( 'settings' )->get_accounts() as $account ) {
-			// Skip accounts with no expiry timestamp or no refresh token, as there's
-			// nothing to schedule for them.
-			if ( empty( $account['token_expires'] ) || empty( $account['refresh_token'] ) ) {
+			// Skip accounts with no refresh token, as there's nothing to refresh with.
+			if ( empty( $account['refresh_token'] ) ) {
 				continue;
 			}
 
-			if ( ! $earliest || (int) $account['token_expires'] < $earliest ) {
-				$earliest = (int) $account['token_expires'];
+			// An account with no stored expiry is treated as due now, so that an
+			// event is still scheduled for it.
+			$token_expires = ( empty( $account['token_expires'] ) ? 0 : (int) $account['token_expires'] );
+
+			// Compare against false explicitly, as a zero timestamp is a valid value
+			// here and would otherwise be treated as "not yet set".
+			if ( $earliest === false || $token_expires < $earliest ) {
+				$earliest = $token_expires;
 			}
 		}
 
@@ -411,8 +414,7 @@ class Cron {
 			$this->base->get_class( 'api' )->refresh_token();
 		}
 
-		// Schedule the next event based on what is now stored. If a refresh failed,
-		// this retries shortly, while the current access token may still be valid.
+		// Schedule the next event based on what is now stored.
 		$this->schedule_refresh_token_event();
 
 	}
