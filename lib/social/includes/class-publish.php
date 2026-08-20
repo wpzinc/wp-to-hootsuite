@@ -851,8 +851,10 @@ class Publish {
 							return $image;
 						}
 
-						// Add image to media_urls.
-						$args['media_urls'] = array( $image );
+						// Add image to media_urls, if one was found.
+						if ( $image !== false ) {
+							$args['media_urls'] = array( $image );
+						}
 						break;
 
 				}

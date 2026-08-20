@@ -55,15 +55,6 @@ class Admin_UI {
 	private $show_import_export_menu = true;
 
 	/**
-	 * Flag to show the Upgrade Sub Menu
-	 *
-	 * @since   1.0.0
-	 *
-	 * @var     bool
-	 */
-	private $show_upgrade_menu = true;
-
-	/**
 	 * Flag to show the Support Sub Menu
 	 *
 	 * @since   1.0.0
@@ -120,7 +111,6 @@ class Admin_UI {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts_css' ) );
 		add_action( str_replace( '-', '_', $this->plugin->name ) . '_admin_menu_import_export', array( $this, 'register_import_export_menu' ), 99 );
 		add_action( str_replace( '-', '_', $this->plugin->name ) . '_admin_menu_support', array( $this, 'register_support_menu' ), 99 );
-		add_action( str_replace( '-', '_', $this->plugin->name ) . '_admin_menu', array( $this, 'admin_menu' ), 99 );
 
 		// Plugin Actions.
 		if ( ! isset( $this->plugin->hide_upgrade_menu ) || ! $this->plugin->hide_upgrade_menu ) {
@@ -250,28 +240,6 @@ class Admin_UI {
 	public function hide_support_menu() {
 
 		$this->show_support_menu = false;
-
-	}
-
-	/**
-	 * Shows the Upgrade Submenu in the Plugin's Menu
-	 *
-	 * @since   1.0.0
-	 */
-	public function show_upgrade_menu() {
-
-		$this->show_upgrade_menu = true;
-
-	}
-
-	/**
-	 * Hides the Upgrade Submenu in the Plugin's Menu
-	 *
-	 * @since   1.0.0
-	 */
-	public function hide_upgrade_menu() {
-
-		$this->show_upgrade_menu = false;
 
 	}
 
@@ -490,63 +458,6 @@ class Admin_UI {
 		$minimum_capability = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_admin_admin_menu_minimum_capability', 'manage_options' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName
 
 		add_submenu_page( $slug, __( 'Support', 'wp-to-hootsuite' ), __( 'Support', 'wp-to-hootsuite' ), $minimum_capability, $this->plugin->name . '-support', array( $this, 'support_screen' ) );
-
-	}
-
-	/**
-	 * Registers the Upgrade Menu Link in the WordPress Administration interface
-	 *
-	 * @since   1.0.0
-	 *
-	 * @param   string $parent_slug   Parent Slug.
-	 */
-	public function register_upgrade_menu( $parent_slug = '' ) {
-
-		// Bail if the Upgrade Menu is hidden.
-		if ( ! $this->show_upgrade_menu ) {
-			return;
-		}
-
-		// If a parent slug is defined, attach the submenu items to that.
-		// Otherwise use the plugin's name.
-		$slug = ( ! empty( $parent_slug ) ? $parent_slug : $this->plugin->name );
-
-		/**
-		 * Filter the minimum capability for accessing Upgrade Sub Menu.
-		 *
-		 * @since   1.0.0
-		 *
-		 * @param   string  $minimum_capability   Minimum Capability.
-		 */
-		$minimum_capability = apply_filters( str_replace( '-', '_', $this->plugin->name ) . '_admin_admin_menu_minimum_capability', 'manage_options' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName
-
-		add_submenu_page( $slug, __( 'Upgrade', 'wp-to-hootsuite' ), __( 'Upgrade', 'wp-to-hootsuite' ), $minimum_capability, $this->plugin->name . '-upgrade', array( $this, 'upgrade_screen' ) );
-
-	}
-
-	/**
-	 * Registers the Import / Export, Support and Upgrade Menu Links in the WordPress Administration interface.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @param   string $parent_slug   Parent Slug.
-	 */
-	public function admin_menu( $parent_slug = '' ) {
-
-		// Only register Import/Export Menu if enabled.
-		if ( $this->show_import_export_menu ) {
-			$this->register_import_export_menu( $parent_slug );
-		}
-
-		// Only register Support Menu if enabled.
-		if ( $this->show_support_menu ) {
-			$this->register_support_menu( $parent_slug );
-		}
-
-		// Only register Upgrade Menu if enabled.
-		if ( $this->show_upgrade_menu ) {
-			$this->register_upgrade_menu( $parent_slug );
-		}
 
 	}
 
@@ -944,15 +855,6 @@ class Admin_UI {
 	 * @since   1.0.0
 	 */
 	public function support_screen() {
-		// We never reach here, as we redirect earlier in the process.
-	}
-
-	/**
-	 * Upgrade Screen
-	 *
-	 * @since   1.0.0
-	 */
-	public function upgrade_screen() {
 		// We never reach here, as we redirect earlier in the process.
 	}
 
