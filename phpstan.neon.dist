@@ -15,7 +15,7 @@ parameters:
     # Paths to scan
     # This should comprise of the base Plugin PHP file, plus directories that contain Plugin PHP files
     paths:
-        - wp-to-buffer.php
+        - wp-to-hootsuite.php
         - includes/
         - lib/
 
