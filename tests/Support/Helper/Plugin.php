@@ -18,9 +18,9 @@ class Plugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function activateWPToHootsuitePlugin($I)
+	public function activateWPToBufferProPlugin($I)
 	{
-		$I->activateThirdPartyPlugin($I, 'wp-to-hootsuite');
+		$I->activateThirdPartyPlugin($I, 'wp-to-buffer-pro');
 	}
 
 	/**
@@ -31,9 +31,9 @@ class Plugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function deactivateWPToHootsuitePlugin($I)
+	public function deactivateWPToBufferProPlugin($I)
 	{
-		$I->deactivateThirdPartyPlugin($I, 'wp-to-hootsuite');
+		$I->deactivateThirdPartyPlugin($I, 'wp-to-buffer-pro');
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Plugin extends \Codeception\Module
 		$I->waitForElementVisible('body.plugins-php');
 
 		// Activate the Plugin.
-		$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+		$I->checkOption('//*[@data-slug="' . $name . '"]//input[@type="checkbox"]');
 		$I->selectOption('action', 'activate-selected');
 		$I->click('#doaction');
 
@@ -93,7 +93,7 @@ class Plugin extends \Codeception\Module
 		$I->waitForElementVisible('body.plugins-php');
 
 		// Deactivate the Plugin.
-		$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+		$I->checkOption('//*[@data-slug="' . $name . '"]//input[@type="checkbox"]');
 		$I->selectOption('action', 'deactivate-selected');
 		$I->click('#doaction');
 	}
