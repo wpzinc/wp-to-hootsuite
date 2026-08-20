@@ -94,7 +94,7 @@ class Hootsuite_API {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @var     int
+	 * @var     int|false
 	 */
 	public $token_expires = false;
 
@@ -206,8 +206,8 @@ class Hootsuite_API {
 	 *
 	 * @since   3.8.1
 	 *
-	 * @param   string $profile_id     Profile ID.
-	 * @return  string                  Timezone Settings URL
+	 * @param   string|false $profile_id     Profile ID.
+	 * @return  string                        Timezone Settings URL
 	 */
 	public function get_timezone_settings_url( $profile_id = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 
@@ -287,7 +287,7 @@ class Hootsuite_API {
 			 *
 			 * @since   3.0.0
 			 *
-			 * @param   WP_Error  $result        Error from API.
+			 * @param   \WP_Error  $result        Error from API.
 			 * @param   string    $client_id     OAuth Client ID.
 			 * @param   string    $access_token  Access Token.
 			 * @param   string    $refresh_token Refresh Token.
@@ -344,7 +344,7 @@ class Hootsuite_API {
 	 * @since   2.8.0
 	 *
 	 * @param   string $account_id     Account ID. Unused in Hootsuite.
-	 * @return  WP_Error|array
+	 * @return  \WP_Error|array
 	 */
 	public function account( $account_id = '' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
@@ -375,7 +375,7 @@ class Hootsuite_API {
 	 *
 	 * @param   bool   $force       Force API call (false = use WordPress transient).
 	 * @param   string $account_id  Account ID.
-	 * @return  WP_Error|array
+	 * @return  \WP_Error|array
 	 */
 	public function profiles( $force = false, $account_id = 'default' ) {
 
@@ -735,7 +735,7 @@ class Hootsuite_API {
 		// If file is an URL, it's been added to the Media Library by e.g. an External Media Library Plugin,
 		// such as External Media without Import.
 		if ( filter_var( $file, FILTER_VALIDATE_URL ) !== false ) {
-			$headers   = get_headers( $file, 1 );
+			$headers   = get_headers( $file, true );
 			$file_size = absint( $headers['Content-Length'] ); // Cast as an integer, otherwise API returns a sizeBytes error.
 		} else {
 			$file_size = absint( filesize( $file ) );
@@ -902,6 +902,7 @@ class Hootsuite_API {
 			);
 		} else {
 			// Send request.
+			$response = new \WP_Error( $this->base->plugin->filter_name . '_api_invalid_method', __( 'Invalid request method.', 'wp-to-hootsuite' ) );
 			switch ( $method ) {
 				/**
 				 * GET
