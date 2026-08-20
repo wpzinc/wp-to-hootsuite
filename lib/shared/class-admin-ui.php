@@ -79,7 +79,7 @@ class Admin_UI {
 	 *
 	 * @var     string
 	 */
-	private $message = '';
+	private $message = ''; // @phpstan-ignore property.onlyWritten
 
 	/**
 	 * Holds the error message to display when importing or exporting a configuration file.
@@ -88,7 +88,7 @@ class Admin_UI {
 	 *
 	 * @var     string
 	 */
-	private $error_message = '';
+	private $error_message = ''; // @phpstan-ignore property.onlyWritten
 
 	/**
 	 * Constructor
@@ -181,7 +181,7 @@ class Admin_UI {
 		$minification_plugins = apply_filters( 'wpzinc_dashboard_should_load_minified_js_plugins', $minification_plugins );
 
 		// If no minification Plugins, load minified JS.
-		if ( ! is_array( $minification_plugins ) || ! count( $minification_plugins ) ) {
+		if ( ! count( $minification_plugins ) ) {
 			return true;
 		}
 
@@ -280,7 +280,7 @@ class Admin_UI {
 		 * @since   1.0.0
 		 *
 		 * @param   array   $screens        Screens.
-		 * @param   array   $classes        Classes.
+		 * @param   string  $classes        Classes.
 		 */
 		$screens = apply_filters( 'wpzinc_admin_body_class', $screens, $classes );
 
@@ -317,7 +317,7 @@ class Admin_UI {
 		}
 
 		// Bail if no screen names were specified to search for.
-		if ( empty( $screens ) || count( $screens ) === 0 ) {
+		if ( empty( $screens ) ) {
 			return false;
 		}
 
@@ -350,9 +350,9 @@ class Admin_UI {
 		$minified = $this->should_load_minified_js();
 
 		// JS.
-		wp_register_script( 'wpzinc-admin-autocomplete-gutenberg', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'autocomplete-gutenberg' . ( $minified ? '-min' : '' ) . '.js', false, $this->plugin->version, true );
+		wp_register_script( 'wpzinc-admin-autocomplete-gutenberg', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'autocomplete-gutenberg' . ( $minified ? '-min' : '' ) . '.js', array(), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-autocomplete', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'autocomplete' . ( $minified ? '-min' : '' ) . '.js', array( 'wpzinc-admin-tribute' ), $this->plugin->version, true );
-		wp_register_script( 'wpzinc-admin-autosize', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'autosize' . ( $minified ? '-min' : '' ) . '.js', false, $this->plugin->version, true );
+		wp_register_script( 'wpzinc-admin-autosize', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'autosize' . ( $minified ? '-min' : '' ) . '.js', array(), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-conditional', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'jquery.form-conditionals' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-inline-search', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'inline-search' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-media-library', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'media-library' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery', 'jquery-ui-sortable' ), $this->plugin->version, true );
@@ -366,12 +366,12 @@ class Admin_UI {
 		wp_register_script( 'wpzinc-admin-tags', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'tags' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-tinymce-modal', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'tinymce-modal' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin-toggle', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'toggle' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
-		wp_register_script( 'wpzinc-admin-tribute', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'tribute' . ( $minified ? '-min' : '' ) . '.js', false, $this->plugin->version, true );
+		wp_register_script( 'wpzinc-admin-tribute', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'tribute' . ( $minified ? '-min' : '' ) . '.js', array(), $this->plugin->version, true );
 		wp_register_script( 'wpzinc-admin', $this->dashboard_url . 'js/' . ( $minified ? 'min/' : '' ) . 'admin' . ( $minified ? '-min' : '' ) . '.js', array( 'jquery' ), $this->plugin->version, true );
 
 		// CSS.
-		wp_register_style( 'wpzinc-admin-selectize', $this->dashboard_url . 'css/selectize.css', false, $this->plugin->version );
-		wp_enqueue_style( 'wpzinc-admin', $this->dashboard_url . 'css/admin.css', false, $this->plugin->version );
+		wp_register_style( 'wpzinc-admin-selectize', $this->dashboard_url . 'css/selectize.css', array(), $this->plugin->version );
+		wp_enqueue_style( 'wpzinc-admin', $this->dashboard_url . 'css/admin.css', array(), $this->plugin->version );
 
 		// Depending on the screen we're on, maybe enqueue specific scripts now.
 		if ( ! function_exists( 'get_current_screen' ) ) {
@@ -773,10 +773,6 @@ class Admin_UI {
 			return;
 		}
 
-		if ( ! is_array( $_FILES ) ) {
-			$this->error_message = __( 'No file was uploaded', 'wp-to-hootsuite' );
-			return;
-		}
 		if ( ! isset( $_FILES['import']['type'] ) || ! isset( $_FILES['import']['tmp_name'] ) || ! isset( $_FILES['import']['size'] ) ) {
 			$this->error_message = __( 'Could not determine file type', 'wp-to-hootsuite' );
 			return;
@@ -816,7 +812,7 @@ class Admin_UI {
 				// Read file.
 				// phpcs:disable WordPress.WP.AlternativeFunctions
 				$handle = fopen( sanitize_text_field( wp_unslash( $_FILES['import']['tmp_name'] ) ), 'r' );
-				$json   = fread( $handle, sanitize_text_field( wp_unslash( $_FILES['import']['size'] ) ) );
+				$json   = fread( $handle, (int) $_FILES['import']['size'] );
 				fclose( $handle );
 				// phpcs:enable
 

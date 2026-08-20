@@ -18,6 +18,24 @@ namespace WPZinc\Social;
 class API {
 
 	/**
+	 * Holds the base class object.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @var     object
+	 */
+	public $base;
+
+	/**
+	 * Holds the API endpoint.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @var     string
+	 */
+	public $api_endpoint = '';
+
+	/**
 	 * Sanitizes API arguments, by removing false or empty
 	 * arguments in the array.
 	 *
@@ -29,7 +47,7 @@ class API {
 	public function sanitize_arguments( $args ) {
 
 		foreach ( $args as $key => $value ) {
-			if ( empty( $value ) || ! $value ) {
+			if ( empty( $value ) ) {
 				unset( $args[ $key ] );
 			}
 		}
@@ -45,7 +63,7 @@ class API {
 	 *
 	 * @param  string $cmd        Command (required).
 	 * @param  array  $params     Params (optional).
-	 * @return mixed               WP_Error | object
+	 * @return mixed               \WP_Error | object
 	 */
 	public function get( $cmd, $params = array() ) {
 
@@ -60,7 +78,7 @@ class API {
 	 *
 	 * @param  string $cmd        Command (required).
 	 * @param  array  $params     Params (optional).
-	 * @return mixed               WP_Error | object
+	 * @return mixed               \WP_Error | object
 	 */
 	public function post( $cmd, $params = array() ) {
 
@@ -76,7 +94,7 @@ class API {
 	 * @param   string $cmd        Command.
 	 * @param   string $method     Method (get|post).
 	 * @param   array  $params     Parameters (optional).
-	 * @return  mixed               WP_Error | object
+	 * @return  mixed               \WP_Error | object
 	 */
 	private function request( $cmd, $method = 'get', $params = array() ) {
 
@@ -110,11 +128,12 @@ class API {
 	 * @param   string $method     Method (post|get).
 	 * @param   array  $params     Parameters.
 	 * @param   int    $timeout    Timeout, in seconds (default: 10).
-	 * @return  mixed               WP_Error | object
+	 * @return  mixed               \WP_Error | object
 	 */
 	private function request_wordpress( $url, $cmd, $method, $params, $timeout = 20 ) {
 
 		// Send request.
+		$response = new \WP_Error( $this->base->plugin->filter_name . '_api_invalid_method', __( 'Invalid request method.', 'wp-to-hootsuite' ) );
 		switch ( $method ) {
 			/**
 			 * GET

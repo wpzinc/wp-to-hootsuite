@@ -5,7 +5,7 @@ Tags: social media automation, auto post, hootsuite, social media scheduler, aut
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,9 @@ We **never** store any information on our web site or API during this process.
 4. Post-level Logging.
 
 == Changelog ==
+
+= 3.1.2 (2026-08-21) =
+* Added: PHPStan static analysis improvements
 
 = 3.1.1 (2026-08-20) =
 * Fix: Status: Images: Don't attempt to assign image to status if no image exists

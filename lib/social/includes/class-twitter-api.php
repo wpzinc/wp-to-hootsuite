@@ -57,7 +57,7 @@ class Twitter_API extends \WPZinc\Social\API {
 	 *
 	 * @param   int $user_id                    User ID.
 	 * @param   int $transient_expiration_time  Transient Expiration Time.
-	 * @return  WP_Error|string
+	 * @return  \WP_Error|string
 	 */
 	public function get_username_by_id( $user_id, $transient_expiration_time ) {
 
@@ -100,7 +100,7 @@ class Twitter_API extends \WPZinc\Social\API {
 	 *
 	 * @param   int    $user_id    User ID.
 	 * @param   string $username   Username.
-	 * @return  WP_Error|array
+	 * @return  \WP_Error|array
 	 */
 	public function username_save( $user_id, $username ) {
 

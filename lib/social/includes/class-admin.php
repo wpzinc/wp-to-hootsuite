@@ -602,7 +602,6 @@ class Admin {
 		 * @since   4.5.7
 		 *
 		 * @param   array   $autocomplete_configuration     Javascript  Autocomplete Configuration.
-		 * @param   string  $post_type                      Post Type.
 		 */
 		$autocomplete_configuration = apply_filters( $this->base->plugin->filter_name . '_admin_get_autocomplete_configuration', $autocomplete_configuration );
 
@@ -996,7 +995,7 @@ class Admin {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @return  mixed   WP_Error | bool
+	 * @return  mixed   \WP_Error | bool
 	 */
 	public function save_settings() {
 
@@ -1121,7 +1120,7 @@ class Admin {
 	 *
 	 * @since   3.7.2
 	 *
-	 * @param   mixed $profiles   API Profiles (false|WP_Error|array).
+	 * @param   mixed $profiles   API Profiles (false|\WP_Error|array).
 	 * @return  string  Tab
 	 */
 	private function get_tab( $profiles = false ) {

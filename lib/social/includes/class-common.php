@@ -122,7 +122,8 @@ class Common {
 		 *
 		 * @since   4.9.0
 		 *
-		 * @param   array   $schedule   Schedule Options.
+		 * @param   array       $schedule   Schedule Options.
+		 * @param   bool|string $post_type  Post Type (false | string).
 		 */
 		$schedule = apply_filters( $this->base->plugin->filter_name . '_get_google_business_start_date_options', $schedule, $post_type );
 
@@ -151,7 +152,8 @@ class Common {
 		 *
 		 * @since   4.9.0
 		 *
-		 * @param   array   $schedule   Schedule Options.
+		 * @param   array       $schedule   Schedule Options.
+		 * @param   bool|string $post_type  Post Type (false | string).
 		 */
 		$schedule = apply_filters( $this->base->plugin->filter_name . '_get_google_business_end_date_options', $schedule, $post_type );
 
@@ -179,7 +181,7 @@ class Common {
 
 		// Filter out excluded post types.
 		$excluded_types = $this->get_excluded_post_types();
-		if ( is_array( $excluded_types ) ) {
+		if ( count( $excluded_types ) > 0 ) {
 			foreach ( $excluded_types as $excluded_type ) {
 				unset( $types[ $excluded_type ] );
 			}
@@ -276,7 +278,7 @@ class Common {
 		$excluded_taxonomies = $this->get_excluded_taxonomies();
 
 		// If excluded taxonomies exist, remove them from the taxonomies array now.
-		if ( is_array( $excluded_taxonomies ) && count( $excluded_taxonomies ) > 0 ) {
+		if ( count( $excluded_taxonomies ) > 0 ) {
 			foreach ( $excluded_taxonomies as $excluded_taxonomy ) {
 				unset( $taxonomies[ $excluded_taxonomy ] );
 			}
@@ -308,13 +310,13 @@ class Common {
 	public function get_all_taxonomies() {
 
 		// Get Post Type Taxonomies.
-		$taxonomies = get_taxonomies( false, 'objects' );
+		$taxonomies = get_taxonomies( array(), 'objects' );
 
 		// Get excluded Taxonomies.
 		$excluded_taxonomies = $this->get_excluded_taxonomies();
 
 		// If excluded taxonomies exist, remove them from the taxonomies array now.
-		if ( is_array( $excluded_taxonomies ) && count( $excluded_taxonomies ) > 0 ) {
+		if ( count( $excluded_taxonomies ) > 0 ) {
 			foreach ( $excluded_taxonomies as $excluded_taxonomy ) {
 				unset( $taxonomies[ $excluded_taxonomy ] );
 			}
