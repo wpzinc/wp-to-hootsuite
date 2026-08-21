@@ -27,6 +27,15 @@ class Log_Table extends \WP_List_Table {
 	public $base;
 
 	/**
+	 * Holds the bulk actions.
+	 *
+	 * @since   3.9.6
+	 *
+	 * @var     array
+	 */
+	protected $_actions; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   3.9.6
@@ -96,7 +105,7 @@ class Log_Table extends \WP_List_Table {
 				?>
 			</select>
 			<select name="profile_id" size="1">
-				<option value=""<?php selected( $this->get_profile(), '' ); ?>><?php esc_attr_e( 'Filter by Profile', 'wp-to-hootsuite' ); ?></option>
+				<option value=""<?php selected( $this->get_profile_id(), '' ); ?>><?php esc_attr_e( 'Filter by Profile', 'wp-to-hootsuite' ); ?></option>
 				<?php
 				foreach ( $profiles as $profile_id => $label ) {
 					?>
@@ -294,7 +303,7 @@ class Log_Table extends \WP_List_Table {
 		$this->set_pagination_args(
 			array(
 				'total_items' => $total,
-				'total_pages' => ceil( $total / $per_page ),
+				'total_pages' => (int) ceil( $total / $per_page ),
 				'per_page'    => $per_page,
 			)
 		);
@@ -598,7 +607,7 @@ class Log_Table extends \WP_List_Table {
 	 *
 	 * @since   3.9.7
 	 *
-	 * @return  string
+	 * @return  int
 	 */
 	private function get_page() {
 

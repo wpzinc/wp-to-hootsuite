@@ -20,7 +20,7 @@ class WP_To_Hootsuite {
 	 *
 	 * @since   3.1.4
 	 *
-	 * @var     object
+	 * @var     object|null
 	 */
 	public static $instance;
 
@@ -31,7 +31,7 @@ class WP_To_Hootsuite {
 	 *
 	 * @var     object
 	 */
-	public $plugin = '';
+	public $plugin;
 
 	/**
 	 * Dashboard
@@ -40,16 +40,16 @@ class WP_To_Hootsuite {
 	 *
 	 * @var     object
 	 */
-	public $dashboard = '';
+	public $dashboard;
 
 	/**
 	 * Classes
 	 *
 	 * @since   3.4.9
 	 *
-	 * @var     array
+	 * @var     object
 	 */
-	public $classes = '';
+	public $classes;
 
 	/**
 	 * Constructor. Acts as a bootstrap to load the rest of the plugin
@@ -234,7 +234,7 @@ class WP_To_Hootsuite {
 
 		// Initialize required classes.
 		$this->classes->admin         = new \WPZinc\Social\Admin( self::$instance );
-		$this->classes->ajax          = new \WPZinc\Social\AJAX( self::$instance );
+		$this->classes->ajax          = new \WPZinc\Social\Ajax( self::$instance );
 		$this->classes->api           = new \WPZinc\Social\Hootsuite_API( self::$instance );
 		$this->classes->common        = new \WPZinc\Social\Common( self::$instance );
 		$this->classes->cron          = new \WPZinc\Social\Cron( self::$instance );
@@ -326,10 +326,9 @@ class WP_To_Hootsuite {
 	 */
 	public function supports( $feature ) {
 
-		// Define supported featured.
-		$supported_features = array();
-
-		return in_array( $feature, $supported_features, true );
+		// No features are supported.
+		unset( $feature );
+		return false;
 
 	}
 
@@ -342,7 +341,7 @@ class WP_To_Hootsuite {
 	 */
 	public static function get_instance() {
 
-		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof self ) ) {
+		if ( ! self::$instance instanceof self ) {
 			self::$instance = new self();
 		}
 

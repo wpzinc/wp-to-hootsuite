@@ -179,10 +179,28 @@ class Settings {
 		if ( is_array( $duplicates ) ) {
 			// Fetch Post Type Name, Profile Name and Action Name.
 			$post_type_object = get_post_type_object( $type );
+
+			// Determine the Profile Name for the duplicate.
 			if ( $duplicates['profile_id'] === 'default' ) {
 				$profile = __( 'Defaults', 'wp-to-hootsuite' );
-			} elseif ( isset( $profiles[ $profile_id ] ) ) {
-				$profile = $profiles[ $profile_id ]['formatted_service'] . ': ' . $profiles[ $profile_id ]['formatted_username'];
+			} else {
+				// Fetch connected Profiles, keyed by Profile ID.
+				$profiles = array();
+				foreach ( $this->get_accounts() as $account_id => $account ) {
+					$this->base->get_class( 'api' )->set_tokens( $account['access_token'], $account['refresh_token'], $account['token_expires'] );
+					$account_profiles = $this->base->get_class( 'api' )->profiles( false, $account_id );
+					if ( is_wp_error( $account_profiles ) ) {
+						continue;
+					}
+					foreach ( $account_profiles as $account_profile ) {
+						$profiles[ $account_profile['id'] ] = $account_profile;
+					}
+				}
+
+				// Use the Profile's formatted name if found, else the Profile ID.
+				$profile = ( isset( $profiles[ $duplicates['profile_id'] ] )
+					? $profiles[ $duplicates['profile_id'] ]['formatted_service'] . ': ' . $profiles[ $duplicates['profile_id'] ]['formatted_username']
+					: $duplicates['profile_id'] );
 			}
 			$post_actions = $this->base->get_class( 'common' )->get_post_actions();
 			$action       = $post_actions[ $duplicates['action'] ];
@@ -212,7 +230,7 @@ class Settings {
 	 * @since   4.8.9
 	 *
 	 * @param   string|array $value  Setting value.
-	 * @return  string                  Setting value
+	 * @return  ($value is array ? array : string) Setting value
 	 */
 	private function strip_tags_deep( $value ) {
 
@@ -254,7 +272,6 @@ class Settings {
 		 * @since   3.4.0
 		 *
 		 * @param   array   $settings   Settings.
-		 * @param   string  $type       Post Type.
 		 */
 		$settings = apply_filters( $this->base->plugin->filter_name . '_default_installation_settings', $settings );
 
@@ -526,8 +543,8 @@ class Settings {
 		 * Default Publish or Update enabled
 		 * 1+ Profiles enabled without override
 		 */
-		$default_publish_action_enabled = $this->get_setting( $post_type, '[default][publish][enabled]', 0 );
-		$default_update_action_enabled  = $this->get_setting( $post_type, '[default][update][enabled]', 0 );
+		$default_publish_action_enabled = $this->get_setting( $post_type, '[default][publish][enabled]', '0' );
+		$default_update_action_enabled  = $this->get_setting( $post_type, '[default][update][enabled]', '0' );
 		if ( $default_publish_action_enabled || $default_update_action_enabled ) {
 			foreach ( $settings as $profile_id => $profile_settings ) {
 				// Skip defaults.
@@ -589,30 +606,6 @@ class Settings {
 	}
 
 	/**
-	 * Runs the given individual status settings through validation.
-	 *
-	 * @since   3.7.3
-	 *
-	 * @param   array $status     Status Message Settings.
-	 * @return  array               Status Message Settings
-	 */
-	private function validate_status( $status ) {
-
-		/**
-		 * Filters status settings during validation, allowing them to be changed.
-		 *
-		 * @since   3.7.3
-		 *
-		 * @param   array   $status     Status.
-		 */
-		$status = apply_filters( $this->base->plugin->filter_name . '_settings_validate_status', $status );
-
-		// Return.
-		return $status;
-
-	}
-
-	/**
 	 * Returns all accounts and their access token, refresh token and token expiry values.
 	 *
 	 * @since   5.4.0
@@ -635,7 +628,7 @@ class Settings {
 	public function account_connected() {
 
 		$accounts = $this->get_accounts();
-		return ! empty( $accounts ) && count( $accounts ) > 0;
+		return ! empty( $accounts );
 
 	}
 
@@ -914,9 +907,9 @@ class Settings {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string $key    Key.
-	 * @param   string $value  Value.
-	 * @return  bool            Success
+	 * @param   string       $key    Key.
+	 * @param   string|array $value  Value.
+	 * @return  bool                    Success
 	 */
 	public function update_option( $key, $value ) {
 
@@ -928,7 +921,7 @@ class Settings {
 			 */
 			case 'custom_tags':
 				// Skip validation if there are no custom field key/values to validate.
-				if ( count( $value ) === 0 ) {
+				if ( ! is_array( $value ) || count( $value ) === 0 ) {
 					break;
 				}
 

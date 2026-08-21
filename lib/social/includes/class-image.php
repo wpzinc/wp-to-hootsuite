@@ -48,8 +48,8 @@ class Image {
 	 *
 	 * @since   3.4.3
 	 *
-	 * @param   bool   $network    Network (false = defaults).
-	 * @param   string $post_type  Post Type.
+	 * @param   bool        $network    Network (false = defaults).
+	 * @param   bool|string $post_type  Post Type.
 	 * @return  array              Image Options
 	 */
 	public function get_status_image_options( $network = false, $post_type = false ) {
@@ -77,7 +77,7 @@ class Image {
 		 * @since   3.4.3
 		 *
 		 * @param   array   $options    Featured Image Dropdown Options.
-		 * @param   string  $network    Social Network.
+		 * @param   bool|string $network    Social Network.
 		 * @param   string  $post_type  Post Type.
 		 */
 		$options = apply_filters( $this->base->plugin->filter_name . '_get_status_image_options', $options, $network, $post_type );
@@ -103,7 +103,7 @@ class Image {
 	 * @param   string      $source               Source Image ID was derived from (plugin, featured_image, post_content, text_to_image).
 	 * @param   bool|string $service              Social Media Service the image is for. If not defined, just return the large version.
 	 * @param   bool|string $status_post_type     Status format (for example, 'story' or 'post' for Instagram).
-	 * @return  array|WP_Error                    Image ID, Image URLs, Source
+	 * @return  array|\WP_Error                    Image ID, Image URLs, Source
 	 */
 	public function get_image_sources( $image_id, $source, $service = false, $status_post_type = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
@@ -134,9 +134,9 @@ class Image {
 				// Get image.
 				$image_path_and_file = get_attached_file( $image_id );
 
-				// Just return the original image ID if we couldn't get the image path and file.
+				// Return the large image sources if we couldn't get the image path and file.
 				if ( empty( $image_path_and_file ) || ! file_exists( $image_path_and_file ) ) {
-					return $image_id;
+					return $this->get_image_source_by_size( $image_id, $source, 'large' );
 				}
 
 				// Load webp image.

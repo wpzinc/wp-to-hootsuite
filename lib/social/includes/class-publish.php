@@ -33,7 +33,7 @@ class Publish {
 	 *
 	 * @since   3.7.8
 	 *
-	 * @var     array
+	 * @var     array|false
 	 */
 	private $all_possible_searches_replacements = false;
 
@@ -42,7 +42,7 @@ class Publish {
 	 *
 	 * @since   3.7.8
 	 *
-	 * @var     array
+	 * @var     array|false
 	 */
 	private $searches_replacements = false;
 
@@ -60,7 +60,7 @@ class Publish {
 
 		// Actions.
 		add_action( 'wp_loaded', array( $this, 'register_publish_hooks' ), 1 );
-		add_action( $this->base->plugin->name, array( $this, 'publish' ), 1, 2 );
+		add_filter( $this->base->plugin->name, array( $this, 'publish' ), 1, 2 );
 
 	}
 
@@ -81,9 +81,9 @@ class Publish {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   string  $new_status     New Status.
-	 * @param   string  $old_status     Old Status.
-	 * @param   WP_Post $post           Post.
+	 * @param   string   $new_status     New Status.
+	 * @param   string   $old_status     Old Status.
+	 * @param   \WP_Post $post           Post.
 	 */
 	public function transition_post_status( $new_status, $old_status, $post ) {
 
@@ -212,7 +212,7 @@ class Publish {
 		}
 
 		// Update.
-		if ( $new_status === 'publish' && $old_status === 'publish' ) {
+		if ( $old_status === 'publish' ) {
 			/**
 			 * Gutenberg Editor REST API Request
 			 * - Non-Gutenberg metaboxes are POSTed via a second, separate request to post.php, which appears
@@ -309,7 +309,7 @@ class Publish {
 	 *
 	 * @since   3.9.1
 	 *
-	 * @param   WP_Post $post   Post.
+	 * @param   \WP_Post $post   Post.
 	 * @return  bool                Post Content contains Gutenberg Block Markup
 	 */
 	private function is_gutenberg_post_content( $post ) {
@@ -327,7 +327,7 @@ class Publish {
 	 *
 	 * @since   3.6.8
 	 *
-	 * @param   WP_Post $post           Post.
+	 * @param   \WP_Post $post           Post.
 	 */
 	public function rest_api_post_publish( $post ) {
 
@@ -340,7 +340,7 @@ class Publish {
 	 *
 	 * @since   3.6.8
 	 *
-	 * @param   WP_Post $post           Post.
+	 * @param   \WP_Post $post           Post.
 	 */
 	public function rest_api_post_update( $post ) {
 
@@ -458,7 +458,7 @@ class Publish {
 	 * @param   int    $post_id                Post ID.
 	 * @param   string $action                 Action (publish|update|repost|bulk_publish).
 	 * @param   bool   $test_mode              Test Mode (won't send to API).
-	 * @return  mixed                               WP_Error | API Results array
+	 * @return  mixed                               \WP_Error | API Results array
 	 */
 	public function publish( $post_id, $action, $test_mode = false ) {
 
@@ -566,6 +566,8 @@ class Publish {
 			}
 
 			// Determine which social media service this profile ID belongs to.
+			$service = false;
+			$account = false;
 			foreach ( $profiles as $profile ) {
 				if ( $profile['id'] == $profile_id ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					$service = $profile['service'];
@@ -603,52 +605,27 @@ class Publish {
 			$post_url         = admin_url( 'post.php?post=' . $post_id . '&action=edit' );
 
 			// Return an error, depending on why no statuses were found.
-			if ( isset( $conditions_met ) && ! $conditions_met ) {
-				$error = new \WP_Error(
-					$this->base->plugin->filter_name . '_no_statuses_conditions',
-					sprintf(
-						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
-						__( 'Status(es) exist for sending this %1$s to %2$s when you %3$s a %4$s, but no status was sent because the %5$s did not meet the status conditions. If you want this %6$s to be sent to %7$s, navigate to <a href="%8$s" target="_blank">%9$s > Settings > %10$s Tab > %11$s Action Tab</a>, ensuring that no Conditions are set on the defined statuses.', 'wp-to-hootsuite' ),
-						$post_type_object->labels->singular_name,
-						$this->base->plugin->account,
-						ucwords( str_replace( '_', ' ', $action ) ),
-						$post_type_object->labels->singular_name,
-						$post_type_object->labels->singular_name,
-						$post_type_object->labels->singular_name,
-						$this->base->plugin->account,
-						$plugin_url,
-						$this->base->plugin->displayName,
-						$post_type_object->labels->name,
-						ucwords( str_replace( '_', ' ', $action ) )
-					)
-				);
+			$error = new \WP_Error(
+				$this->base->plugin->filter_name . '_no_statuses_enabled',
+				sprintf(
+					/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
+					__( 'No Plugin Settings are defined for sending %1$s to %2$s when you %3$s a %4$s. To send statuses to %5$s on %6$s, navigate to <a href="%7$s" target="_blank">%8$s > Settings > %9$s Tab > %10$s Action Tab</a>, tick "Enabled", and also enable at least one social media profile.', 'wp-to-hootsuite' ),
+					$post_type_object->labels->name,
+					$this->base->plugin->account,
+					ucwords( str_replace( '_', ' ', $action ) ),
+					$post_type_object->labels->singular_name,
+					$this->base->plugin->account,
+					ucwords( str_replace( '_', ' ', $action ) ),
+					$plugin_url,
+					$this->base->plugin->displayName,
+					$post_type_object->labels->name,
+					ucwords( str_replace( '_', ' ', $action ) )
+				)
+			);
 
-				$this->base->get_class( 'log' )->add_to_debug_log( $this->base->plugin->displayName . ': publish(): Statuses Error: ' . $error->get_error_message() );
+			$this->base->get_class( 'log' )->add_to_debug_log( $this->base->plugin->displayName . ': publish(): Statuses Error: ' . $error->get_error_message() );
 
-				return $error;
-			} else {
-				$error = new \WP_Error(
-					$this->base->plugin->filter_name . '_no_statuses_enabled',
-					sprintf(
-						/* translators: %1$s: Post Type Name, Singular, %2$s: Social Media Service Name (Buffer, Hootsuite), %3$s: Action (Publish, Update, Repost, Bulk Publish), %4$s, %5$s, %6$s: Post Type Name, Singular, %7$s: Social Media Service Name (Buffer, Hootsuite), %8$s: Plugin URL, %9$s: Plugin Name, %10$s: Post Type Name, Singular, %11$s: Action (Publish, Update, Repost, Bulk Publish) */
-						__( 'No Plugin Settings are defined for sending %1$s to %2$s when you %3$s a %4$s. To send statuses to %5$s on %6$s, navigate to <a href="%7$s" target="_blank">%8$s > Settings > %9$s Tab > %10$s Action Tab</a>, tick "Enabled", and also enable at least one social media profile.', 'wp-to-hootsuite' ),
-						$post_type_object->labels->name,
-						$this->base->plugin->account,
-						ucwords( str_replace( '_', ' ', $action ) ),
-						$post_type_object->labels->singular_name,
-						$this->base->plugin->account,
-						ucwords( str_replace( '_', ' ', $action ) ),
-						$plugin_url,
-						$this->base->plugin->displayName,
-						$post_type_object->labels->name,
-						ucwords( str_replace( '_', ' ', $action ) )
-					)
-				);
-
-				$this->base->get_class( 'log' )->add_to_debug_log( $this->base->plugin->displayName . ': publish(): Statuses Error: ' . $error->get_error_message() );
-
-				return $error;
-			}
+			return $error;
 		}
 
 		/**
@@ -670,7 +647,7 @@ class Publish {
 		$results = $this->send( $statuses, $post_id, $action, $profiles, $test_mode );
 
 		// If no results, we're finished.
-		if ( empty( $results ) || count( $results ) === 0 ) {
+		if ( empty( $results ) ) {
 			return false;
 		}
 
@@ -689,7 +666,7 @@ class Publish {
 	 *
 	 * @param   int    $post_id                Post ID.
 	 * @param   string $action                 Action (publish|update).
-	 * @return  mixed                               WP_Error | API Results array
+	 * @return  mixed                               \WP_Error | API Results array
 	 */
 	private function validate( $post_id, $action ) {
 
@@ -737,13 +714,13 @@ class Publish {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   WP_Post    $post                       Post.
+	 * @param   \WP_Post   $post                       Post.
 	 * @param   string     $profile_id                 Profile ID.
 	 * @param   string     $service                    Service.
 	 * @param   array      $status                     Status Settings.
 	 * @param   string     $action                     Action (publish|update|repost|bulk_publish).
 	 * @param   bool|array $account                    Account.
-	 * @return  bool
+	 * @return  array|\WP_Error
 	 */
 	private function build_args( $post, $profile_id, $service, $status, $action, $account = false ) {
 
@@ -879,7 +856,7 @@ class Publish {
 		 * @since   3.0.0
 		 *
 		 * @param   array       $args                       API standardised arguments.
-		 * @param   WP_Post     $post                       WordPress Post.
+		 * @param   \WP_Post     $post                       WordPress Post.
 		 * @param   string      $profile_id                 Social Media Profile ID.
 		 * @param   string      $service                    Social Media Service.
 		 * @param   array       $status                     Parsed Status Message Settings.
@@ -900,10 +877,10 @@ class Publish {
 	 *
 	 * @since   3.9.8
 	 *
-	 * @param   WP_Post     $post       Post ID.
+	 * @param   \WP_Post    $post       Post ID.
 	 * @param   string      $service    Social Media Service.
 	 * @param   bool|string $format     Status format (for example, 'story' or 'post' for Instagram).
-	 * @return  bool|array
+	 * @return  array|bool|\WP_Error
 	 */
 	private function get_post_image( $post, $service, $format = false ) {
 
@@ -923,9 +900,9 @@ class Publish {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   WP_Post $post               Post.
-	 * @param   string  $message            Status Message to parse.
-	 * @param   bool    $strip_urls         Whether to strip URLs from the status message.
+	 * @param   \WP_Post $post               Post.
+	 * @param   string   $message            Status Message to parse.
+	 * @param   bool     $strip_urls         Whether to strip URLs from the status message.
 	 * @return  string                      Parsed Status Message
 	 */
 	public function parse_text( $post, $message, $strip_urls = false ) {
@@ -939,7 +916,7 @@ class Publish {
 		}
 
 		// If no searches and replacements are defined, we can't parse anything.
-		if ( ! $this->all_possible_searches_replacements || count( $this->all_possible_searches_replacements ) === 0 ) {
+		if ( ! $this->all_possible_searches_replacements ) {
 			return $message;
 		}
 
@@ -947,9 +924,6 @@ class Publish {
 		preg_match_all( '|{(.+?)}|', $message, $matches );
 
 		// If no tags exist in the message, there's nothing to parse.
-		if ( ! is_array( $matches ) ) {
-			return $message;
-		}
 		if ( count( $matches[0] ) === 0 ) {
 			return $message;
 		}
@@ -1040,9 +1014,9 @@ class Publish {
 					 * @since   3.0.0
 					 *
 					 * @param   string      $term_name                          Term Name.
-					 * @param   string      $tag_params['taxonomy_term_format'] Term Format.
+					 * @param   string      $taxonomy_term_format Term Format.
 					 * @param   WP_Term     $term                               Term.
-					 * @param   string      $tag_params['taxonomy']             Taxonomy.
+					 * @param   string      $taxonomy             Taxonomy.
 					 * @param   string      $text                               Status Text.
 					 */
 					$term_name = apply_filters( $this->base->plugin->filter_name . '_publish_parse_text_term_hashtag', $term_name, $tag_params['taxonomy_term_format'], $term, $tag_params['taxonomy'], $text );
@@ -1055,9 +1029,9 @@ class Publish {
 					 *
 					 * @param   string      $term_name                              Term Name.
 					 * @param   string      $term->name                             Term Name.
-					 * @param   string      $tag_params['taxonomy']                 Taxonomy.
+					 * @param   string      $taxonomy                 Taxonomy.
 					 * @param   string      $text                                   Status Text.
-					 * @param   string      $tag_params['taxonomy_term_format']     Term Format.
+					 * @param   string      $taxonomy_term_format     Term Format.
 					 */
 					$term_name = apply_filters( $this->base->plugin->filter_name . '_term', $term_name, $term->name, $tag_params['taxonomy'], $text, $tag_params['taxonomy_term_format'] );
 
@@ -1105,10 +1079,10 @@ class Publish {
 		 *
 		 * @param   string      $text                                       Parsed Text, no Tags.
 		 * @param   string      $message                                    Unparsed Text with Tags.
-		 * @param   array       $this->searches_replacements                Specific Tag Search and Replacements for the given Text.
-		 * @param   array       $this->all_possible_searches_replacements   All Registered Tag Search and Replacements.
-		 * @param   WP_Post     $post                                       WordPress Post.
-		 * @param   WP_User     $author                                     WordPress User (Author).
+		 * @param   array       $searches_replacements                Specific Tag Search and Replacements for the given Text.
+		 * @param   array       $all_possible_searches_replacements   All Registered Tag Search and Replacements.
+		 * @param   \WP_Post     $post                                       WordPress Post.
+		 * @param   \WP_User     $author                                     WordPress User (Author).
 		 */
 		$text = apply_filters( $this->base->plugin->filter_name . '_publish_parse_text', $text, $message, $this->searches_replacements, $this->all_possible_searches_replacements, $post, $author );
 
@@ -1122,8 +1096,8 @@ class Publish {
 	 *
 	 * @since   4.9.0
 	 *
-	 * @param   WP_Post $post               Post.
-	 * @param   array   $status             Status.
+	 * @param   \WP_Post $post               Post.
+	 * @param   array    $status             Status.
 	 * @return  bool|array                  Google Business Profile status configuration
 	 */
 	public function parse_google_business( $post, $status ) {
@@ -1210,7 +1184,7 @@ class Publish {
 						 * @param   bool|string $date                   Date (yyyy-mm-dd hh:mm:ss format).
 						 * @param   array       $google_business_args   Google Business specific arguments for status.
 						 * @param   array       $status                 Status.
-						 * @param   WP_Post     $post                   WordPress Post.
+						 * @param   \WP_Post     $post                   WordPress Post.
 						 */
 						$date = apply_filters( $this->base->plugin->filter_name . '_publish_parse_google_business_start_date_' . $status['googlebusiness']['start_date_option'], $date, $google_business_args, $status, $post );
 
@@ -1270,7 +1244,7 @@ class Publish {
 						 * @param   bool|string $date                   Date (yyyy-mm-dd hh:mm:ss format).
 						 * @param   array       $google_business_args   Google Business specific arguments for status.
 						 * @param   array       $status                 Status.
-						 * @param   WP_Post     $post                   WordPress Post.
+						 * @param   \WP_Post     $post                   WordPress Post.
 						 */
 						$date = apply_filters( $this->base->plugin->filter_name . '_publish_parse_google_business_end_date_' . $status['googlebusiness']['end_date_option'], $date, $google_business_args, $status, $post );
 
@@ -1446,8 +1420,8 @@ class Publish {
 	 *
 	 * @since   3.7.8
 	 *
-	 * @param   WP_Post $post       WordPress Post.
-	 * @param   WP_User $author     WordPress User (Author of the Post).
+	 * @param   \WP_Post $post       WordPress Post.
+	 * @param   \WP_User $author     WordPress User (Author of the Post).
 	 * @return  array                   Search / Replacement Key / Value pairs
 	 */
 	private function register_all_possible_searches_replacements( $post, $author ) {
@@ -1471,8 +1445,8 @@ class Publish {
 		 * @since   3.7.8
 		 *
 		 * @param   array       $searches_replacements  Registered Supported Tags and their Replacements.
-		 * @param   WP_Post     $post                   WordPress Post.
-		 * @param   WP_User     $author                 WordPress User (Author of the Post).
+		 * @param   \WP_Post     $post                   WordPress Post.
+		 * @param   \WP_User     $author                 WordPress User (Author of the Post).
 		 */
 		$searches_replacements = apply_filters( $this->base->plugin->filter_name . '_publish_get_all_possible_searches_replacements', $searches_replacements, $post, $author );
 
@@ -1486,8 +1460,8 @@ class Publish {
 	 *
 	 * @since   3.7.8
 	 *
-	 * @param   array   $searches_replacements  Registered Supported Tags and their Replacements.
-	 * @param   WP_Post $post                   WordPress Post.
+	 * @param   array    $searches_replacements  Registered Supported Tags and their Replacements.
+	 * @param   \WP_Post $post                   WordPress Post.
 	 * @return  array                           Registered Supported Tags and their Replacements
 	 */
 	private function register_post_searches_replacements( $searches_replacements, $post ) {
@@ -1513,7 +1487,7 @@ class Publish {
 		 * @since   3.7.8
 		 *
 		 * @param   array       $searches_replacements  Registered Supported Tags and their Replacements.
-		 * @param   WP_Post     $post                   WordPress Post.
+		 * @param   \WP_Post     $post                   WordPress Post.
 		 */
 		$searches_replacements = apply_filters( $this->base->plugin->filter_name . '_publish_register_post_searches_replacements', $searches_replacements, $post );
 
@@ -1527,9 +1501,9 @@ class Publish {
 	 *
 	 * @since   3.7.8
 	 *
-	 * @param   array   $searches_replacements  Registered Supported Tags and their Replacements.
-	 * @param   WP_Post $post                   WordPress Post.
-	 * @param   array   $taxonomies             Post Taxonomies.
+	 * @param   array    $searches_replacements  Registered Supported Tags and their Replacements.
+	 * @param   \WP_Post $post                   WordPress Post.
+	 * @param   array    $taxonomies             Post Taxonomies.
 	 * @return  array   $searches_replacements  Registered Supported Tags and their Replacements.
 	 */
 	private function register_taxonomy_searches_replacements( $searches_replacements, $post, $taxonomies ) {
@@ -1545,7 +1519,7 @@ class Publish {
 		 * @since   3.7.8
 		 *
 		 * @param   array       $searches_replacements  Registered Supported Tags and their Replacements.
-		 * @param   WP_Post     $post                   WordPress Post.
+		 * @param   \WP_Post     $post                   WordPress Post.
 		 * @param   array       $taxonomies             Post Taxonomies.
 		 */
 		$searches_replacements = apply_filters( $this->base->plugin->filter_name . '_publish_register_post_searches_replacements', $searches_replacements, $post, $taxonomies );
@@ -1561,7 +1535,7 @@ class Publish {
 	 *
 	 * @since   3.7.3
 	 *
-	 * @param   WP_Post $post               WordPress Post.
+	 * @param   \WP_Post $post               WordPress Post.
 	 * @return  string                          Title
 	 */
 	private function get_title( $post ) {
@@ -1575,7 +1549,7 @@ class Publish {
 		 * @since   3.7.3
 		 *
 		 * @param   string      $title      Post Title.
-		 * @param   WP_Post     $post       WordPress Post.
+		 * @param   \WP_Post     $post       WordPress Post.
 		 */
 		$title = apply_filters( $this->base->plugin->filter_name . '_publish_get_title', $title, $post );
 
@@ -1591,8 +1565,8 @@ class Publish {
 	 *
 	 * @since   3.7.3
 	 *
-	 * @param   WP_Post $post               WordPress Post.
-	 * @param   bool    $fallback           Use Content if no Excerpt exists.
+	 * @param   \WP_Post $post               WordPress Post.
+	 * @param   bool     $fallback           Use Content if no Excerpt exists.
 	 * @return  string                          Excerpt
 	 */
 	private function get_excerpt( $post, $fallback = true ) {
@@ -1620,7 +1594,7 @@ class Publish {
 		 * @since   3.7.3
 		 *
 		 * @param   string      $excerpt    Post Excerpt.
-		 * @param   WP_Post     $post       WordPress Post.
+		 * @param   \WP_Post     $post       WordPress Post.
 		 */
 		$excerpt = apply_filters( $this->base->plugin->filter_name . '_publish_get_excerpt', $excerpt, $post );
 
@@ -1635,8 +1609,8 @@ class Publish {
 	 *
 	 * @since   3.7.3
 	 *
-	 * @param   WP_Post $post               WordPress Post.
-	 * @param   bool    $to_more_tag        Only return content up to the <!-- more --> tag.
+	 * @param   \WP_Post $post               WordPress Post.
+	 * @param   bool     $to_more_tag        Only return content up to the <!-- more --> tag.
 	 * @return  string                          Content
 	 */
 	private function get_content( $post, $to_more_tag = false ) {
@@ -1646,7 +1620,7 @@ class Publish {
 		if ( $to_more_tag ) {
 			$extended = get_extended( $post->post_content );
 
-			if ( isset( $extended['main'] ) && ! empty( $extended['main'] ) ) {
+			if ( ! empty( $extended['main'] ) ) {
 				$content = $extended['main'];
 			} else {
 				// Fallback to the Post Content.
@@ -1696,7 +1670,7 @@ class Publish {
 		 * @since   3.7.3
 		 *
 		 * @param   string      $content                    Post Content.
-		 * @param   WP_Post     $post                       WordPress Post.
+		 * @param   \WP_Post     $post                       WordPress Post.
 		 * @param   bool        $is_gutenberg_request_content  Is Gutenberg Post Content.
 		 */
 		$content = apply_filters( $this->base->plugin->filter_name . '_publish_get_content', $content, $post, $is_gutenberg_request_content );
@@ -1711,7 +1685,7 @@ class Publish {
 	 *
 	 * @since   4.7.7
 	 *
-	 * @param   WP_Post $post   WordPress Post.
+	 * @param   \WP_Post $post   WordPress Post.
 	 * @return  string              Date
 	 */
 	private function get_date( $post ) {
@@ -1724,7 +1698,7 @@ class Publish {
 		 * @since   4.7.7
 		 *
 		 * @param   string      $date                       Date.
-		 * @param   WP_Post     $post                       WordPress Post.
+		 * @param   \WP_Post     $post                       WordPress Post.
 		 */
 		$date = apply_filters( $this->base->plugin->filter_name . '_publish_get_date', $date, $post );
 
@@ -1738,7 +1712,7 @@ class Publish {
 	 *
 	 * @since   4.0.6
 	 *
-	 * @param   WP_Post $post               WordPress Post.
+	 * @param   \WP_Post $post               WordPress Post.
 	 * @return  string                          WordPress Post Permalink
 	 */
 	private function get_permalink( $post ) {
@@ -1766,7 +1740,7 @@ class Publish {
 		 * @since   4.0.6
 		 *
 		 * @param   string      $url                            WordPress Post Permalink.
-		 * @param   WP_Post     $post                           WordPress Post.
+		 * @param   \WP_Post     $post                           WordPress Post.
 		 * @param   bool        $force_trailing_forwardslash    Force Trailing Forwardslash.
 		 */
 		$url = apply_filters( $this->base->plugin->filter_name . '_publish_get_permalink', $url, $post, $force_trailing_forwardslash );
@@ -1781,7 +1755,7 @@ class Publish {
 	 *
 	 * @since   4.2.7
 	 *
-	 * @param   WP_Post $post               WordPress Post.
+	 * @param   \WP_Post $post               WordPress Post.
 	 * @return  string                          WordPress Post Permalink
 	 */
 	private function get_short_permalink( $post ) {
@@ -1795,7 +1769,7 @@ class Publish {
 		 * @since   4.2.7
 		 *
 		 * @param   string      $url                            WordPress Post Permalink.
-		 * @param   WP_Post     $post                           WordPress Post.
+		 * @param   \WP_Post     $post                           WordPress Post.
 		 */
 		$url = apply_filters( $this->base->plugin->filter_name . '_publish_get_short_permalink', $url, $post );
 
@@ -1933,7 +1907,7 @@ class Publish {
 		$original_text = $text;
 
 		// Bail if the word limit is zero or false.
-		if ( ! $word_limit || $word_limit === 0 ) {
+		if ( ! $word_limit ) {
 			return $text;
 		}
 
@@ -1971,7 +1945,7 @@ class Publish {
 		$original_text = $text;
 
 		// Bail if the sentence limit is zero or false.
-		if ( ! $sentence_limit || $sentence_limit === 0 ) {
+		if ( ! $sentence_limit ) {
 			return $text;
 		}
 
@@ -2029,7 +2003,7 @@ class Publish {
 	private function apply_character_limit( $text, $character_limit = 0 ) {
 
 		// Bail if the character limit is zero or false.
-		if ( ! $character_limit || $character_limit === 0 ) {
+		if ( ! $character_limit ) {
 			return $text;
 		}
 

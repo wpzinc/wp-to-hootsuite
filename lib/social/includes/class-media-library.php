@@ -45,14 +45,14 @@ class Media_Library {
 	 *
 	 * @since   4.2.0
 	 *
-	 * @param   string $source     Source Path and Filename.
-	 * @param   int    $post_id    Post ID.
-	 * @param   string $filename   Target Filename to save source as.
-	 * @param   string $title      Image Title (optional).
-	 * @param   string $caption    Image Caption (optional).
-	 * @param   string $alt_tag    Image Alt Tag (optional).
-	 * @param   string $description Image Description (optional).
-	 * @return  WP_Error|int        WP_Error | Image ID
+	 * @param   string       $source     Source Path and Filename.
+	 * @param   int          $post_id    Post ID.
+	 * @param   string|false $filename   Target Filename to save source as.
+	 * @param   string       $title      Image Title (optional).
+	 * @param   string       $caption    Image Caption (optional).
+	 * @param   string       $alt_tag    Image Alt Tag (optional).
+	 * @param   string       $description Image Description (optional).
+	 * @return  \WP_Error|int        \WP_Error | Image ID
 	 */
 	public function upload_local_image( $source, $post_id = 0, $filename = false, $title = '', $caption = '', $alt_tag = '', $description = '' ) {
 

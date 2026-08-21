@@ -132,7 +132,7 @@ class Log {
 		}
 
 		// Return.
-		return absint( $log_settings['enabled'] );
+		return (bool) absint( $log_settings['enabled'] );
 
 	}
 
@@ -207,9 +207,6 @@ class Log {
 		);
 
 		// Bail if no bulk action.
-		if ( ! is_array( $bulk_action ) ) {
-			return;
-		}
 		if ( ! count( $bulk_action ) ) {
 			return;
 		}
@@ -337,7 +334,7 @@ class Log {
 		}
 
 		// Check if we need to hide the meta box by the logged in User's role.
-		if ( wp_get_current_user() && is_array( wp_get_current_user()->roles ) && ! empty( wp_get_current_user()->roles ) ) {
+		if ( ! empty( wp_get_current_user()->roles ) ) {
 			// Bail if we're hiding the meta boxes for the logged in User's role.
 			if ( $this->base->get_class( 'settings' )->get_setting( 'hide_meta_box_by_roles', '[' . wp_get_current_user()->roles[0] . ']' ) ) {
 				return;
@@ -370,7 +367,7 @@ class Log {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   WP_Post $post   Post.
+	 * @param   \WP_Post $post   Post.
 	 */
 	public function output_post_log( $post ) {
 
@@ -705,7 +702,7 @@ class Log {
 	 * @since   3.9.6
 	 *
 	 * @param   array $params     Query Parameters (false = all records).
-	 * @return  string              WHERE SQL clause
+	 * @return  string|false        WHERE SQL clause
 	 */
 	private function build_where_clause( $params ) {
 
@@ -718,61 +715,59 @@ class Log {
 
 		// Build where clauses.
 		$where = array();
-		if ( $params !== false && is_array( $params ) && count( $params ) > 0 ) {
-			foreach ( $params as $key => $value ) {
-				// Skip blank params.
-				if ( empty( $value ) ) {
-					continue;
-				}
+		foreach ( $params as $key => $value ) {
+			// Skip blank params.
+			if ( empty( $value ) ) {
+				continue;
+			}
 
-				// Build condition based on the key.
-				switch ( $key ) {
-					case 'post_title':
+			// Build condition based on the key.
+			switch ( $key ) {
+				case 'post_title':
+					$where[] = $wpdb->prepare(
+						'(%i LIKE %s OR status_text LIKE %s OR result_message LIKE %s)',
+						$key,
+						'%' . $wpdb->esc_like( $value ) . '%',
+						'%' . $wpdb->esc_like( $value ) . '%',
+						'%' . $wpdb->esc_like( $value ) . '%'
+					);
+					break;
+
+				case 'request_sent_start_date':
+					if ( ! empty( $params['request_sent_end_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
 						$where[] = $wpdb->prepare(
-							'(%i LIKE %s OR status_text LIKE %s OR result_message LIKE %s)',
-							$key,
-							'%' . $wpdb->esc_like( $value ) . '%',
-							'%' . $wpdb->esc_like( $value ) . '%',
-							'%' . $wpdb->esc_like( $value ) . '%'
+							'request_sent <= %s',
+							$value . ' 23:59:59'
 						);
-						break;
-
-					case 'request_sent_start_date':
-						if ( ! empty( $params['request_sent_end_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
-							$where[] = $wpdb->prepare(
-								'request_sent <= %s',
-								$value . ' 23:59:59'
-							);
-						} else {
-							$where[] = $wpdb->prepare(
-								'request_sent >= %s',
-								$value . ' 00:00:00'
-							);
-						}
-						break;
-
-					case 'request_sent_end_date':
-						if ( ! empty( $params['request_sent_start_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
-							$where[] = $wpdb->prepare(
-								'request_sent >= %s',
-								$value . ' 00:00:00'
-							);
-						} else {
-							$where[] = $wpdb->prepare(
-								'request_sent <= %s',
-								$value . ' 23:59:59'
-							);
-						}
-						break;
-
-					default:
+					} else {
 						$where[] = $wpdb->prepare(
-							'%i = %s',
-							$key,
-							$value
+							'request_sent >= %s',
+							$value . ' 00:00:00'
 						);
-						break;
-				}
+					}
+					break;
+
+				case 'request_sent_end_date':
+					if ( ! empty( $params['request_sent_start_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
+						$where[] = $wpdb->prepare(
+							'request_sent >= %s',
+							$value . ' 00:00:00'
+						);
+					} else {
+						$where[] = $wpdb->prepare(
+							'request_sent <= %s',
+							$value . ' 23:59:59'
+						);
+					}
+					break;
+
+				default:
+					$where[] = $wpdb->prepare(
+						'%i = %s',
+						$key,
+						$value
+					);
+					break;
 			}
 		}
 
@@ -901,7 +896,7 @@ class Log {
 	 *
 	 * @since   3.9.8
 	 *
-	 * @param   datetime $date_time     Date and Time.
+	 * @param   \DateTime $date_time     Date and Time.
 	 * @return  bool                    Success
 	 */
 	public function delete_by_request_sent_cutoff( $date_time ) {
@@ -1053,7 +1048,7 @@ class Log {
 		$html = '';
 
 		// If no results, return a single row.
-		if ( ! $log || ! is_array( $log ) || count( $log ) === 0 ) {
+		if ( ! $log ) {
 			$html = '
                     <tr>
                         <td colspan="' . $colspan . '">' .

@@ -132,7 +132,7 @@ class Notices {
 		 * @since   3.9.6
 		 *
 		 * @param   array   $success_notices    Success Notices.
-		 * @param   object  $this->notices      Success and Error Notices.
+		 * @param   array   $notices              Success and Error Notices.
 		 */
 		$success_notices = apply_filters( $this->base->plugin->filter_name . '_notices_get_success_notices', $success_notices, $this->notices );
 
@@ -203,7 +203,7 @@ class Notices {
 		 * @since   4.5.3
 		 *
 		 * @param   array   $warning_notices    Warning Notices.
-		 * @param   object  $this->notices      Success, Warning and Error Notices.
+		 * @param   array   $notices              Success, Warning and Error Notices.
 		 */
 		$warning_notices = apply_filters( $this->base->plugin->filter_name . '_notices_get_warning_notices', $warning_notices, $this->notices );
 
@@ -266,7 +266,7 @@ class Notices {
 		 * @since   3.9.6
 		 *
 		 * @param   array   $error_notices  Error Notices.
-		 * @param   object  $this->notices  Success and Error Notices.
+		 * @param   array   $notices          Success and Error Notices.
 		 */
 		$error_notices = apply_filters( $this->base->plugin->filter_name . '_notices_get_error_notices', $error_notices, $this->notices );
 
@@ -326,15 +326,6 @@ class Notices {
 		 * @param   array   $notices    Success and Error Notices.
 		 */
 		$notices = apply_filters( $this->base->plugin->filter_name . '_notices_get_notices', $notices );
-
-		// If not an array, setup.
-		if ( ! is_array( $notices ) ) {
-			$notices = array(
-				'success' => array(),
-				'warning' => array(),
-				'error'   => array(),
-			);
-		}
 
 		// If some keys aren't set, define them now.
 		if ( ! isset( $notices['success'] ) ) {

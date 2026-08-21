@@ -53,7 +53,7 @@ class Post {
 
 		// Check we can get the current screen the user is viewing.
 		$screen = get_current_screen();
-		if ( ! $screen || ! isset( $screen->base ) || ! isset( $screen->parent_base ) ) {
+		if ( ! $screen || ! isset( $screen->parent_base ) ) {
 			return;
 		}
 

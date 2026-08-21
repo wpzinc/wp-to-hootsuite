@@ -50,9 +50,9 @@ class Validation {
 	 * @param   string $api_profile_timezone               API Timezone.
 	 * @param   string $api_profile_name                   API Profile Name (e.g. @n7TestAcct).
 	 * @param   string $api_profile_change_timezone_url    URL to API service where the user can change the timezone.
-	 * @return  mixed   WP_Error | true
+	 * @return  mixed   \WP_Error | true
 	 */
-	public function timezones_match( $api_profile_timezone = false, $api_profile_name = '', $api_profile_change_timezone_url = '#' ) {
+	public function timezones_match( $api_profile_timezone = '', $api_profile_name = '', $api_profile_change_timezone_url = '#' ) {
 
 		// Pass test if we don't have API access.
 		if ( ! $this->base->get_class( 'settings' )->account_connected() ) {
@@ -110,7 +110,7 @@ class Validation {
 	 * @since   3.1.1
 	 *
 	 * @param   array $settings   Settings.
-	 * @return  bool                Duplicates
+	 * @return  false|array         Profile ID and Action with duplicates, or false
 	 */
 	public function check_for_duplicates( $settings ) {
 

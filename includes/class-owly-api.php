@@ -70,21 +70,6 @@ class Owly_API {
 	}
 
 	/**
-	 * Private function to perform a GET request
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  string $cmd        Command (required).
-	 * @param  array  $params     Params (optional).
-	 * @return mixed               WP_Error | object
-	 */
-	private function get( $cmd, $params = array() ) {
-
-		return $this->request( $cmd, 'get', $params );
-
-	}
-
-	/**
 	 * Private function to perform a POST request
 	 *
 	 * @since  1.0.0
@@ -149,6 +134,7 @@ class Owly_API {
 	private function request_wordpress( $url, $method, $params, $timeout = 10 ) {
 
 		// Send request.
+		$response = new \WP_Error( $this->base->plugin->filter_name . '_api_invalid_method', __( 'Invalid request method.', 'wp-to-hootsuite' ) );
 		switch ( $method ) {
 			/**
 			 * GET
