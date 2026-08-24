@@ -70,7 +70,9 @@ class Install {
 		// Reschedule the cron events.
 		$this->base->get_class( 'cron' )->schedule_log_cleanup_event();
 		$this->base->get_class( 'cron' )->schedule_media_cleanup_event();
-		$this->base->get_class( 'cron' )->schedule_refresh_token_event();
+
+		// Unschedule cron events we no longer use.
+		$this->base->get_class( 'cron' )->unschedule_refresh_token_event();
 
 		// Bail if settings already exist.
 		$settings = $this->base->get_class( 'settings' )->get_settings( 'post' );
@@ -115,7 +117,9 @@ class Install {
 		// Reschedule the cron events.
 		$this->base->get_class( 'cron' )->reschedule_log_cleanup_event();
 		$this->base->get_class( 'cron' )->reschedule_media_cleanup_event();
-		$this->base->get_class( 'cron' )->reschedule_refresh_token_event();
+
+		// Unschedule cron events we no longer use.
+		$this->base->get_class( 'cron' )->unschedule_refresh_token_event();
 
 		// Update the version number.
 		update_option( $this->base->plugin->name . '-version', $this->base->plugin->version );
