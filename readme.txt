@@ -154,7 +154,6 @@ We **never** store any information on our web site or API during this process.
 
 = 3.1.3 (2026-08-24) =
 * Fix: Authentication: Only show Reconnect button if the connection has expired
-* Removed: Authentication: Schedule refreshing tokens to prevent "grant request is invalid" errors 
 
 = 3.1.2 (2026-08-21) =
 * Added: PHPStan static analysis improvements
