@@ -70,7 +70,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 						echo esc_html(
 							sprintf(
-								/* translators: %1$s: Plugin Name, %2$s: Social Media Service Name (Buffer, Hootsuite) */
+								/* translators: %1$s: Social Media Scheduler Name, %2$s: Plugin Name */
 								__( 'A list of %1$s accounts/organizations that are connected to %2$s.', 'wp-to-hootsuite' ),
 								$this->base->plugin->account,
 								$this->base->plugin->displayName
@@ -79,14 +79,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 						?>
 						<br />
 						<?php
-						echo esc_html__( 'Missing profiles? Click the Refresh Profiles to update your profiles list.', 'wp-to-hootsuite' );
+						echo esc_html__( 'Missing profiles? Click the Refresh Profiles button to update your profiles list.', 'wp-to-hootsuite' );
 						?>
 						<br />
 						<?php
 						echo esc_html(
 							sprintf(
-								/* translators: %1$s: Social Media Service Name (Buffer, Hootsuite) */
-								__( 'Issues with your connection to %1$s? Click the Reconnect button.', 'wp-to-hootsuite' ),
+								/* translators: %s: Social Media Scheduler Name */
+								__( 'Issues with your connection to %s? You\'ll see a Reconnect button below, which you can click.', 'wp-to-hootsuite' ),
 								$this->base->plugin->account
 							)
 						);
@@ -123,9 +123,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<a href="<?php echo esc_url( $refresh_profiles_url ); ?>" class="button button-secondary">
 								<?php esc_html_e( 'Refresh Profiles', 'wp-to-hootsuite' ); ?>
 							</a>
-							<a href="<?php echo esc_url( $reconnect_url ); ?>" class="button button-secondary">
-								<?php esc_html_e( 'Reconnect', 'wp-to-hootsuite' ); ?>
-							</a>
+							<?php
+							// Only show Reconnect if the token expired.
+							if ( time() > $account['token_expires'] ) {
+								?>
+								<a href="<?php echo esc_url( $reconnect_url ); ?>" class="button button-secondary">
+									<?php esc_html_e( 'Reconnect', 'wp-to-hootsuite' ); ?>
+								</a>
+								<?php
+							}
+							?>
 							<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button wpzinc-button-red">
 								<?php esc_html_e( 'Disconnect', 'wp-to-hootsuite' ); ?>
 							</a>

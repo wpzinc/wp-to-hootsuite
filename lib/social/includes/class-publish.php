@@ -212,7 +212,7 @@ class Publish {
 		}
 
 		// Update.
-		if ( $old_status === 'publish' ) {
+		if ( $new_status === 'publish' && $old_status === 'publish' ) { // @phpstan-ignore-line
 			/**
 			 * Gutenberg Editor REST API Request
 			 * - Non-Gutenberg metaboxes are POSTed via a second, separate request to post.php, which appears
