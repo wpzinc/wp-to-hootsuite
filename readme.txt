@@ -5,7 +5,7 @@ Tags: social media automation, auto post, hootsuite, social media scheduler, aut
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,10 @@ We **never** store any information on our web site or API during this process.
 4. Post-level Logging.
 
 == Changelog ==
+
+= 3.1.5 (2026-09-15) =
+* Fix: Logs: Show connection errors
+* Fix: Logs: Create table if it doesn't exist on Plugin version upgrade
 
 = 3.1.4 (2026-08-31) =
 * Fix: Authentication: PHP Fatal error: Undefined method `reschedule_refresh_token_event`

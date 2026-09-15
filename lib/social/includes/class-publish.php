@@ -509,6 +509,20 @@ class Publish {
 			// Display an error.
 			if ( is_wp_error( $account_profiles ) ) {
 				$this->base->get_class( 'notices' )->add_error_notice( $account_profiles->get_error_message() );
+
+				// Log the connection error so it's visible in the Logs screen, not just debug.log.
+				if ( $this->base->get_class( 'log' )->is_enabled() ) {
+					$this->base->get_class( 'log' )->add(
+						$post_id,
+						array(
+							'action'         => $action,
+							'request_sent'   => gmdate( 'Y-m-d H:i:s' ),
+							'result'         => 'error',
+							'result_message' => $account_profiles->get_error_message(),
+						)
+					);
+				}
+
 				continue;
 			}
 
