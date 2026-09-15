@@ -121,6 +121,9 @@ class Install {
 		// Unschedule cron events we no longer use.
 		$this->base->get_class( 'cron' )->unschedule_refresh_token_event();
 
+		// Create log table if it doesn't exist.
+		$this->base->get_class( 'log' )->activate();
+
 		// Update the version number.
 		update_option( $this->base->plugin->name . '-version', $this->base->plugin->version );
 
