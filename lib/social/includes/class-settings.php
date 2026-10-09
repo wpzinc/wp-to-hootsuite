@@ -666,7 +666,7 @@ class Settings {
 		);
 
 		// Update the accounts.
-		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts, false );
 
 	}
 
@@ -696,7 +696,42 @@ class Settings {
 		$accounts[ $account_id ]['token_expires'] = $token_expires;
 
 		// Update the accounts.
-		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts, false );
+
+	}
+
+	/**
+	 * Clears the stored tokens for the account holding the given refresh token.
+	 * Keyed on the refresh token, so a token already rotated by another request won't match.
+	 *
+	 * @since   6.2.5
+	 *
+	 * @param   string $refresh_token   Refresh Token that was rejected.
+	 * @return  bool                     Whether an account was cleared.
+	 */
+	public function clear_account_credentials_by_refresh_token( $refresh_token ) {
+
+		if ( empty( $refresh_token ) ) {
+			return false;
+		}
+
+		$accounts = $this->get_accounts();
+		foreach ( $accounts as $account_id => $account ) {
+			if ( $account['refresh_token'] !== $refresh_token ) {
+				continue;
+			}
+
+			// Clear tokens so the dead token stops being presented and the Reconnect button shows.
+			$accounts[ $account_id ]['access_token']  = '';
+			$accounts[ $account_id ]['refresh_token'] = '';
+			$accounts[ $account_id ]['token_expires'] = 0;
+
+			// Update the accounts.
+			update_option( $this->base->plugin->settingsName . '-accounts', $accounts, false );
+			return true;
+		}
+
+		return false;
 
 	}
 
@@ -730,7 +765,7 @@ class Settings {
 		$accounts[ $account_id ]['profile_ids']   = $profile_ids;
 
 		// Update the accounts.
-		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts, false );
 
 	}
 
@@ -756,7 +791,7 @@ class Settings {
 		$accounts[ $account_id ]['profile_ids'] = $profile_ids;
 
 		// Update the accounts.
-		update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+		update_option( $this->base->plugin->settingsName . '-accounts', $accounts, false );
 
 	}
 
@@ -780,7 +815,7 @@ class Settings {
 		delete_option( $this->base->plugin->name . '-profiles-' . $account_id );
 
 		// Update the accounts.
-		return update_option( $this->base->plugin->settingsName . '-accounts', $accounts );
+		return update_option( $this->base->plugin->settingsName . '-accounts', $accounts, false );
 
 	}
 

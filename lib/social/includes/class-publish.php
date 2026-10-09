@@ -777,8 +777,7 @@ class Publish {
 		}
 
 		// Build API compatible arguments.
-		$thumbnail = $this->get_post_image( $post, $service, $status['post_type'] );
-		$args      = array(
+		$args = array(
 			'account'     => $account,
 			'post_type'   => $status['post_type'],
 			'profile_ids' => array( $profile_id ),
