@@ -715,6 +715,8 @@ class Settings {
 			return false;
 		}
 
+		// Read from the database, so a stale cached copy can't wipe tokens another request just saved.
+		wp_cache_delete( $this->base->plugin->settingsName . '-accounts', 'options' );
 		$accounts = $this->get_accounts();
 		foreach ( $accounts as $account_id => $account ) {
 			if ( $account['refresh_token'] !== $refresh_token ) {
