@@ -170,6 +170,11 @@ class Ajax {
 		// Get Post ID.
 		$post_id = absint( $_REQUEST['post'] );
 
+		// Bail if the user cannot edit this Post.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-to-hootsuite' ) );
+		}
+
 		// Return log table output.
 		wp_send_json_success( $this->base->get_class( 'log' )->build_log_table_output( $this->base->get_class( 'log' )->get( $post_id ) ) );
 
@@ -192,6 +197,11 @@ class Ajax {
 
 		// Get Post ID.
 		$post_id = absint( $_REQUEST['post'] );
+
+		// Bail if the user cannot edit this Post.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-to-hootsuite' ) );
+		}
 
 		// Clear log.
 		$this->base->get_class( 'log' )->delete_by_post_id( $post_id );
