@@ -5,7 +5,7 @@ Tags: social media automation, auto post, hootsuite, social media scheduler, aut
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.7
+Stable tag: 3.1.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,10 @@ We **never** store any information on our web site or API during this process.
 4. Post-level Logging.
 
 == Changelog ==
+
+= 3.1.8 (2026-11-20) =
+* Fix: Security: Check the user can edit the Post before viewing or clearing its Log, and can access the Plugin's settings before saving them
+* Fix: Security: Escape status text, profile names and API responses when displaying Logs
 
 = 3.1.7 (2026-11-11) =
 * Fix: Authentication: Re-read stored credentials from the database before clearing them, so newer credentials saved by another request are not removed

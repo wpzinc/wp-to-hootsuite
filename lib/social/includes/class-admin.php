@@ -611,14 +611,13 @@ class Admin {
 	}
 
 	/**
-	 * Add the Plugin to the WordPress Administration Menu
+	 * Returns the minimum capability required to access the Plugin's settings.
 	 *
-	 * @since   1.0.0
+	 * @since   6.3.0
+	 *
+	 * @return  string
 	 */
-	public function admin_menu() {
-
-		// Define the minimum capability required to access settings.
-		$minimum_capability = 'manage_options';
+	public function get_minimum_capability() {
 
 		/**
 		 * Defines the minimum capability required to access the Plugin's
@@ -629,7 +628,19 @@ class Admin {
 		 * @param   string  $capability     Minimum Required Capability.
 		 * @return  string                  Minimum Required Capability
 		 */
-		$minimum_capability = apply_filters( $this->base->plugin->filter_name . '_admin_admin_menu_minimum_capability', $minimum_capability );
+		return apply_filters( $this->base->plugin->filter_name . '_admin_admin_menu_minimum_capability', 'manage_options' );
+
+	}
+
+	/**
+	 * Add the Plugin to the WordPress Administration Menu
+	 *
+	 * @since   1.0.0
+	 */
+	public function admin_menu() {
+
+		// Define the minimum capability required to access settings.
+		$minimum_capability = $this->get_minimum_capability();
 
 		/**
 		 * Add settings menus and sub menus for the Plugin's settings.
