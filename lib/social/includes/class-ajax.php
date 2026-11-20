@@ -58,6 +58,11 @@ class Ajax {
 		// Run a security check first.
 		check_ajax_referer( $this->base->plugin->name . '-username-save-twitter', 'nonce' );
 
+		// Bail if the user does not have permission.
+		if ( ! current_user_can( $this->base->get_class( 'admin' )->get_minimum_capability() ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-to-hootsuite' ) );
+		}
+
 		// Bail if no user ID or username was provided.
 		if ( ! isset( $_REQUEST['user_id'] ) ) {
 			wp_send_json_error( __( 'No user ID was provided.', 'wp-to-hootsuite' ) );
@@ -86,6 +91,11 @@ class Ajax {
 
 		// Run a security check first.
 		check_ajax_referer( $this->base->plugin->name . '-save-statuses', 'nonce' );
+
+		// Bail if the user does not have permission.
+		if ( ! current_user_can( $this->base->get_class( 'admin' )->get_minimum_capability() ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-to-hootsuite' ) );
+		}
 
 		// Bail if no post type was provided.
 		if ( ! isset( $_REQUEST['post_type'] ) ) {
@@ -130,6 +140,11 @@ class Ajax {
 		// Run a security check first.
 		check_ajax_referer( $this->base->plugin->name . '-get-status-row', 'nonce' );
 
+		// Bail if the user does not have permission.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-to-hootsuite' ) );
+		}
+
 		// Bail if expect parameters were not was provided.
 		if ( ! isset( $_REQUEST['status'] ) ) {
 			wp_send_json_error( __( 'No status was provided.', 'wp-to-hootsuite' ) );
@@ -170,6 +185,11 @@ class Ajax {
 		// Get Post ID.
 		$post_id = absint( $_REQUEST['post'] );
 
+		// Bail if the user does not have permission.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-to-hootsuite' ) );
+		}
+
 		// Return log table output.
 		wp_send_json_success( $this->base->get_class( 'log' )->build_log_table_output( $this->base->get_class( 'log' )->get( $post_id ) ) );
 
@@ -192,6 +212,11 @@ class Ajax {
 
 		// Get Post ID.
 		$post_id = absint( $_REQUEST['post'] );
+
+		// Bail if the user does not have permission.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-to-hootsuite' ) );
+		}
 
 		// Clear log.
 		$this->base->get_class( 'log' )->delete_by_post_id( $post_id );
