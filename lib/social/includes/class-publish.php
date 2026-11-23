@@ -149,7 +149,8 @@ class Publish {
 		// If a previous request flagged that an 'update' request should be treated as a publish request (i.e.
 		// we're using Gutenberg and request to post.php was made after the REST API), do this now.
 		$needs_publishing = get_post_meta( $post->ID, $this->base->plugin->filter_name . '_needs_publishing', true );
-		if ( $needs_publishing ) {
+		// Only act on the flag when the Post is published, as it may have been added by the user (e.g. Custom Fields).
+		if ( $needs_publishing && $new_status === 'publish' ) {
 			$this->base->get_class( 'log' )->add_to_debug_log( 'Gutenberg: Needs Publishing' );
 
 			// Run Publish Status Action now.
@@ -163,7 +164,8 @@ class Publish {
 		// If a previous request flagged that an update request be deferred (i.e.
 		// we're using Gutenberg and request to post.php was made after the REST API), do this now.
 		$needs_updating = get_post_meta( $post->ID, $this->base->plugin->filter_name . '_needs_updating', true );
-		if ( $needs_updating ) {
+		// Only act on the flag when the Post is published, as it may have been added by the user (e.g. Custom Fields).
+		if ( $needs_updating && $new_status === 'publish' ) {
 			$this->base->get_class( 'log' )->add_to_debug_log( 'Gutenberg: Needs Updating' );
 
 			// Run Publish Status Action now.
