@@ -5,7 +5,7 @@ Tags: social media automation, auto post, hootsuite, social media scheduler, aut
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.8
+Stable tag: 3.1.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,9 @@ We **never** store any information on our web site or API during this process.
 4. Post-level Logging.
 
 == Changelog ==
+
+= 3.1.9 (2026-11-23) =
+* Fix: Security: Only send statuses for a Post that is being published or updated, preventing a pending Post being sent to social media
 
 = 3.1.8 (2026-11-20) =
 * Fix: Security: Check the user can edit the Post before viewing or clearing its Log, and can access the Plugin's settings before saving them
